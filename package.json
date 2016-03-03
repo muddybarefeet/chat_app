@@ -1,0 +1,33 @@
+{
+  "name": "chat_app",
+  "version": "1.0.0",
+  "description": "Implementation of a chat app from the ground up",
+  "main": "webpack.config.js",
+  "scripts": {},
+  "author": "Anna Rogers",
+  "license": "ISC",
+  "dependencies": {
+    "babel-loader": "^6.2.4",
+    "babel-preset-react": "^6.5.0",
+    "bcrypt": "^0.8.5",
+    "bluebird": "^3.3.3",
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "events": "^1.1.0",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "flux": "^2.1.1",
+    "fs": "0.0.2",
+    "history": "^2.0.0",
+    "jwt-simple": "^0.4.1",
+    "knex": "^0.10.0",
+    "morgan": "^1.7.0",
+    "nodemon": "^1.9.1",
+    "pg": "^4.5.1",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-router": "^2.0.0",
+    "superagent": "^1.8.0-beta.2",
+    "webpack": "^1.12.14"
+  }
+}

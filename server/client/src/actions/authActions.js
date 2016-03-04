@@ -9,6 +9,7 @@ var authActions = {
     requestHelper
     .post('users/login', {email: email, password: password})
     .end(function (err, response) {
+      console.log('response', response);
       if (response.status === 200) {
         userData = response.body.data;
         AppDispatcher.handleServerAction({
@@ -17,8 +18,8 @@ var authActions = {
         });
       } else {
         AppDispatcher.handleServerAction({
-          actionType: "USER_LOGIN_ERROR",
-          data: userData
+          actionType: "USER_LOGIN_ERROR"
+          // data: userData
         });
       }
     });

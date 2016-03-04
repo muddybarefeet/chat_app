@@ -1,7 +1,7 @@
 //Schema from the matches table
 //-------------------------------------
 module.exports = function (knex) {
-    return knex.schema.createTableIfNotExists('usersRooms', function (table) {
+    return knex.schema.createTableIfNotExists('users_rooms', function (table) {
         table.increments('usersRooms_id')
             .primary();
         table.integer('roomId')

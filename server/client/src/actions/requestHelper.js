@@ -4,22 +4,22 @@ var rp = require('superagent');
 
 var requestHelper = {
   
-  post: function (url, body) { //add jwt back in here!
+  post: function (url, body, jwt) { //add jwt back in here!
     return rp
       .post(baseUrl + url)
-      // .set('authorization', jwt)
+      .set('authorization', jwt)
       .send(body);
   },
 
   get: function (url, jwt) {
     return rp(baseUrl + url)
-      // .set('authorization', jwt);
+      .set('authorization', jwt);
   },
 
   put: function(url, jwt) {
     return rp
       .put(baseUrl + url)
-      // .set('authorization', jwt);
+      .set('authorization', jwt);
   }
 
 };

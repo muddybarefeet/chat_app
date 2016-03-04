@@ -11,6 +11,7 @@ module.exports = function (services) {
       
       var email = req.body.email;
       var password = req.body.password;
+
       services.db.users.login(email, password)
       .then(function(response) {
         res.json({
@@ -30,6 +31,7 @@ module.exports = function (services) {
   //-----------------------------------
   router.route('/signup')
     .post(function (req, res) {
+      
       var username = req.body.username;
       var email = req.body.email;
       var password = req.body.password;

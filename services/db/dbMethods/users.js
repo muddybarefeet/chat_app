@@ -9,15 +9,18 @@ module.exports = function (knex) {
 //Takes login info and checks password
 //-------------------------------------
   module.login = function (email, password) {
-    
     var id;
     var user_name;
     return knex('users').where('email', email)
     .then(function (data) {
-      id = data[0].u_id;
-      userEmail = data[0].email;
-      user_name = data[0].username;
-      return bcrypt.compareAsync(password, data[0].password);
+      if (data.length > 0) {
+        id = data[0].u_id;
+        userEmail = data[0].email;
+        user_name = data[0].username;
+        return bcrypt.compareAsync(password, data[0].password);
+      } else {
+        throw new Error("Your email and password does not exist in the database");
+      }
     })
     .then(function (userVerified) {
       //userVerified returns true/false
@@ -26,6 +29,7 @@ module.exports = function (knex) {
         var obj = {};
         obj.jwt = encode({id: id, exp: current});
         obj.username = user_name;
+        console.log('object', obj);
         return obj;
       } else {
         throw new Error("User Not Verified");

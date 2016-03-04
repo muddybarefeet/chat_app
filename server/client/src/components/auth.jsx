@@ -1,9 +1,10 @@
 
+var authActions = require('./../actions/authActions.js');
+var authStore = require('./../stores/authStore.js');
+
 var React = require('react');
 var Link = require('react-router').Link;
 
-var authActions = require('./../actions/authActions.js');
-var authStore = require('./../stores/authStore.js');
 
 var Login = React.createClass({
 

@@ -1,17 +1,23 @@
 
 var express = require('express');
 var router = express.Router();
+var checkAuth = require('./../../../services/jwts/index.js').checkAuth;
 
 module.exports = function (services) {
 
+  router.use(checkAuth);
+
   //Post to make a connection with another person
   //-----------------------------------
-  router.route('/makeConnection')
+  router.route('/add')
     .post(function (req, res) {
-      //want to pass to the database:
-      //user to make connection and who connect to 
-      
-      services.db.friends.makeConnection(/*userRequested, requestFor*/)
+
+      console.log('in post', req);
+
+      var userId = req.__userId;
+      var requestFor = req.body.recipient;
+
+      services.db.friends.makeConnection(userId, requestFor)
       .then(function(response) {
         res.json({
           data: response
@@ -28,23 +34,73 @@ module.exports = function (services) {
 
   //Confirm that you want to make a new connection with a request sent to you
   //-----------------------------------
-  router.route('/confirmConnection')
-    .post(function (req, res) {
-      
-      services.db.friends.confirmConnection(/*userConfirmed, userConfirmedTo, accept/reject*/)
-      .then(function (response) {
-        res.json({
-          data: response
-        });
-      })
-      .catch(function(err){
-        console.log('err', err);
-        res.status(404).json({
-            message: err.message
-        });
-      });
+  // router.route('/requestResponse')
+  //   .post(function (req, res) {
 
-    });
+  //     var userId = req.user.u_id;
+  //     var toRespondTo = req.body.toRespond;
+  //     var status = req.body.status;
+
+  //     services.db.friends.confirmConnection(userId, toRespondTo, status)
+  //     .then(function (response) {
+  //       res.json({
+  //         data: response
+  //       });
+  //     })
+  //     .catch(function(err){
+  //       console.log('err', err);
+  //       res.status(404).json({
+  //           message: err.message
+  //       });
+  //     });
+
+  //   });
+
+
+    //get all friends
+    //-----------------------------------
+    // router.route('/get')
+    //   .get(function (req, res) {
+
+    //     var userId = req.user.u_id;
+
+    //     services.db.friends.getFriends(userId)
+    //     .then(function (response) {
+    //       res.json({
+    //         data: response
+    //       });
+    //     })
+    //     .catch(function(err){
+    //       console.log('err', err);
+    //       res.status(404).json({
+    //           message: err.message
+    //       });
+    //     });
+
+    //   });
+
+
+    //get all people not friends 
+    //-----------------------------------
+    // router.route('/showWhoCanFriend')
+    //   .get(function (req, res) {
+
+    //     // var userId = req.user.u_id;
+
+    //     services.db.friends.showWhoCanFriend(userId)
+    //     .then(function (response) {
+    //       res.json({
+    //         data: response
+    //       });
+    //     })
+    //     .catch(function(err){
+    //       console.log('err', err);
+    //       res.status(404).json({
+    //           message: err.message
+    //       });
+    //     });
+
+    //   });
 
 
   return router;

@@ -10,7 +10,7 @@ var session = require('express-session');
 
 //export object that gets called from the express server ./../index.js
 module.exports = function (services) {
-
+  console.log('rootere')
   var router = express.Router();
   router.use(bodyParser());
 

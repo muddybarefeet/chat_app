@@ -24803,11 +24803,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
 	var authActions = __webpack_require__(217);
 	var authStore = __webpack_require__(231);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
 
 	var Login = React.createClass({
 	  displayName: 'Login',
@@ -24981,6 +24981,7 @@
 	  sendLogin: function (email, password) {
 
 	    requestHelper.post('users/login', { email: email, password: password }).end(function (err, response) {
+	      console.log('response', response);
 	      if (response.status === 200) {
 	        userData = response.body.data;
 	        AppDispatcher.handleServerAction({
@@ -24989,8 +24990,8 @@
 	        });
 	      } else {
 	        AppDispatcher.handleServerAction({
-	          actionType: "USER_LOGIN_ERROR",
-	          data: userData
+	          actionType: "USER_LOGIN_ERROR"
+	          // data: userData
 	        });
 	      }
 	    });
@@ -25371,21 +25372,17 @@
 
 	var requestHelper = {
 
-	  post: function (url, body) {
+	  post: function (url, body, jwt) {
 	    //add jwt back in here!
-	    return rp.post(baseUrl + url)
-	    // .set('authorization', jwt)
-	    .send(body);
+	    return rp.post(baseUrl + url).set('authorization', jwt).send(body);
 	  },
 
 	  get: function (url, jwt) {
-	    return rp(baseUrl + url);
-	    // .set('authorization', jwt);
+	    return rp(baseUrl + url).set('authorization', jwt);
 	  },
 
 	  put: function (url, jwt) {
-	    return rp.put(baseUrl + url);
-	    // .set('authorization', jwt);
+	    return rp.put(baseUrl + url).set('authorization', jwt);
 	  }
 
 	};
@@ -27269,6 +27266,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27276,6 +27274,21 @@
 	var Chat = React.createClass({
 	  displayName: 'Chat',
 
+
+	  handleAddFriendClick: function () {
+	    //actions.showWhoCanFriend()
+	    friendActions.addFriend(4); //hard coded in that I want to befriend mum currently to test!!
+	  },
+
+	  handleSeeFriendsClick: function () {
+	    //actions.getFriends()
+	    friendActions.getFriends();
+	  },
+
+	  handleNewFriendsClick: function () {
+	    //actions.showWhoCanFriend()
+	    friendActions.getFriends();
+	  },
 
 	  render: function () {
 
@@ -27286,6 +27299,21 @@
 	        'h1',
 	        null,
 	        'Chat Page'
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn btn-warning', onClick: this.handleAddFriendClick },
+	        'Add friend'
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn btn-info', onClick: this.handleSeeFriendsClick },
+	        'See Friends'
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn btn-success', onClick: this.handleNewFriendsClick },
+	        'See new Friends'
 	      )
 	    );
 	  }
@@ -27293,6 +27321,54 @@
 	});
 
 	module.exports = Chat;
+
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var friendsActions = {
+
+	  addFriend: function (whoFor) {
+	    console.log('in action jwt', jwt);
+	    requestHelper.post('friends/add', { recipient: whoFor }, jwt).end(function (err, response) {
+	      console.log('response from db on adding a friend', response);
+	    });
+	    // AppDispatcher.handleServerAction({
+	    //   actionType: "USER_LOGIN_ERROR",
+	    //   data: userData
+	    // });
+	  },
+
+	  requestResponse: function (friendToConfirm, status) {
+
+	    requestHelper.post('friends/requestResponse', { toRespondTo: friendToConfirm, status: status }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	    });
+	  },
+
+	  getFriends: function () {
+
+	    requestHelper.get('friends/get', jwt).end(function (err, response) {
+	      console.log('response getting friends', response);
+	    });
+	  },
+
+	  showWhoCanFriend: function () {
+
+	    requestHelper.get('friends/showWhoCanFriend', jwt).end(function (err, response) {
+	      console.log('response show who can be friended', response);
+	    });
+	  }
+
+	};
+
+	module.exports = friendsActions;
 
 /***/ }
 /******/ ]);

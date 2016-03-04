@@ -4,11 +4,11 @@ module.exports = function (knex) {
     return knex.schema.createTableIfNotExists('messages', function (table) {
         table.increments('messages_id')
             .primary();
-        table.integer('senderId')
+        table.integer('sender_id')
             .references('u_id')
             .inTable('users')
             .notNullable();
-        table.integer('recieverId')
+        table.integer('reciever_id')
             .references('u_id')
             .inTable('users')
             .notNullable();

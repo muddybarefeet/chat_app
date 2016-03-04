@@ -5,9 +5,13 @@ module.exports = function (knex) {
         table.increments('usersRooms_id')
             .primary();
         table.integer('roomId')
-            .unique();
+            .references('r_id')
+            .inTable('rooms')
+            .notNullable();
         table.integer('userId')
-            .unique();
+            .references('u_id')
+            .inTable('users')
+            .notNullable();
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };

@@ -25,8 +25,30 @@ module.exports = function (knex) {
   //-------------------------------------
   module.newMessage = function (userId, message, whoFrom, whoFor, room) {
 
+    var roomId;
+    var recipientId;
     //get the roomId
-    //insert the roomId, message, sender, and reciever into the messages table
+    return knex.select('r_id').from('rooms').where('name', room)
+    .then(function (room) {
+      roomId = room[0];
+      //get the id of the person to send the message to ------- here not verifying that they are frineds as would not seem them to message if not friends
+      return knex.select('u_id').from('users').where('username', whoFor);
+    })
+    .then(function (userId) {
+      recipientId = userId[0];
+      //insert the roomId, message, sender, and reciever into the messages table
+      return knex('messages').insert(
+        [
+          {
+            sender_id: userId,
+            reciever_id: recipientId,
+            message: message
+          }
+        ], '*');
+    })
+    .then(function (insertedMessages) {
+      console.log('inserted message', insertedMessages);
+    });
 
   };
 
@@ -36,7 +58,14 @@ module.exports = function (knex) {
 
     //join table between users and rooms to use
     //go to this join table and get the all room ids where the user is
-    //go to the rooms table and extract the rooms that match the ids
+    return knex.select('roomId').from('usersRooms.js').where('userId', userId)
+    .then(function (arrayOfIds) {
+      //go to the rooms table and for each room id get the row in the table corespondeing to the id
+      arrayOfIds.forEach(function (roomId) { //----------------------------------------------CHEK THIS BIT OUT PROPERLY!!
+        return knex.select().table('rooms').where('r_id', roomid);
+      });
+
+    });
     
   };
 
@@ -45,7 +74,14 @@ module.exports = function (knex) {
   module.createRoom = function (userId, roomName, status) {
 
     //insert a new room into the rooms table status: private/public
-    //insert a user and room id into the users/rooms join table
+    return knex.insert([{name: roomName, type: status}], '*')
+    .then(function (room) {
+      //insert a user and room id into the users/rooms join table
+      return knex.insert([{roomId: room[0].r_id, userId: userId}], '*');
+    })
+    .then(function (insertedData) {
+      console.log('inserted new room in to the rooms table and the usersRooms', insertedData);
+    });
     
   };
 

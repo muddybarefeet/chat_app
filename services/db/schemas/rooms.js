@@ -6,7 +6,9 @@ module.exports = function (knex) {
             .primary();
         table.string('name')
             .unique();
-        table.string('type');
+        table.enu('type', ['public', 'private'])
+            .notNullable();
+        table.boolean('creator');
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };

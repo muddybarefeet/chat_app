@@ -62,7 +62,7 @@ module.exports = function (knex) {
     .then(function (arrayOfIds) {
       //go to the rooms table and for each room id get the row in the table corespondeing to the id
       arrayOfIds.forEach(function (roomId) { //----------------------------------------------CHEK THIS BIT OUT PROPERLY!!
-        return knex.select().table('rooms').where('r_id', roomid);
+        return knex.select().table('rooms').where('r_id', roomId);
       });
 
     });
@@ -74,10 +74,10 @@ module.exports = function (knex) {
   module.createRoom = function (userId, roomName, status) {
 
     //insert a new room into the rooms table status: private/public
-    return knex.insert([{name: roomName, type: status}], '*')
+    return knex('usersRooms').insert([{name: roomName, type: status, isActive: true}], '*')
     .then(function (room) {
       //insert a user and room id into the users/rooms join table
-      return knex.insert([{roomId: room[0].r_id, userId: userId}], '*');
+      return knex('rooms').insert([{roomId: room[0].r_id, userId: userId, creator: true}], '*');
     })
     .then(function (insertedData) {
       console.log('inserted new room in to the rooms table and the usersRooms', insertedData);
@@ -89,18 +89,48 @@ module.exports = function (knex) {
   //-------------------------------------
   module.joinRoom = function (userId, roomName, peopleInvited) {
 
+    var roomId;
     //find the room in the rooms table and get the id
-    //add the user id and the roomid to the rooms/users table
-    //get the ids for the invited people and add them with the table id to the users/rooms table
+    return knex.select('r_id').from('rooms').where('name', roomName)
+    .then(function (room) {
+      //add the user id and the roomId to the rooms/users table
+      roomId = roomId[0];
+      return knex('rooms').insert([{ roomId: roomId, userId: userId, creator: false }], '*');
+    })
+    .then(function (insertedRow) {
+      //get the ids for the invited people and add them with the table id to the users/rooms table
+      console.log('new room joined', insertedRow);
+      peopleInvited.forEach(function (username) {
+        //get the id
+        //add to the users/rooms table
+        //---------------------------------------------SORT!!
+      });
+    });
     
   };
 
-    //join a room------ there could later show private rooms and one has to conact the room person for auth to join a room 
+  //return all joinable rooms----- there could later show private rooms and one has to conact the room person for auth to join a room 
   //-----------------------------------------------
   module.getJoinableRooms = function (userId) {
 
-    //go to the rooms table and return all the rooms which have a status of public
+    //go to the rooms table and return all the rooms which have a type of public
+    return knex('rooms').select().where('status', 'public')
+    .then(function (arrayOfRooms) {
+      console.log('all public rooms', arrayOfRooms);
+    });
     
+  };
+
+  //leave a room
+  //-------------------
+  module.getJoinableRooms = function (userId) {
+
+    //go to the users/rooms table and delete the entry for the user ------ extend to just have an isActive field
+    return knex('usersRooms').where('userId', userId).update({isActive: false}, '*')
+    .then(function (updatedRow) {
+      console.log('update row in usersRooms table',updatedRow); //-------------------check need this then block
+    });
+
   };
 
   return module;

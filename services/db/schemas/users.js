@@ -1,4 +1,4 @@
-//Schema from the matches table
+//Schema from the users table
 //-------------------------------------
 module.exports = function (knex) { //table with name email and password
     return knex.schema.createTableIfNotExists('users', function (table) {

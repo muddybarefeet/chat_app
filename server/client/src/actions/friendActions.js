@@ -7,16 +7,20 @@ var jwt = require('../constants.js').jwt;
 var friendsActions = {
 
   addFriend: function (whoFor) {
-    console.log('in action jwt', jwt);
+
     requestHelper
     .post('friends/add', { recipient: whoFor },jwt)
     .end(function (err, response) {
-      console.log('response from db on adding a friend', response);
+
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "ADD_FRIEND",
+          data: response.data
+        });
+      } else {
+        console.log('err', err);
+      }
     });
-    // AppDispatcher.handleServerAction({
-    //   actionType: "USER_LOGIN_ERROR",
-    //   data: userData
-    // });
   },
 
   requestResponse: function (friendToConfirm, status) {
@@ -31,7 +35,7 @@ var friendsActions = {
   },
 
   getFriends: function () {
-
+    console.log('geting friends')
     requestHelper
     .get('friends/get', jwt)
     .end(function (err, response) {

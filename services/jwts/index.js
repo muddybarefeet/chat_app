@@ -12,8 +12,7 @@ module.exports = {
   },
 
   checkAuth: function (req, res, next) {
-    console.log('in return', req.headers.authorization);
-    
+
     if (req.headers.authorization) {
       var decoded = jwt.decode(req.headers.authorization, secret);
       req.__userId = decoded.id;

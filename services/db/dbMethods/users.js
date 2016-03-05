@@ -29,7 +29,6 @@ module.exports = function (knex) {
         var obj = {};
         obj.jwt = encode({id: id, exp: current});
         obj.username = user_name;
-        console.log('object', obj);
         return obj;
       } else {
         throw new Error("User Not Verified");

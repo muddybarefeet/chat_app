@@ -24981,7 +24981,6 @@
 	  sendLogin: function (email, password) {
 
 	    requestHelper.post('users/login', { email: email, password: password }).end(function (err, response) {
-	      console.log('response', response);
 	      if (response.status === 200) {
 	        userData = response.body.data;
 	        AppDispatcher.handleServerAction({
@@ -24990,8 +24989,8 @@
 	        });
 	      } else {
 	        AppDispatcher.handleServerAction({
-	          actionType: "USER_LOGIN_ERROR"
-	          // data: userData
+	          actionType: "USER_LOGIN_ERROR",
+	          data: userData
 	        });
 	      }
 	    });
@@ -27276,17 +27275,14 @@
 
 
 	  handleAddFriendClick: function () {
-	    //actions.showWhoCanFriend()
-	    friendActions.addFriend(4); //hard coded in that I want to befriend mum currently to test!!
+	    friendActions.addFriend('dad'); //hard coded in that I want to befriend mum currently to test!!
 	  },
 
-	  handleSeeFriendsClick: function () {
-	    //actions.getFriends()
+	  handleGetFriendsClick: function () {
 	    friendActions.getFriends();
 	  },
 
 	  handleNewFriendsClick: function () {
-	    //actions.showWhoCanFriend()
 	    friendActions.getFriends();
 	  },
 
@@ -27307,7 +27303,7 @@
 	      ),
 	      React.createElement(
 	        'button',
-	        { type: 'button', className: 'btn btn-info', onClick: this.handleSeeFriendsClick },
+	        { type: 'button', className: 'btn btn-info', onClick: this.handleGetFriendsClick },
 	        'See Friends'
 	      ),
 	      React.createElement(
@@ -27335,14 +27331,18 @@
 	var friendsActions = {
 
 	  addFriend: function (whoFor) {
-	    console.log('in action jwt', jwt);
+
 	    requestHelper.post('friends/add', { recipient: whoFor }, jwt).end(function (err, response) {
-	      console.log('response from db on adding a friend', response);
+
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "ADD_FRIEND",
+	          data: response.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
 	    });
-	    // AppDispatcher.handleServerAction({
-	    //   actionType: "USER_LOGIN_ERROR",
-	    //   data: userData
-	    // });
 	  },
 
 	  requestResponse: function (friendToConfirm, status) {
@@ -27353,7 +27353,7 @@
 	  },
 
 	  getFriends: function () {
-
+	    console.log('geting friends');
 	    requestHelper.get('friends/get', jwt).end(function (err, response) {
 	      console.log('response getting friends', response);
 	    });

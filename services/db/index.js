@@ -7,6 +7,6 @@ var knex = knex(config.db[ENV]);
 var methods = {};
 
 methods.users = require('./dbMethods/users')(knex);
-
+methods.friends = require('./dbMethods/friends')(knex);
 
 module.exports = methods;

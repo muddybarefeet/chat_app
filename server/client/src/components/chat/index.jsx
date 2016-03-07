@@ -7,7 +7,11 @@ var Link = require('react-router').Link;
 var Chat = React.createClass({
 
   handleAddFriendClick: function () {
-    friendActions.addFriend('dad'); //hard coded in that I want to befriend mum currently to test!!
+    friendActions.addFriend('dad'); //hard coded in that I want to befriend dad currently to test!!
+  },
+
+  handleConfirmFriend: function () {
+    friendActions.confirmRequest('anna', true); //
   },
 
   handleGetFriendsClick: function () {
@@ -25,6 +29,7 @@ var Chat = React.createClass({
 
         <h1>Chat Page</h1>
         <button type="button" className="btn btn-warning" onClick={this.handleAddFriendClick}>Add friend</button>
+        <button type="button" className="btn btn-default" onClick={this.handleConfirmFriend}>Confirm Friend</button>
         <button type="button" className="btn btn-info" onClick={this.handleGetFriendsClick}>See Friends</button>
         <button type="button" className="btn btn-success" onClick={this.handleNewFriendsClick}>See new Friends</button>
 

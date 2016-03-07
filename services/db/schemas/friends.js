@@ -12,7 +12,7 @@ module.exports = function (knex) {
             .references('u_id')
             .inTable('users')
             .notNullable();
-        table.string('requestAccepted'); //have an accepted and reject to only be filled when the person asked answers
+        table.boolean('requestAccepted'); //have an accepted and reject to only be filled when the person asked answers
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };

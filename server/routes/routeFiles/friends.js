@@ -34,14 +34,13 @@ module.exports = function (services) {
 
   //Confirm that you want to make a new connection with a request sent to you
   //-----------------------------------
-  router.route('/requestResponse')
+  router.route('/confirmRequest')
     .post(function (req, res) {
-
       var userId = req.__userId;
       var toRespondTo = req.body.toRespond;
       var status = req.body.status;
 
-      services.db.friends.confirmConnection(userId, toRespondTo, status)
+      services.db.friends.confirmRequest(userId, toRespondTo, status)
       .then(function (response) {
         res.json({
           data: response

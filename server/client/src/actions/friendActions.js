@@ -23,10 +23,10 @@ var friendsActions = {
     });
   },
 
-  requestResponse: function (friendToConfirm, status) {
+  confirmRequest: function (friendToConfirm, status) {
 
     requestHelper
-    .post('friends/requestResponse', { toRespondTo: friendToConfirm, status: status }, jwt)
+    .post('friends/confirmRequest', { toRespond: friendToConfirm, status: status }, jwt)
     .end(function (err, response) {
       console.log('response from db on confiming/reject friend a friend', response);
 
@@ -35,7 +35,7 @@ var friendsActions = {
   },
 
   getFriends: function () {
-    console.log('geting friends')
+
     requestHelper
     .get('friends/get', jwt)
     .end(function (err, response) {

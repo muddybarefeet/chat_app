@@ -27275,7 +27275,11 @@
 
 
 	  handleAddFriendClick: function () {
-	    friendActions.addFriend('dad'); //hard coded in that I want to befriend mum currently to test!!
+	    friendActions.addFriend('dad'); //hard coded in that I want to befriend dad currently to test!!
+	  },
+
+	  handleConfirmFriend: function () {
+	    friendActions.confirmRequest('anna', true); //
 	  },
 
 	  handleGetFriendsClick: function () {
@@ -27300,6 +27304,11 @@
 	        'button',
 	        { type: 'button', className: 'btn btn-warning', onClick: this.handleAddFriendClick },
 	        'Add friend'
+	      ),
+	      React.createElement(
+	        'button',
+	        { type: 'button', className: 'btn btn-default', onClick: this.handleConfirmFriend },
+	        'Confirm Friend'
 	      ),
 	      React.createElement(
 	        'button',
@@ -27345,15 +27354,15 @@
 	    });
 	  },
 
-	  requestResponse: function (friendToConfirm, status) {
+	  confirmRequest: function (friendToConfirm, status) {
 
-	    requestHelper.post('friends/requestResponse', { toRespondTo: friendToConfirm, status: status }, jwt).end(function (err, response) {
+	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm, status: status }, jwt).end(function (err, response) {
 	      console.log('response from db on confiming/reject friend a friend', response);
 	    });
 	  },
 
 	  getFriends: function () {
-	    console.log('geting friends');
+
 	    requestHelper.get('friends/get', jwt).end(function (err, response) {
 	      console.log('response getting friends', response);
 	    });

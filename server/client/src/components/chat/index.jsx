@@ -11,7 +11,7 @@ var Chat = React.createClass({
   },
 
   handleConfirmFriend: function () {
-    friendActions.confirmRequest('anna', true); //
+    friendActions.confirmRequest('anna'); //
   },
 
   handleGetFriendsClick: function () {

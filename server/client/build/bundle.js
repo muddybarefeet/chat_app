@@ -27279,7 +27279,7 @@
 	  },
 
 	  handleConfirmFriend: function () {
-	    friendActions.confirmRequest('anna', true); //
+	    friendActions.confirmRequest('anna'); //
 	  },
 
 	  handleGetFriendsClick: function () {
@@ -27360,9 +27360,9 @@
 	    });
 	  },
 
-	  confirmRequest: function (friendToConfirm, status) {
+	  confirmRequest: function (friendToConfirm) {
 
-	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm, status: status }, jwt).end(function (err, response) {
+	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
 	      console.log('response from db on confiming/reject friend a friend', response);
 	    });
 	  },

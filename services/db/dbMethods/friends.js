@@ -7,18 +7,17 @@ module.exports = function (knex) {
 
 //enters into the friends table the user making a friend request
 //-------------------------------------
-  module.makeConnection = function (whoMake, whoFor) {
+  module.makeConnection = function (userId, nameOfRecipiant) {
     var recipientId;
     //get the user ids of both users
     //should have user who sent the requests on the jwt
-    return knex('users').where('username', whoFor)
+    return knex('users').where('username', nameOfRecipiant)
     .then(function (user) {
-      console.log('user in db query', user);
-      //get the whoFor id
+      //get the nameOfRecipiant id
       recipientId = user[0].u_id;
       //then insert both ids to the friends table
       return knex('friends')
-      .insert({ friendor: whoMake, friendee: recipientId}, "*");
+      .insert({ friendor: userId, friendee: recipientId}, "*");
     })
     .then(function (friendRow) {
       console.log('friend row from connection', friendRow);
@@ -30,19 +29,19 @@ module.exports = function (knex) {
 
 // enters into the friends table the confimer friend request
 // -------------------------------------
-  module.confirmRequest = function (userId, withWho, status) {
+  module.confirmRequest = function (userId, withWho) {
     //take the confirmed id and look for it in the friends table
     //get the userId id from the jwt
     return knex('users').where('username', withWho)
     .then(function (user) {
+      console.log('user ',user);
       //insert a new row into the friends table
       return knex('friends')
-      .insert({friendor: withWho, friendee: userId}, '*');
-
+      .insert({friendor: user[0].u_id, friendee: userId}, '*');
     })
-    .then(function (updatedRow) {
-      console.log(updatedRow);
-      return updatedRow;//this returns the number of affected rows---> should only ever be one
+    .then(function (newRow) {
+      console.log('new row: ',newRow);
+      return newRow;//this returns the number of affected rows---> should only ever be one
     });
 
   };

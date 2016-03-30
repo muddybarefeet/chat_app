@@ -38,9 +38,8 @@ module.exports = function (services) {
     .post(function (req, res) {
       var userId = req.__userId;
       var toRespondTo = req.body.toRespond;
-      var status = req.body.status;
 
-      services.db.friends.confirmRequest(userId, toRespondTo, status)
+      services.db.friends.confirmRequest(userId, toRespondTo)
       .then(function (response) {
         res.json({
           data: response

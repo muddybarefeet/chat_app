@@ -7,7 +7,7 @@ var Link = require('react-router').Link;
 var Chat = React.createClass({
 
   handleAddFriendClick: function () {
-    friendActions.addFriend('dad'); //hard coded in that I want to befriend dad currently to test!!
+    friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
   },
 
   handleConfirmFriend: function () {

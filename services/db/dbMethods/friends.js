@@ -52,12 +52,25 @@ module.exports = function (knex) {
   // join the users and friends tables then filter?
 
   module.getFriends = function (userId) {
-    //take the rows with user in frindor
-    //take rows with user in friendee
-    //compare and return the ones that match
-    //OR
-    //join the users and friends table and select the rows
+    //get all the rows which have the user id in
+    return knex.select('friendor', 'friendee')
+    .from('friends')
+    .where('friendor', '=', userId)
+    .orWhere('friendee', '=', userId)
+    //get data on who is friends with who and who is pending
+    //get all numbers out that are not the user and query against the user table
+    .then(function(rowsMatch) {
+      console.log(rowsMatch);
+      //look through the objects array
+      //make pending request hash
+      //pending accept hash
+      //friends hash
+      //go through array and update hashes 
+      rowsMatch.map(function(id) {
 
+      });
+
+    });
   };
 
   //get a list of all users not friends with to the client

@@ -27301,6 +27301,11 @@
 	        'Chat Page'
 	      ),
 	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement('input', { type: 'text', className: 'form-control', id: 'messageBox' })
+	      ),
+	      React.createElement(
 	        'button',
 	        { type: 'button', className: 'btn btn-warning', onClick: this.handleAddFriendClick },
 	        'Add friend'
@@ -27319,7 +27324,8 @@
 	        'button',
 	        { type: 'button', className: 'btn btn-success', onClick: this.handleNewFriendsClick },
 	        'See new Friends'
-	      )
+	      ),
+	      React.createElement('div', { id: 'messageHistory' })
 	    );
 	  }
 

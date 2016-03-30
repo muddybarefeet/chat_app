@@ -28,10 +28,15 @@ var Chat = React.createClass({
       <div>
 
         <h1>Chat Page</h1>
+        <div className="container">
+          <input type="text" className="form-control" id="messageBox" />
+        </div>
         <button type="button" className="btn btn-warning" onClick={this.handleAddFriendClick}>Add friend</button>
         <button type="button" className="btn btn-default" onClick={this.handleConfirmFriend}>Confirm Friend</button>
         <button type="button" className="btn btn-info" onClick={this.handleGetFriendsClick}>See Friends</button>
         <button type="button" className="btn btn-success" onClick={this.handleNewFriendsClick}>See new Friends</button>
+
+        <div id="messageHistory"></div>
 
       </div>
     );

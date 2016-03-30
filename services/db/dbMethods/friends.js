@@ -17,7 +17,8 @@ module.exports = function (knex) {
       //get the whoFor id
       recipientId = user[0].u_id;
       //then insert both ids to the friends table
-      return knex('friends').insert({ userSentId: whoMake, userToConfirmId: recipientId, requestAccepted: null}, "*");
+      return knex('friends')
+      .insert({ friendor: whoMake, friendee: recipientId}, "*");
     })
     .then(function (friendRow) {
       console.log('friend row from connection', friendRow);
@@ -34,21 +35,13 @@ module.exports = function (knex) {
     //get the userId id from the jwt
     return knex('users').where('username', withWho)
     .then(function (user) {
-      return knex.select()
-      .from('friends')
-      .where('userToConfirmId', userId)
-      .andWhere('userSentId', user[0].u_id)
-      .andWhere('requestAccepted', null);
-    })
-    .then(function (connectionRow) {
-      //take the user connection and update the values in 'requestAccepted'
-      if (status) {
-        return knex('friends').update('requestAccepted', 'true').where('f_id', connectionRow[0].f_id);
-      } else {
-        return knex('friends').update('requestAccepted', 'false').where('f_id', connectionRow[0].f_id);
-      }
+      //insert a new row into the friends table
+      return knex('friends')
+      .insert({friendor: withWho, friendee: userId}, '*');
+
     })
     .then(function (updatedRow) {
+      console.log(updatedRow);
       return updatedRow;//this returns the number of affected rows---> should only ever be one
     });
 
@@ -60,40 +53,11 @@ module.exports = function (knex) {
   // join the users and friends tables then filter?
 
   module.getFriends = function (userId) {
-    //look in friends table for the user in 1 of two columns
-    return knex.select('userSentId', 'userToConfirmId')
-    .from('friends')
-    .where(function () {
-      this.where('userSentId', userId)
-      .orWhere('userToConfirmId', userId);
-    })
-    .andWhere('requestAccepted', true)
-    //make list of all ids
-    .then(function (arrayOfFriends) {
-      //loop through the objects and extract the ones that are not the userId
-      // return arrayOfFriends.map(function (friend) {
-      //   if (friend.userSentId !== userId) {
-      //     return friend.userSentId;
-      //   } else {
-      //     return friend.userToConfirmId;
-      //   }
-      // });
-      // return arrayOfFriends.innerJoin('users', 'users.u_id', '=', '')
-
-    })
-    .then(function (arrayOfFriendIds) {
-      //look them up in the users table 
-      // return arrayOfFriendIds.map(function (friendId) {
-      //   //take the ids and look up the rest of the user information
-      //   return knex.select().from('users').where('u_id', friendId);
-      // });
-
-    })
-    .then(function (arrayOfuserInformation) {
-      console.log('userInformation', arrayOfuserInformation);
-      return arrayOfuserInformation;
-    });
-
+    //take the rows with user in frindor
+    //take rows with user in friendee
+    //compare and return the ones that match
+    //OR
+    //join the users and friends table and select the rows
 
   };
 

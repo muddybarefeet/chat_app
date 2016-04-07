@@ -52,6 +52,9 @@ module.exports = function (knex) {
   // join the users and friends tables then filter?
 
   module.getFriends = function (userId) {
+    var pendingResquests = {};
+    var friendsHash = {};
+    var friendsData = {};
     //get all the rows which have the user id in
     return knex.select('friendor', 'friendee')
     .from('friends')
@@ -60,15 +63,42 @@ module.exports = function (knex) {
     //get data on who is friends with who and who is pending
     //get all numbers out that are not the user and query against the user table
     .then(function(rowsMatch) {
-      console.log(rowsMatch);
+      console.log("MAtched rows",rowsMatch);
       //look through the objects array
-      //make pending request hash
-      //pending accept hash
-      //friends hash
-      //go through array and update hashes 
-      rowsMatch.map(function(id) {
+      rowsMatch.forEach(function(element) {
+        //get the id that is not the users
+        var friendId;
+        if ( element.friendor === userId ) {
+          friendId = element.friendee;
+        } else {
+          friendId = element.friendor;
+        }
+        //once have the friend id then add to the pending request object
+        //if already in the pending request then add to the friends
+        if ( pendingResquests[friendId] ) {
+          delete pendingResquests[friendId];
+          friendsHash[friendId] = true;
+        } else {
+          pendingResquests[friendId] = true;
+        }
 
       });
+      //take the contents of the hashes and get all friends details
+      var friends = Object.keys(friendsHash);
+      return knex.select('u_id', 'username', 'email').from('users')
+      .whereIn('u_id', friends);
+
+    }).then(function (returnFriends) {
+      //get all pending friends details
+      friendsData.friends = returnFriends;
+      var pending = Object.keys(pendingResquests);
+      return knex.select('u_id', 'username', 'email').from('users')
+      .whereIn('u_id', pending);
+
+    }).then(function (returnPending) {
+
+      friendsData.pending = returnPending;
+      return friendsData;
 
     });
   };

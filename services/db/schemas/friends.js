@@ -13,5 +13,6 @@ module.exports = function (knex) {
             .inTable('users')
             .notNullable();
         table.timestamp('created_at').defaultTo(knex.fn.now());
+        // table.unique(['friendor', 'friendee']);
     });
 };

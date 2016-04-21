@@ -52,8 +52,10 @@ module.exports = function (knex) {
   // join the users and friends tables then filter?
 
   module.getFriends = function (userId) {
-    var pendingResquests = {};
+    var pendingResquestOut = {};
+    var pendingResquestIn = {};
     var friendsHash = {};
+    //final hash
     var friendsData = {};
     //get all the rows which have the user id in
     return knex.select('friendor', 'friendee')
@@ -73,48 +75,80 @@ module.exports = function (knex) {
         } else {
           friendId = element.friendor;
         }
-        //once have the friend id then add to the pending request object
-        //if already in the pending request then add to the friends
-        if ( pendingResquests[friendId] ) {
-          delete pendingResquests[friendId];
-          friendsHash[friendId] = true;
-        } else {
-          pendingResquests[friendId] = true;
+        
+        //loop through the elements in the array of hashes. if the friendor id is the user then put it in pendingOut(if not already there)
+        if (element.friendor === userId && !pendingResquestOut[friendId]) {
+          pendingResquestOut[friendId] = true;
+        } else if (element.friendor === friendId) {
+        //if this friend is already in the pendingOut and the friendor is not the user then add here, else add to friends
+          if (pendingResquestOut[friendId]) {
+            delete pendingResquestOut[friendId];
+            friendsHash[friendId] = true;
+          } else {
+            pendingResquestIn[friendId] = true;
+          }
         }
+
 
       });
       //take the contents of the hashes and get all friends details
       var friends = Object.keys(friendsHash);
-      return knex.select('u_id', 'username', 'email').from('users')
+      return knex.select('u_id', 'username', 'email')
+      .from('users')
       .whereIn('u_id', friends);
 
-    }).then(function (returnFriends) {
+    })
+    .then(function (returnFriends) {
       //get all pending friends details
       friendsData.friends = returnFriends;
-      var pending = Object.keys(pendingResquests);
-      return knex.select('u_id', 'username', 'email').from('users')
+      var pending = Object.keys(pendingResquestOut);
+      return knex.select('u_id', 'username', 'email')
+      .from('users')
       .whereIn('u_id', pending);
 
-    }).then(function (returnPending) {
-
+    })
+    .then(function (returnPending) {
+      //get all pendingIn friends details
       friendsData.pending = returnPending;
-      return friendsData;
+      var pendingIn = Object.keys(pendingResquestIn);
+      return knex.select('u_id', 'username', 'email')
+      .from('users')
+      .whereIn('u_id', pendingIn);
 
+    }).then(function (returnPendingIn) {
+      friendsData.pendingIn = returnPending;
+      return friendsData;
     });
   };
 
   //get a list of all users not friends with to the client
   // //-------------------------------------
-  // module.showWhoCanFriend = function (userId) {
+  module.showWhoCanFriend = function (userId) {
+    var notYetFriends;
+    //return all ids from the friends table that are not associated with the user
+    return knex.select('friendor', 'friendee')
+    .from('friends')
+    .whereNot('friendor', userId)
+    .orWhereNot('friendee', '=', userId)
+    .then(function(notYetFriendsArray) {
+      //take the array of ids not accosiated with the user and get the details from the user table
+      //make one list of all the friendIds
+      notYetFriendsArray.forEach(function (element) {
+        notYetFriends[element.friendor] = true;
+        notYetFriends[element.friendee] = true;
+      });
+      //take the new hash of values and get the users data
+      var ids = Object.keys(notYetFriends);
+      return knex.select('u_id', 'username', 'email')
+      .from('users')
+      .whereIn('u_id', ids);
+    })
+    .then(function (arrayUserInformation) {
+      //return array of user objects to the client
+      return arrayUserInformation;
+    });
 
-  //   //get a list of all user id's
-  //   //call the getFriends and get all friends
-  //   //find the difference and return ones not in getFriends result
-
-
-
-
-  // };
+  };
 
   return module;
 

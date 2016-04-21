@@ -1,11 +1,11 @@
 //run this file with node in the termial to set up the tables in postgres
 
 //schemas to require
-var users = require('./users.js');
-var friends = require('./friends.js');
-var rooms = require('./rooms.js');
-var messages = require('./messages.js');
-var usersRooms = require('./usersRooms.js');
+var users = require('../schemas/users.js');
+var friends = require('../schemas/friends.js');
+var rooms = require('../schemas/rooms.js');
+var messages = require('../schemas/messages.js');
+var usersRooms = require('../schemas/usersRooms.js');
 
 //knex connection
 var knex = require('knex');

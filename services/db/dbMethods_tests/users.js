@@ -13,16 +13,16 @@ var usersController = require('../dbMethods/users.js')(knex);
 describe('Users Controller', function () {
   var users = [{
     username: 'TESTannaUser',
-    name: 'TESTanna',
-    email: 'TESTanna@anna'
+    email: 'TESTanna@anna',
+    password: 'TESTanna'
   }, {
     username: 'TESTkateUser',
-    name: 'TESTkate',
-    email: 'TESTkate@kate'
+    email: 'TESTkate@kate',
+    password: 'TESTkate'
   }, {
     username: 'TESTrohanUser',
-    name: 'TESTrohan',
-    email: 'TESTrohan@rohan'
+    email: 'TESTrohan@rohan',
+    password: 'TESTrohan'
   }];
 
   before(function (done) {
@@ -30,6 +30,7 @@ describe('Users Controller', function () {
   });
 
   after(function (done) {
+    console.log('removing the users');
     Promise.map(users, function (user) {
         return knex('users').where('email', user.email).del();
       })
@@ -38,99 +39,72 @@ describe('Users Controller', function () {
       });
   });
 
-  describe('findOrCreateUser', function () {
+
+  describe('signup', function () {
 
     it('should insert a user into the users table', function (done) {
-
       var user = users[0];
-      usersController.findOrCreateUser(user.username, user.name, user.email)
-        .then(function (user) {
-          expect(user.name).to.equal('TESTanna');
-          done();
-        });
-
-    });
-
-    it('should not insert the same user into the database multiple times', function (done) {
-
-      var user = users[0];
-      usersController.findOrCreateUser(user.username, user.name, user.email)
-        .then(function () {
-          return knex('users').where('email', user.email);
-        })
-        .then(function (response) {
-          expect(response.length).to.equal(1);
-          done();
-        });
-    });
-
-  });
-
-  describe('getUser', function () {
-
-    it('should be able to return a specific user', function (done) {
-      var user = users[1];
-      usersController.findOrCreateUser(user.username, user.name, user.email)
+      console.log(user);
+      usersController.signup(user.username, user.email, user.password)
         .then(function (insertedUser) {
-          return insertedUser.u_id;
-        })
-        .then(function (id) {
-          return usersController.getUser(id);
-        })
-        .then(function (foundUser) {
-          expect(foundUser.name).to.equal(user.name);
+          console.log('inserted user', insertedUser);
+          expect(insertedUser.username).to.equal("TESTannaUser");
           done();
         });
+    });
 
+
+    it('should insert a second user into the users table', function (done) {
+      var user = users[2];
+      usersController.signup(user.username, user.email, user.password)
+        .then(function (insertedUser) {
+          expect(insertedUser.username).to.equal(user.username);
+          done();
+        });
+    });
+
+    it('should should not insert the same user into the table again', function (done) {
+      var user = users[0];
+      usersController.signup(user.username, user.email, user.password)
+        .catch(function (err) {
+          expect(err.message).to.equal("This user already exists in the users table");
+          done();
+        });
     });
 
   });
 
 
-  describe('searchUsers', function () {
+  describe('login', function () {
 
-    it('should find a user by searching by username', function (done) {
-      usersController.searchUsers('TESTannaUser')
-        .then(function (response) {
-          expect(response[0].name).to.equal(users[0].name);
+    it('should log an existing user in', function (done) {
+      var user = users[0];
+      usersController.login(user.email, user.password)
+        .then(function (user) {
+          expect(user.username).to.equal('TESTannaUser');
           done();
         });
+
     });
 
-    it('should find a user by searching by name', function (done) {
-      usersController.searchUsers('TESTanna')
-        .then(function (response) {
-          expect(response[0].name).to.equal(users[0].name);
+    it('should not log a not existing user in', function (done) {
+      var user = users[2];
+      usersController.login("Harry", "sally")
+        .catch(function (err) {
+          expect(err.message).to.equal('Your email and password does not exist in the database');
           done();
         });
+
     });
 
-    it('should find a user regardless of case', function (done) {
-      Promise.all([
-          usersController.searchUsers('TESTANnAUsEr')
-          .then(function (response) {
-            expect(response[0].name).to.equal(users[0].name);
-          }),
-          usersController.searchUsers('TESTaNNa')
-          .then(function (response) {
-            expect(response[0].name).to.equal(users[0].name);
-          })
-        ])
-        .then(function () {
+    it('should not log a user in with an incorrect password', function (done) {
+      var user = users[2];
+      usersController.login(user.email, "melon")
+        .catch(function (err) {
+          expect(err.message).to.equal('User not verified');
           done();
         });
-    });
 
-    it('should find all users that match the search query', function (done) {
-      usersController.searchUsers('TeSt')
-        .then(function (response) {
-          expect(response[0].name).to.equal(users[0].name);
-          expect(response[1].name).to.equal(users[1].name);
-          expect(response.length).to.equal(users.length);
-        })
-        .then(function () {
-          done();
-        });
     });
 
   });

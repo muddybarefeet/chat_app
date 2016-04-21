@@ -14,19 +14,19 @@ describe('Friends Controller', function () {
   
   var users = [{
     username: 'TESTannaUser',
-    name: 'TESTanna',
+    password: 'TESTanna',
     email: 'TESTanna@anna'
   }, {
     username: 'TESTkateUser',
-    name: 'TESTkate',
+    password: 'TESTkate',
     email: 'TESTkate@kate'
   }, {
     username: 'TESTrohanUser',
-    name: 'TESTrohan',
+    password: 'TESTrohan',
     email: 'TESTrohan@rohan'
   }, {
     username: 'TESTruanUser',
-    name: 'TESTruan',
+    password: 'TESTruan',
     email: 'TESTruan@rohan'
   }];
 

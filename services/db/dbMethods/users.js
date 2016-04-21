@@ -31,7 +31,7 @@ module.exports = function (knex) {
         obj.username = user_name;
         return obj;
       } else {
-        throw new Error("User Not Verified");
+        throw new Error("User not verified");
       }
     });
 
@@ -60,8 +60,17 @@ module.exports = function (knex) {
       obj.jwt = encode({id: insertedUser[0].u_id});
       obj.username = insertedUser[0].username;
       return obj;
-    });
+    })
+    .catch(function (err) {
+      var error = err.message;
+      var regex = new RegExp("duplicate key value violates unique constraint");
+      if (regex.test(error) ) {
+        throw new Error("This user already exists in the users table");
+      } else {
+        throw err;
+      }
 
+    });
   };
 
 

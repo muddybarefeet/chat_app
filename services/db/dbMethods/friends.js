@@ -20,7 +20,6 @@ module.exports = function (knex) {
       .insert({ friendor: userId, friendee: recipientId}, "*");
     })
     .then(function (friendRow) {
-      console.log('friend row from connection', friendRow);
       return friendRow[0];
     });
 
@@ -34,14 +33,12 @@ module.exports = function (knex) {
     //get the userId id from the jwt
     return knex('users').where('username', withWho)
     .then(function (user) {
-      console.log('user ',user);
       //insert a new row into the friends table
       return knex('friends')
-      .insert({friendor: user[0].u_id, friendee: userId}, '*');
+      .insert({friendor: userId, friendee: user[0].u_id}, '*');
     })
     .then(function (newRow) {
-      console.log('new row: ',newRow);
-      return newRow;//this returns the number of affected rows---> should only ever be one
+      return newRow[0];//this returns inserted row
     });
 
   };
@@ -55,6 +52,8 @@ module.exports = function (knex) {
     var pendingResquestOut = {};
     var pendingResquestIn = {};
     var friendsHash = {};
+    //----------------------------------------todo!
+    var notYetFriends = {};
     //final hash
     var friendsData = {};
     //get all the rows which have the user id in
@@ -65,7 +64,6 @@ module.exports = function (knex) {
     //get data on who is friends with who and who is pending
     //get all numbers out that are not the user and query against the user table
     .then(function(rowsMatch) {
-      console.log("MAtched rows",rowsMatch);
       //look through the objects array
       rowsMatch.forEach(function(element) {
         //get the id that is not the users
@@ -88,7 +86,6 @@ module.exports = function (knex) {
             pendingResquestIn[friendId] = true;
           }
         }
-
 
       });
       //take the contents of the hashes and get all friends details
@@ -116,39 +113,45 @@ module.exports = function (knex) {
       .whereIn('u_id', pendingIn);
 
     }).then(function (returnPendingIn) {
-      friendsData.pendingIn = returnPending;
+      friendsData.pendingIn = returnPendingIn;
       return friendsData;
     });
   };
 
   //get a list of all users not friends with to the client
   // //-------------------------------------
-  module.showWhoCanFriend = function (userId) {
-    var notYetFriends;
+  // module.showWhoCanFriend = function (userId) {
+  //   var notYetFriends = {};
     //return all ids from the friends table that are not associated with the user
-    return knex.select('friendor', 'friendee')
-    .from('friends')
-    .whereNot('friendor', userId)
-    .orWhereNot('friendee', '=', userId)
-    .then(function(notYetFriendsArray) {
-      //take the array of ids not accosiated with the user and get the details from the user table
-      //make one list of all the friendIds
-      notYetFriendsArray.forEach(function (element) {
-        notYetFriends[element.friendor] = true;
-        notYetFriends[element.friendee] = true;
-      });
-      //take the new hash of values and get the users data
-      var ids = Object.keys(notYetFriends);
-      return knex.select('u_id', 'username', 'email')
-      .from('users')
-      .whereIn('u_id', ids);
-    })
-    .then(function (arrayUserInformation) {
-      //return array of user objects to the client
-      return arrayUserInformation;
-    });
 
-  };
+    //go to the users table and get all users details of users that are not you
+    //once have details then go through the friends table make a hash of 
+
+    // return knex.select('friendor', 'friendee')
+    // .from('friends')
+    // .where('friendor', '<>', userId)
+    // .andWhere('friendee', '<>', userId)
+    // .then(function(notYetFriendsArray) {
+    //   console.log('not friends', notYetFriendsArray);
+    //   //take the array of ids not accosiated with the user and get the details from the user table
+    //   //make one list of all the friendIds
+    //   notYetFriendsArray.forEach(function (element) {
+    //     notYetFriends[element.friendor] = true;
+    //     notYetFriends[element.friendee] = true;
+    //   });
+    //   //take the new hash of values and get the users data
+    //   var ids = Object.keys(notYetFriends);
+    //   return knex.select('u_id', 'username', 'email')
+    //   .from('users')
+    //   .whereIn('u_id', ids);
+    // })
+    // .then(function (arrayUserInformation) {
+    //   //return array of user objects to the client
+    //   console.log(arrayUserInformation);
+    //   return arrayUserInformation;
+    // });
+
+  // };
 
   return module;
 

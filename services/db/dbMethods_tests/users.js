@@ -2,7 +2,6 @@ var chai = require('chai');
 var expect = chai.expect;
 var Promise = require('bluebird');
 
-//extract this out if I can?
 var knex = require('knex');
 var config = require('./../../../config.js');
 var ENV = 'development';

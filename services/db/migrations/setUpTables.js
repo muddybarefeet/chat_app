@@ -14,6 +14,16 @@ var ENV = 'development';
 var knex = knex(config.db[ENV]);
 
 
+// var down = function (knex) {
+//   return knex.schema.dropTable('friends')
+//   .then(function (droppedFriends) {
+//     return knex.schema.dropTable('users');
+//   })
+//   .catch(function (err) {
+//     console.log('error dropping', err);
+//   });
+// };
+
 var up = function (knex) {
   //set up my tables
   return users(knex)
@@ -28,8 +38,10 @@ var up = function (knex) {
   })
   .then(function () {
     return usersRooms(knex);
+  })
+  .catch(function (err) {
+    console.log('error setting up tables', err);
   });
 };
 
 up(knex);
-

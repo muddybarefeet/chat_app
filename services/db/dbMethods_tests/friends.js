@@ -2,7 +2,6 @@ var chai = require('chai');
 var expect = chai.expect;
 var Promise = require('bluebird');
 
-//want to take this out if I can?
 var knex = require('knex');
 var config = require('./../../../config.js');
 var ENV = 'development';
@@ -30,6 +29,12 @@ describe('Friends Controller', function () {
     email: 'TESTruan@rohan'
   }];
 
+  var friends = [{
+    id: 1
+  },{
+    id: 2
+  }];
+
   // ============= Setup ============= \\
   before(function (done) {
    //insert users into DB
@@ -43,17 +48,16 @@ describe('Friends Controller', function () {
 
   // ============= Teardown ============= \\
   after(function (done) {
-    //remove matches
+    //remove friends
     Promise.map(friends, function (friend) {
         return knex('friends')
-          .where('friendor', users[0].u_id)
-          .orWhere('friendee', users[1].u_id)
-          .del();
+        .where('f_id', friend.id)
+        .del();
       })
       //remove users
       .then(function () {
         return Promise.map(users, function (user) {
-          return knex('users').where('u_id', user.u_id).del();
+          return knex('users').where('email', user.email).del();
         });
       })
       .then(function () {
@@ -67,7 +71,7 @@ describe('Friends Controller', function () {
 
       var user = users[0];
       var friendee = users[1];
-      usersController.makeConnection(user.u_id, friendee.u_id)
+      friendsController.makeConnection(user.u_id, friendee.username)
         .then(function (returnRow) {
           expect(returnRow.friendor).to.equal(user.u_id);
           done();
@@ -84,9 +88,11 @@ describe('Friends Controller', function () {
       //could this be a better test?
       var user = users[1];
       var recipient = users[0];
-      usersController.confirmRequest(user.u_id, recipient.u_id)
-        .then(function (numOfAffectedRows) {
-          expect(numOfAffectedRows).to.equal(1);
+      friendsController.confirmRequest(user.u_id, recipient.username)
+        .then(function (insetedRow) {
+          expect(insetedRow.f_id).to.equal(2);
+          expect(insetedRow.friendor).to.equal(2);
+          expect(insetedRow.friendee).to.equal(1);
           done();
         });
 
@@ -99,28 +105,14 @@ describe('Friends Controller', function () {
 
     it('should return a hash of the users friends, pending requests made and other people\'s friend requests to them', function (done) {
       var user = users[1];
-      usersController.getFriends(user.u_id)
+      friendsController.getFriends(user.u_id)
         .then(function (response) {
           expect(response).to.have.property('friends').that.is.an('array');
           expect(response).to.have.property('pending').that.is.an('array');
           expect(response).to.have.property('pendingIn').that.is.an('array');
+          //add one more case for the last function
           done();
         });
-    });
-
-  });
-
-  describe('showWhoCanFriend', function () {
-
-    it('should return an array of all the users that the user is not currently friends with', function (done) {
-      
-      var user = users[1];
-      usersController.showWhoCanFriend(user.u_id)
-        .then(function (arrayUserInformation) {
-          expect(arrayUserInformation).to.have.length.above(0);
-          done();
-        });
-
     });
 
   });

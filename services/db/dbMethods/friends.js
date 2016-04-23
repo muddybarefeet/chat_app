@@ -21,6 +21,10 @@ module.exports = function (knex) {
     })
     .then(function (friendRow) {
       return friendRow[0];
+    })
+    .catch(function (err) {
+      console.log('this is an error from the makeConnection fn in the controller');
+      throw err;
     });
 
   };
@@ -39,6 +43,10 @@ module.exports = function (knex) {
     })
     .then(function (newRow) {
       return newRow[0];//this returns inserted row
+    })
+    .catch(function (err) {
+      console.log('this is an error from the confirmRequest fn in the controller');
+      throw err;
     });
 
   };
@@ -49,23 +57,27 @@ module.exports = function (knex) {
   // join the users and friends tables then filter?
 
   module.getFriends = function (userId) {
-    var pendingResquestOut = {};
-    var pendingResquestIn = {};
-    var friendsHash = {};
-    //----------------------------------------todo!
-    var notYetFriends = {};
     //final hash
-    var friendsData = {};
-    //get all the rows from friends
-    return knex.select('friendor', 'friendee')
-    .from('friends')
-    // .where('friendor', '=', userId)
-    // .orWhere('friendee', '=', userId)
-    //get data on who is friends with who and who is pending
-    //get all numbers out that are not the user and query against the user table
-    .then(function(rows) {
-      //look through the objects array
-      rows.forEach(function(element) {
+    var friendsData = {
+      pendingResquestOut: {},
+      pendingResquestIn: {},
+      friendsHash: {},
+      notYetFriends: {}
+    };
+
+    //store of the users data from the database
+    var usersData;
+
+    return knex.select()
+    .from('users')
+    .then(function(usersRows) {
+      usersData = usersRows;
+      return knex.select('friendor', 'friendee')
+      .from('friends');
+    })
+    .then(function (friendsRows) {
+      //look through the list of friends and extract the friend information
+      friendsRows.forEach(function(element) {
         //if friendor or friendee is the user in the element then the other value is the friendId
         var friendId;
         if ( element.friendor === userId || element.friendee === userId ) {
@@ -74,66 +86,50 @@ module.exports = function (knex) {
           } else {
             friendId = element.friendor;
           }
-          //check that it has not been alrady put in the notyetfriends hash, if it has then delet it from this hash
-          if ( notYetFriends[friendId] ) {
-            delete notYetFriends[friendId];
+          //check that it has not been alrady put in the friendsData.notyetfriends hash, if it has then delet it from this hash
+          if ( friendsData.notYetFriends[friendId] ) {
+            delete friendsData.notYetFriends[friendId];
           }
         } else {
-          //if the user is not in the element then put both into the notYetFriends has
-          notYetFriends[element.friendor] = true;
-          notYetFriends[element.friendee] = true;
+          //if the user is not in the element then put both into the friendsData.notYetFriends has
+          friendsData.notYetFriends[element.friendor] = true;
+          friendsData.notYetFriends[element.friendee] = true;
         }
-        
+
         //loop through the elements in the array of hashes. if the friendor id is the user then put it in pendingOut(if not already there)
-        if (element.friendor === userId && !pendingResquestOut[friendId]) {
-          pendingResquestOut[friendId] = true;
+        if (element.friendor === userId && !friendsData.pendingResquestOut[friendId]) {
+          friendsData.pendingResquestOut[friendId] = true;
         } else if (element.friendor === friendId) {
         //if this friend is already in the pendingOut and the friendor is not the user then add here, else add to friends
-          if (pendingResquestOut[friendId]) {
-            delete pendingResquestOut[friendId];
-            friendsHash[friendId] = true;
+          if (friendsData.pendingResquestOut[friendId]) {
+            delete friendsData.pendingResquestOut[friendId];
+            friendsData.friendsHash[friendId] = true;
           } else {
-            pendingResquestIn[friendId] = true;
+            friendsData.pendingResquestIn[friendId] = true;
           }
         }
 
       });
-      //take the contents of the hashes and get all friends details
-      var friends = Object.keys(friendsHash);
-      return knex.select('u_id', 'username', 'email')
-      .from('users')
-      .whereIn('u_id', friends);
+      //loop through the users array of hashes
+      //if the u_id is not in any of the other hashes then put the user object in the friendsData.notyetfriends hash
+      usersData.forEach(function (user) {
+        //look in the three hashes for the user.u_id
+        if (friendsData.pendingResquestOut[user.u_id]) {
+          friendsData.pendingResquestOut[user.u_id] = user;
+        } else if (friendsData.pendingResquestIn[user.u_id]) {
+          friendsData.pendingResquestIn[user.u_id] = user;
+        } else if (friendsData.friendsHash[user.u_id]) {
+          friendsData.friendsHash[user.u_id] = user;
+        } else if (user.u_id !== userId) {
+          friendsData.notYetFriends[user.u_id] = user;
+        }
+      });
 
-    })
-    .then(function (returnFriends) {
-      //get all pending friends details
-      friendsData.friends = returnFriends;
-      var pending = Object.keys(pendingResquestOut);
-      return knex.select('u_id', 'username', 'email')
-      .from('users')
-      .whereIn('u_id', pending);
-
-    })
-    .then(function (returnPending) {
-      //get all pendingIn friends details
-      friendsData.pending = returnPending;
-      var pendingIn = Object.keys(pendingResquestIn);
-      return knex.select('u_id', 'username', 'email')
-      .from('users')
-      .whereIn('u_id', pendingIn);
-
-    }).then(function (returnPendingIn) {
-      friendsData.pendingIn = returnPendingIn;
-      var notFriends = Object.keys(notYetFriends);
-      return knex.select('u_id', 'username', 'email')
-      .from('users')
-      .whereIn('u_id', notFriends);
-    })
-    .then(function (usersNotFriends) {
-      friendsData.notFriends = usersNotFriends;
       return friendsData;
+
     })
     .catch(function (err) {
+      console.log('this is an error from the getFriends fn in the controller');
       throw err;
     });
   };

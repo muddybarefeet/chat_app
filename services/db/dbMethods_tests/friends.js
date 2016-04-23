@@ -29,11 +29,6 @@ describe('Friends Controller', function () {
     email: 'TESTruan@rohan'
   }];
 
-  var friends = [{
-    id: 1
-  },{
-    id: 2
-  }];
 
   // ============= Setup ============= \\
   before(function (done) {
@@ -49,34 +44,42 @@ describe('Friends Controller', function () {
   // ============= Teardown ============= \\
   after(function (done) {
     //remove friends
-    Promise.map(friends, function (friend) {
-        return knex('friends')
-        .where('f_id', friend.id)
-        .del();
-      })
-      //remove users
-      .then(function () {
-        return Promise.map(users, function (user) {
-          return knex('users').where('email', user.email).del();
-        });
-      })
-      .then(function () {
-        done();
-      });
+    return knex('friends').del()
+    //remove users
+    .then(function (delCount) {
+      return knex('users').del();
+    })
+    .then(function (count) {
+      done();
+    });
   });
 
   describe('makeConnection', function () {
 
-    it('should insert a the user id into the friends table as the friendor', function (done) {
+    it('should insert a user id into the friends table as the friendor', function () {
 
       var user = users[0];
       var friendee = users[1];
+      return friendsController.makeConnection(user.u_id, friendee.username)
+        .then(function (returnRow) {
+          return expect(returnRow.friendor).to.equal(user.u_id);
+        });
+
+    });
+
+    it('should insert a second user id into the friends table as the friendor', function (done) {
+
+      var user = users[0];
+      var friendee = users[3];
       friendsController.makeConnection(user.u_id, friendee.username)
         .then(function (returnRow) {
           expect(returnRow.friendor).to.equal(user.u_id);
+          return knex.select().from('users').orderBy('u_id', 'asc');
+        })
+        .then(function (usersArray) {
+          users = usersArray;
           done();
         });
-
     });
 
   });
@@ -90,9 +93,8 @@ describe('Friends Controller', function () {
       var recipient = users[0];
       friendsController.confirmRequest(user.u_id, recipient.username)
         .then(function (insetedRow) {
-          expect(insetedRow.f_id).to.equal(2);
-          expect(insetedRow.friendor).to.equal(2);
-          expect(insetedRow.friendee).to.equal(1);
+          expect(insetedRow.friendor).to.equal(users[1].u_id);
+          expect(insetedRow.friendee).to.equal(users[0].u_id);
           done();
         });
 
@@ -104,13 +106,15 @@ describe('Friends Controller', function () {
   describe('getFriends', function () {
 
     it('should return a hash of the users friends, pending requests made and other people\'s friend requests to them', function (done) {
-      var user = users[1];
+      var user = users[0];
       friendsController.getFriends(user.u_id)
         .then(function (response) {
-          expect(response).to.have.property('friends').that.is.an('array');
-          expect(response).to.have.property('pending').that.is.an('array');
-          expect(response).to.have.property('pendingIn').that.is.an('array');
-          expect(response).to.have.property('pendingIn').that.is.an('array');
+          expect(response).to.have.property('friendsHash').that.is.an('object');
+          expect(response).to.have.property('pendingResquestIn').that.is.an('object');
+          expect(response).to.have.property('pendingResquestOut').that.is.an('object');
+          expect(response).to.have.property('notYetFriends').that.is.an('object');
+          expect(response.friendsHash[users[1].u_id].username).to.equal('TESTkateUser');
+          expect(response.notYetFriends[users[2].u_id].username).to.equal('TESTrohanUser');
           done();
         });
     });

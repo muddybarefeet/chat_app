@@ -28,14 +28,15 @@ describe('Users Controller', function () {
     done();
   });
 
+  var userEmails = users.map(function (user) {
+    return user.email;
+  });
+
   after(function (done) {
-    console.log('removing the users');
-    Promise.map(users, function (user) {
-        return knex('users').where('email', user.email).del();
-      })
-      .then(function () {
-        done();
-      });
+    return knex('users').whereIn('email', userEmails).del()
+    .then(function () {
+      done();
+    });
   });
 
 

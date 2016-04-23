@@ -83,7 +83,7 @@ describe('Friends Controller', function () {
 
   describe('confirmRequest', function () {
 
-    it('should instert a new rown into the friends table to confirm the previous friend request', function (done) {
+    it('should instert a new row into the friends table to confirm the previous friend request', function (done) {
       
       //could this be a better test?
       var user = users[1];
@@ -110,7 +110,7 @@ describe('Friends Controller', function () {
           expect(response).to.have.property('friends').that.is.an('array');
           expect(response).to.have.property('pending').that.is.an('array');
           expect(response).to.have.property('pendingIn').that.is.an('array');
-          //add one more case for the last function
+          expect(response).to.have.property('pendingIn').that.is.an('array');
           done();
         });
     });

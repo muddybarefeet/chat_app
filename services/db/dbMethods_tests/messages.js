@@ -63,7 +63,6 @@ describe('Friends Controller', function () {
       var recipient = users[1];
       return messagesController.sendMessage(user.u_id, recipient.username, "This is the first message!")
       .then(function (returnRow) {
-        console.log('returning', returnRow);
         expect(returnRow.message).to.equal("This is the first message!");
         expect(returnRow.reciever_id).to.equal(recipient.u_id);
         expect(returnRow.has_been_read).to.equal(false);
@@ -73,18 +72,16 @@ describe('Friends Controller', function () {
 
   });
 
-  xdescribe('confirmRequest', function () {
+  describe('updateMessageStatus', function () {
 
-    it('should instert a new row into the friends table to confirm the previous friend request', function (done) {
+    it('should update the has_been_read field in the messages table', function (done) {
       
       var user = users[1];
       var recipient = users[0];
-      messagesController.confirmRequest(user.u_id, recipient.username)
-        .then(function (insetedRow) {
-          expect(insetedRow.friendor).to.equal(users[1].u_id);
-          expect(insetedRow.friendee).to.equal(users[0].u_id);
-          expect(insetedRow.friendee).to.equal(users[0].u_id);
-          
+      messagesController.updateMessageStatus(user.u_id, "This is the first message!")
+        .then(function (updatedRow) {
+          expect(updatedRow.message).to.equal("This is the first message!");
+          expect(updatedRow.has_been_read).to.equal(true);
           done();
         });
 
@@ -93,18 +90,16 @@ describe('Friends Controller', function () {
   });
 
 
-  xdescribe('getFriends', function () {
+  describe('getMessages', function () {
 
-    it('should return a hash of the users friends, pending requests made and other people\'s friend requests to them', function (done) {
+    it('should get all the users messages, written and recieved and return a hash of read and unread messages', function (done) {
       var user = users[0];
-      messagesController.getFriends(user.u_id)
+      messagesController.getMessages(user.u_id)
         .then(function (response) {
-          expect(response).to.have.property('friendsHash').that.is.an('object');
-          expect(response).to.have.property('pendingResquestIn').that.is.an('object');
-          expect(response).to.have.property('pendingResquestOut').that.is.an('object');
-          expect(response).to.have.property('notYetFriends').that.is.an('object');
-          expect(response.friendsHash[users[1].u_id].username).to.equal('TESTkateUser');
-          expect(response.notYetFriends[users[2].u_id].username).to.equal('TESTrohanUser');
+          expect(response).to.have.property('read').that.is.an('array');
+          expect(response).to.have.property('unread').that.is.an('array');
+          expect(response.read[0].message).to.equal('This is the first message!');
+          expect(response.unread).to.have.lengthOf(0);
           done();
         });
     });

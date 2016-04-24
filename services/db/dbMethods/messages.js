@@ -30,12 +30,32 @@ module.exports = function (knex) {
 
   };
 
+  //function triggered on a user reading a message to set has_been_read to true
+  fnHash.updateMessageStatus = function (userId, message) {
+
+    //update the has_been_read cell in the messages table to true
+    return knex('messages')
+    .where('reciever_id', userId)
+    .andWhere('message', message)
+    .update({
+      has_been_read: true
+    }, '*')
+    .then(function (newRow) {
+      return newRow[0];
+    })
+    .catch(function (err) {
+      console.log('err updating read message status');
+      throw err;
+    });
+
+  };
+
   //to recieve all messages sent to the client from other users
   fnHash.getMessages = function (userId) {
 
     var userMessages = {
       read: [],
-      unread: {}
+      unread: []
     };
 
     //go to the messgaes table and get all messages for that user
@@ -52,6 +72,7 @@ module.exports = function (knex) {
           userMessages.unread.push(element);
         }
       });
+      return userMessages;
     })
     .catch(function (err) {
       console.log('err in getting a users messages', err);

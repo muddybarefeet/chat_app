@@ -14,6 +14,8 @@ module.exports = function (knex) {
             .notNullable();
         table.string('message')
             .notNullable();
+        table.boolean('has_been_read')
+            .notNullable();
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };

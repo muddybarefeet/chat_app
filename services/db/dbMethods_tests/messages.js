@@ -66,6 +66,7 @@ describe('Friends Controller', function () {
         console.log('returning', returnRow);
         expect(returnRow.message).to.equal("This is the first message!");
         expect(returnRow.reciever_id).to.equal(recipient.u_id);
+        expect(returnRow.has_been_read).to.equal(false);
       });
 
     });
@@ -76,13 +77,14 @@ describe('Friends Controller', function () {
 
     it('should instert a new row into the friends table to confirm the previous friend request', function (done) {
       
-      //could this be a better test?
       var user = users[1];
       var recipient = users[0];
       messagesController.confirmRequest(user.u_id, recipient.username)
         .then(function (insetedRow) {
           expect(insetedRow.friendor).to.equal(users[1].u_id);
           expect(insetedRow.friendee).to.equal(users[0].u_id);
+          expect(insetedRow.friendee).to.equal(users[0].u_id);
+          
           done();
         });
 

@@ -70,6 +70,19 @@ describe('Friends Controller', function () {
 
     });
 
+    it('should insert a second sender and recipient and their message into the messages table', function () {
+
+      var user = users[1];
+      var recipient = users[0];
+      return messagesController.sendMessage(user.u_id, recipient.username, "Pretty cool!")
+      .then(function (returnRow) {
+        expect(returnRow.message).to.equal("Pretty cool!");
+        expect(returnRow.reciever_id).to.equal(recipient.u_id);
+        expect(returnRow.has_been_read).to.equal(false);
+      });
+
+    });
+
   });
 
   describe('updateMessageStatus', function () {
@@ -87,6 +100,19 @@ describe('Friends Controller', function () {
 
     });
 
+    it('should update the has_been_read field in the second message in the messages table', function (done) {
+      
+      var user = users[0];
+      var recipient = users[1];
+      messagesController.updateMessageStatus(user.u_id, "Pretty cool!")
+        .then(function (updatedRow) {
+          expect(updatedRow.message).to.equal("Pretty cool!");
+          expect(updatedRow.has_been_read).to.equal(true);
+          done();
+        });
+
+    });
+
   });
 
 
@@ -96,10 +122,8 @@ describe('Friends Controller', function () {
       var user = users[0];
       messagesController.getMessages(user.u_id, "TESTkateUser")
         .then(function (response) {
-          // expect(response).to.have.property('read').that.is.an('array');
-          // expect(response).to.have.property('unread').that.is.an('array');
-          // expect(response.read[0].message).to.equal('This is the first message!');
-          // expect(response.unread).to.have.lengthOf(0);
+          // expect(response[0].message).to.equal('This is the first message!');
+          expect(response).to.have.lengthOf(2);
           done();
         });
     });

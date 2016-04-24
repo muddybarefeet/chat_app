@@ -53,40 +53,27 @@ module.exports = function (knex) {
   //to recieve all messages sent to the client from other users
   fnHash.getMessages = function (userId, otherUsername) {
 
-    var userMessages = {
-      read: [],
-      unread: []
-    };
-
     //get the id of the other user
     return knex.select('u_id')
     .from('users')
     .where('username', otherUsername)
     .then(function (otherUserId) {
-      console.log('messages', otherUserId[0].u_id, userId);
       //get all messages between the users
       return knex.select()
       .from('messages')
       .where(function () {
         this.where('sender_id', userId)
-        .andWhere('reciever_id', otherUserId[0]);
+        .andWhere('reciever_id', otherUserId[0].u_id);
       })
       .orWhere(function () {
         this.where('sender_id', otherUserId[0].u_id)
         .andWhere('reciever_id', userId);
-      });
+      })
+      .orderBy('created_at', 'asc');
     })
     .then(function (selectedMessages) {
-      console.log('selected messages for the user', selectedMessages);
       //loop through the array of users messages and add to the userMessages hash accordingly
-      selectedMessages.forEach(function (element) {
-        if (element.has_been_read) {
-          userMessages.read.push(element);
-        } else {
-          userMessages.unread.push(element);
-        }
-      });
-      return userMessages;
+      return selectedMessages;
     })
     .catch(function (err) {
       console.log('err in getting a users messages', err);

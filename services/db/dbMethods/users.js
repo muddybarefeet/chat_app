@@ -4,11 +4,11 @@ var encode = require('./../../jwts/index.js').encode;
 
 module.exports = function (knex) {
 
-  var module = {};
+  var fnHash = {};
 
 //Takes login info and checks password
 //-------------------------------------
-  module.login = function (email, password) {
+  fnHash.login = function (email, password) {
     var id;
     var user_name;
     return knex('users').where('email', email)
@@ -40,7 +40,7 @@ module.exports = function (knex) {
 
 //save new user data to the db
 //-------------------------------------
-  module.signup = function (username, email, password) {
+  fnHash.signup = function (username, email, password) {
 
     return bcrypt.genSaltAsync(10)
     .then(function(salt) {
@@ -74,6 +74,6 @@ module.exports = function (knex) {
   };
 
 
-  return module;
+  return fnHash;
 
 };

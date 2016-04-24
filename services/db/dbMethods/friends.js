@@ -1,13 +1,12 @@
-// var Promise = require('bluebird');
-var pg = require('pg-native');
+
 
 module.exports = function (knex) {
 
-  var module = {};
+  var fnHash = {};
 
 //enters into the friends table the user making a friend request
 //-------------------------------------
-  module.makeConnection = function (userId, nameOfRecipiant) {
+  fnHash.makeConnection = function (userId, nameOfRecipiant) {
     var recipientId;
     //get the user ids of both users
     //should have user who sent the requests on the jwt
@@ -17,7 +16,10 @@ module.exports = function (knex) {
       recipientId = user[0].u_id;
       //then insert both ids to the friends table
       return knex('friends')
-      .insert({ friendor: userId, friendee: recipientId}, "*");
+      .insert({
+        friendor: userId,
+        friendee: recipientId
+      }, "*");
     })
     .then(function (friendRow) {
       return friendRow[0];
@@ -32,14 +34,17 @@ module.exports = function (knex) {
 
 // enters into the friends table the confimer friend request
 // -------------------------------------
-  module.confirmRequest = function (userId, withWho) {
+  fnHash.confirmRequest = function (userId, withWho) {
     //take the confirmed id and look for it in the friends table
     //get the userId id from the jwt
     return knex('users').where('username', withWho)
     .then(function (user) {
       //insert a new row into the friends table
       return knex('friends')
-      .insert({friendor: userId, friendee: user[0].u_id}, '*');
+      .insert({
+        friendor: userId,
+        friendee: user[0].u_id
+      }, '*');
     })
     .then(function (newRow) {
       return newRow[0];//this returns inserted row
@@ -56,7 +61,7 @@ module.exports = function (knex) {
   //JOIN the tables want and then filter out what not want!
   // join the users and friends tables then filter?
 
-  module.getFriends = function (userId) {
+  fnHash.getFriends = function (userId) {
     //final hash
     var friendsData = {
       pendingResquestOut: {},
@@ -134,6 +139,6 @@ module.exports = function (knex) {
     });
   };
 
-  return module;
+  return fnHash;
 
 };

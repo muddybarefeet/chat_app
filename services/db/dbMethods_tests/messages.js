@@ -122,7 +122,6 @@ describe('Friends Controller', function () {
       var user = users[0];
       messagesController.getMessages(user.u_id, "TESTkateUser")
         .then(function (response) {
-          // expect(response[0].message).to.equal('This is the first message!');
           expect(response).to.have.lengthOf(2);
           done();
         });

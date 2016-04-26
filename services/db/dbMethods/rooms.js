@@ -1,105 +1,56 @@
 
 
-fnHash.exports = function (knex) {
+module.exports = function (knex) {
 
   var fnHash = {};
 
   //make a room
-  //1. private/public
-  fnHash.createRoom = function (userId, roomName, status, invited) {
-    var usersData;
-    var roomDataId;
+  fnHash.createRoom = function (userId, roomName, status) {
 
-    if (status === "public") {
-      return knex('rooms')
-      .insert([{
-        name: roomName,
-        type: "public",
-        creator: userId
-      }], '*')
-      .then(function (insertedRowArray) {
-        return knex('users_rooms')
-        .insert([{
-          roomId: insertedRowArray[0].r_id,
-          userId: userId,
-          isActive: true
-        }], '*');
-      })
-      .then(function (arrayOfInsertedUserData) {
-        return arrayOfInsertedUserData;
-      })
-      .catch(function (err) {
-        console.log('error in making a public room ', err);
-        throw err;
-      });
-    } else {
-      return knex('rooms')
-      .insert([{
-        name: roomName,
-        type: "private",
-        creator: userId
-      }], '*')
-      .then(function (insertedArray) {
-        roomDataId = insertedArray[0].r_id;
-        //now need to insert the users into the users_rooms table table
-        return knex('users_rooms')
-        .insert([{
-          roomId: insertedArray[0].r_id,
-          userId: userId,
-          isActive: true
-        }], '*');
-      })
-      .then(function (insertedCreator) {
-        //insert all invitees into the table
-        //get the users details and store in an array
-        //once have an array then loop through and if in the invted array then take and insert into the users_rooms
-        return knex.select('u_id', 'username')
-        .from('users');
-      })
-      .then(function (usersArray) {
-        return Promise.map(invited, function (personUsername) {
-          //get the userId from usersData and insert into the users table
-          var id;
-          //find the user_id in the usersData array
-          usersData.forEach(function (hash) {
-            if (hash.username === personUsername) {
-              id = hash.u_id;
-            }
-          });
+    var isActive;
 
-          return knex('users_rooms')
-          .insert([{
-            roomId: roomDataId,
-            userId: id,
-            isActive: false
-          }], '*');
-        });
-      })
-      .then(function (array) {
-        return array;
-      })
-      .catch(function (err) {
-        console.log('error in making a private room ', err);
-        throw err;
-      });
+    return knex('rooms')
+    .insert([{
+      name: roomName,
+      type: status,
+      creator: userId
+    }], '*')
+    .then(function (insertedRowArray) {
+      return knex('users_rooms')
+      .insert([{
+        roomId: insertedRowArray[0].r_id,
+        userId: userId,
+        accepted: true
+      }], '*');
     })
+    .then(function (arrayOfInsertedUserData) {
+      return arrayOfInsertedUserData;
+    })
+    .catch(function (err) {
+      console.log('error in making a public room ', err);
+      throw err;
+    });
 
-
-    //insert a new room into the rooms table status: private/public
-    // return knex('users_rooms').insert([{name: roomName, type: status, isActive: true}], '*')
-    // .then(function (room) {
-    //   //insert a user and room id into the users/rooms join table
-    //   return knex('rooms').insert([{roomId: room[0].r_id, userId: userId, creator: true}], '*');
-    // })
-    // .then(function (insertedData) {
-    //   console.log('inserted new room in to the rooms table and the usersRooms', insertedData);
-    // });
   };
+
+  //invite users to join a private room
+  // fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
+
+  //   var usersArr;
+
+  //   return knex.select('u_id')
+  //   .from('users')
+  //   .whereIn('username', inviteeUsernames)
+  //   .then(function (userIdsArray) {
+  //     usersArr = userIdsArray;
+      
+  //   })
+
+  // };
 
   //get all of the rooms the user is part of/has been inited to
   //-------------------------------------
   // fnHash.getRooms = function (userId) {
-
   //   //join table between users and rooms to use
   //   //go to this join table and get the all room ids where the user is
   //   return knex.select('roomId').from('usersRooms.js').where('userId', userId)
@@ -108,7 +59,6 @@ fnHash.exports = function (knex) {
   //     arrayOfIds.forEach(function (roomId) { //----------------------------------------------CHEK THIS BIT OUT PROPERLY!!
   //       return knex.select().table('rooms').where('r_id', roomId);
   //     });
-
   //   });
 
 

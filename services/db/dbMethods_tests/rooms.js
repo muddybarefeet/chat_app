@@ -43,9 +43,10 @@ describe('Friends Controller', function () {
 
   // ============= Teardown ============= \\
   after(function (done) {
-    //remove friends
-    return knex('messages').del()
-    //remove users
+    return knex('users_rooms').del()
+    .then(function () {
+      return knex('rooms').del();
+    })
     .then(function (delCount) {
       return knex('users').del();
     })
@@ -60,13 +61,18 @@ describe('Friends Controller', function () {
     it('should create a public room in the rooms table and insert the maker into the users_room table', function () {
       //userId, roomName, status, invited
       var user = users[0];
-      var recipient = users[1];
-      return roomsController.createRoom(user.u_id, "testRoom", "public", null)
+      return roomsController.createRoom(user.u_id, "testRoom", "public")
       .then(function (returnRow) {
         console.log('room', returnRow);
-        // expect(returnRow.message).to.equal("This is the first message!");
-        // expect(returnRow.reciever_id).to.equal(recipient.u_id);
-        // expect(returnRow.has_been_read).to.equal(false);
+        expect(returnRow[0].accepted).to.equal(true);
+        return knex.select()
+        .from('rooms')
+        .where('name', "testRoom");
+      })
+      .then(function (usersReturn) {
+        console.log(usersReturn);
+        expect(usersReturn[0].type).to.equal("public");
+        expect(usersReturn[0].creator).to.equal(user.u_id);
       });
 
     });

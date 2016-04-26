@@ -12,7 +12,7 @@ module.exports = function (knex) {
             .references('u_id')
             .inTable('users')
             .notNullable();
-        table.boolean('isActive');
+        table.boolean('accepted');
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });
 };

@@ -33,7 +33,7 @@ module.exports = function (knex) {
 
   };
 
-  //invite users to join a private room
+  //invite users to join a room
   fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
 
     var usersArr;
@@ -44,7 +44,7 @@ module.exports = function (knex) {
     .then(function (userIdsArray) {
       usersArr = userIdsArray;
       //get the id of the room inviting to
-      return knex.select('r_id')
+      return knex.select('r_id', 'type')
       .from('rooms')
       .where('name', roomName);
     })
@@ -67,6 +67,42 @@ module.exports = function (knex) {
       throw err;
     });
   };
+
+  //join a room
+  //-----------
+
+  //1. can be invited to join a room: click on room --> send request to back end to check that they are in the users rooms
+  //return yes/no to allow to see the room
+
+  //2.can ask to join a room if public
+  //click on the room --> send request and check that the room is public and then insert the user into the table with accepted true
+  fnHash.joinRoom = function (userId, roomName) {
+
+    return knex.select()
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomArr) {
+      //insert / update the user in users rooms table      
+
+      // return knex('users_rooms').insert([{
+      //   roomId: roomArr[0].r_id,
+      //   userId: userId,
+      //   accepted: true
+      // }],'*');
+    });
+
+
+  };
+
+  //see pending room requests
+  //-------------------------
+
+  //see all rooms can join
+  //-------------------------
+
+
+  //see all rooms joined
+
 
   //get all of the rooms the user is part of/has been inited to
   //-------------------------------------

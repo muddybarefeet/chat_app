@@ -63,7 +63,6 @@ describe('Friends Controller', function () {
       var user = users[0];
       return roomsController.createRoom(user.u_id, "testRoom", "public")
       .then(function (returnRow) {
-        console.log('room', returnRow);
         expect(returnRow[0].accepted).to.equal(true);
         return knex.select()
         .from('rooms')
@@ -73,35 +72,23 @@ describe('Friends Controller', function () {
         console.log(usersReturn);
         expect(usersReturn[0].type).to.equal("public");
         expect(usersReturn[0].creator).to.equal(user.u_id);
+        done();
       });
 
     });
 
   });
 
-  xdescribe('updateMessageStatus', function () {
+  describe('inviteUsers', function () {
 
-    it('should update the has_been_read field in the messages table', function (done) {
-      
+    it('should invite users to a room', function (done) {
+      //have for either public/private rooms
       var user = users[1];
-      var recipient = users[0];
-      roomsController.updateMessageStatus(user.u_id, "This is the first message!")
-        .then(function (updatedRow) {
-          expect(updatedRow.message).to.equal("This is the first message!");
-          expect(updatedRow.has_been_read).to.equal(true);
-          done();
-        });
-
-    });
-
-    it('should update the has_been_read field in the second message in the messages table', function (done) {
-      
-      var user = users[0];
-      var recipient = users[1];
-      roomsController.updateMessageStatus(user.u_id, "Pretty cool!")
-        .then(function (updatedRow) {
-          expect(updatedRow.message).to.equal("Pretty cool!");
-          expect(updatedRow.has_been_read).to.equal(true);
+      roomsController.inviteUsers(user.u_id, "testRoom", ['TESTannaUser','TESTrohanUser','TESTruanUser'])
+        .then(function (returnRow) {
+          console.log('returning', returnRow);
+          expect(returnRow).to.have.lengthOf(3);
+          expect(returnRow.accepted).to.equal(false); //false as invited and not yet accepted invite
           done();
         });
 

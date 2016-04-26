@@ -1,4 +1,4 @@
-
+var Promise = require('bluebird');
 
 module.exports = function (knex) {
 
@@ -34,19 +34,39 @@ module.exports = function (knex) {
   };
 
   //invite users to join a private room
-  // fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
+  fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
 
-  //   var usersArr;
+    var usersArr;
 
-  //   return knex.select('u_id')
-  //   .from('users')
-  //   .whereIn('username', inviteeUsernames)
-  //   .then(function (userIdsArray) {
-  //     usersArr = userIdsArray;
-      
-  //   })
-
-  // };
+    return knex.select('u_id')
+    .from('users')
+    .whereIn('username', inviteeUsernames)
+    .then(function (userIdsArray) {
+      usersArr = userIdsArray;
+      //get the id of the room inviting to
+      return knex.select('r_id')
+      .from('rooms')
+      .where('name', roomName);
+    })
+    .then(function (arrOfId) {
+      return Promise.map(usersArr, function (user) {
+        return knex('users_rooms').insert([{
+          roomId: arrOfId[0].r_id,
+          userId: user.u_id,
+          accepted: false
+        }],'*');
+      });
+    })
+    .then(function (dataReturned) {
+      return dataReturned.map(function (dbReturn) {
+        return dbReturn[0];
+      });
+    })
+    .catch(function (err) {
+      console.log('error in inviting users to a private room ', err);
+      throw err;
+    });
+  };
 
   //get all of the rooms the user is part of/has been inited to
   //-------------------------------------

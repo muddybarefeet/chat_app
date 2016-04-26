@@ -97,13 +97,14 @@ describe('Friends Controller', function () {
   });
 
 
-  xdescribe('getMessages', function () {
+  describe('joinRoom', function () {
 
-    it('should get all the users messages, written and recieved and return a hash of read and unread messages', function (done) {
-      var user = users[0];
-      roomsController.getMessages(user.u_id, "TESTkateUser")
+    it('should add a user to a room', function (done) {
+      var user = users[2];
+      roomsController.joinRoom(user.u_id, "testRoom")
         .then(function (response) {
-          expect(response).to.have.lengthOf(2);
+          console.log('testing the return', response);
+          // expect(response).to.have.lengthOf(2);
           done();
         });
     });

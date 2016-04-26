@@ -8,11 +8,10 @@ module.exports = function (knex) {
             .references('r_id')
             .inTable('rooms')
             .notNullable();
-        table.integer('user_id')
+        table.integer('sender')
             .references('u_id')
             .inTable('users')
             .notNullable();
-        table.boolean('creator');
         table.string('message');
         table.timestamp('created_at').defaultTo(knex.fn.now());
     });

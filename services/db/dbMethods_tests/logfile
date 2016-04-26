@@ -1,0 +1,10 @@
+LOG:  database system was shut down at 2016-04-26 11:59:27 PDT
+LOG:  MultiXact member wraparound protections are now enabled
+LOG:  database system is ready to accept connections
+LOG:  autovacuum launcher started
+FATAL:  database "chat_app" does not exist
+FATAL:  database "chat_app" does not exist
+FATAL:  database "annarogers" does not exist
+FATAL:  database "annarogers" does not exist
+FATAL:  database "chat_app" does not exist
+FATAL:  database "chat_app" does not exist

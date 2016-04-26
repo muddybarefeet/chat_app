@@ -82,133 +82,171 @@ module.exports = function (knex) {
     .from('rooms')
     .where('name', roomName)
     .then(function (roomArr) {
-      //insert / update the user in users rooms table      
-
-      // return knex('users_rooms').insert([{
-      //   roomId: roomArr[0].r_id,
-      //   userId: userId,
-      //   accepted: true
-      // }],'*');
-    });
-
+      //insert / update the user in users rooms table
+      //get the user that matches the usrId if no matches then insert
+      return knew.select()
+      .from('users_rooms')
+      .where('userId', userId)
+      .then(function (selectedData) {
+        if (!selectedData[0]) {
+          return knex('users_rooms').insert([{
+            roomId: roomArr[0].r_id,
+            userId: userId,
+            accepted: true
+          }],'*');
+        } else {
+          return ["Already Inserted"];
+        }
+      })
+      .then(function (insertedData) {
+        return insertedData[0];
+      })
+      .catch(function (err) {
+        console.log('error in joining a room', err);
+        throw err;
+      });
 
   };
 
-  //see pending room requests
+  //see pending room requests for the user
   //-------------------------
+  //go to the users_rooms and get all accepted false that relate to the user
+  //once have the array of these then get the room data for each one and return
+  fnHash.pendingRequests = function (userId) {
+
+    return knex.select('roomId')
+    .from('users_rooms')
+    .where('userId', userId)
+    .andWhere('accepted', false)
+    .then(function (returnRows) {
+      //loop through the array of roomIds and get the data from the rooms table and return
+      var idsArray = returnRows.map(function (roomIdentifier) {
+        return roomIdentifier.roomId;
+      });
+
+      return knex.select()
+      .from('rooms')
+      .whereIn('r_id', idsArray);
+
+    })
+    .catch(function (err) {
+      console.log('error in seeing pending room invites', err);
+      throw err;
+    });
+
+  };
+  
 
   //see all rooms can join
   //-------------------------
+  //go to rooms and return all that are public that you are not part of
+  fnHash.notJoinedYet = function (userId) {
+
+    var partOf = {};
+    //get list of all rooms part of
+    //then get list of all public rooms that not already joined
+    return knex.select('roomId')
+    .from('users_rooms')
+    .where('userId', userId)
+    .then(function (returnRows) {
+      //flatten the array of into one hash
+      returnRows.forEach(function (id) {
+        partOf[id.roomId] = true;
+      });
+      //---------CAN I USE A WHERE IN HERE??
+      return knex.select()
+      .from('rooms')
+      .where('type', 'public')
+      .andWhere('creator', '<>', userId)
+    })
+    .then(function (roomsNotIn) {
+      return roomsNotIn.map(function (room) {
+        if (partOf[room.r_id]) {
+          return room;
+        }
+      })
+    })
+    .catch(function (err) {
+      console.log('error in finding rooms you can join', err);
+      throw err;
+    });
+
+  };
 
 
   //see all rooms joined
+  //---------------------------
+  //users_rooms get all rows you are in and then get the room data accociated with these inputs
+  fnHash.seeRoomsIn = function (userId) {
+    var roomData;
+    //select all the rows from the users rooms table that is in and then get this data from the rooms table
+    return knex.select('roomId')
+    .from('users_rooms')
+    .where('userId', userId)
+    .andWhere('accepted', true)
+    .then(function (returnRows) {
+      //flatten the array of into one hash
+      returnRows.forEach(function (id) {
+        roomData[id.roomId] = true;
+      });
+      return knex.select()
+      .from('rooms')
+      .whereIn('r_id', roomData);
+    })
+    .catch(function (err) {
+      console.log('err in see rooms part of', err);
+      throw err;
+    });
 
+  };
 
-  //get all of the rooms the user is part of/has been inited to
-  //-------------------------------------
-  // fnHash.getRooms = function (userId) {
-  //   //join table between users and rooms to use
-  //   //go to this join table and get the all room ids where the user is
-  //   return knex.select('roomId').from('usersRooms.js').where('userId', userId)
-  //   .then(function (arrayOfIds) {
-  //     //go to the rooms table and for each room id get the row in the table corespondeing to the id
-  //     arrayOfIds.forEach(function (roomId) { //----------------------------------------------CHEK THIS BIT OUT PROPERLY!!
-  //       return knex.select().table('rooms').where('r_id', roomId);
-  //     });
-  //   });
+  //send message
+  fnHash.sendMessages = function (userId, roomName, message) {
 
+    //insert the message into the rooms messages table
+    return knex.select('r_id')
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomId) {
+      return knex('rooms_messages')
+        .insert([{
+        room_id: roomId[0].r_id,
+        sender: userId,
+        message: message
+      }],'*');
+    })
+    .then(function (returnData) {
+      //update the users messages by returning the content of the messages table
+      return knex.select()
+      .from('rooms_messages')
+      .orderBy('created_at', 'asc');
+    })
+    .catch(function (err) {
+      console.log('err in sending message', err);
+      throw err;
+    })
 
-  // //return all joinable rooms----- there could later show private rooms and one has to conact the room person for auth to join a room 
-  // //-----------------------------------------------
-  // fnHash.getJoinableRooms = function (userId) {
+  };
 
-  //   //go to the rooms table and return all the rooms which have a type of public
-  //   return knex('rooms').select().where('status', 'public')
-  //   .then(function (arrayOfRooms) {
-  //     console.log('all public rooms', arrayOfRooms);
-  //   });
-    
-  // };
+  //get messages
+  fnHash.getMessages = function (userId, roomName) {
+    //go to the rooms table and the the id
+    //then insert into the messages table
+    return knex.select('r_id')
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomIdArr) {
+      return knex.select()
+      .from('rooms_messages')
+      .where('room_id', roomIdArr[0].r_id)
+      .orderBy('created_at', 'asc');
+    })
+    .catch(function (err) {
+      console.log('err in getting messages', err);
+      throw err;
+    })
 
-
-  // //join a room
-  // //-------------------------------------
-  // fnHash.joinRoom = function (userId, roomName, peopleInvited) {
-
-  //   var roomId;
-  //   //find the room in the rooms table and get the id
-  //   return knex.select('r_id').from('rooms').where('name', roomName)
-  //   .then(function (room) {
-  //     //add the user id and the roomId to the rooms/users table
-  //     roomId = roomId[0];
-  //     return knex('rooms').insert([{ roomId: roomId, userId: userId, creator: false }], '*');
-  //   })
-  //   .then(function (insertedRow) {
-  //     //get the ids for the invited people and add them with the table id to the users/rooms table
-  //     console.log('new room joined', insertedRow);
-  //     peopleInvited.forEach(function (username) {
-  //       //get the id
-  //       //add to the users/rooms table
-  //       //---------------------------------------------SORT!!
-  //     });
-  //   });
-    
-  // };
-
-
-
-
-
-  // //get all messages for the selected room
-  // //-------------------------------------
-  // fnHash.getMessages = function (userId, room) {
-
-  //   //get the roomId from the rooms table
-  //   return knex.select('r_id').from('rooms').where('name', room)
-  //   //find all messages with this room id
-  //   .then(function (room) {
-  //     return knex.select().from('messages').where('m_id', room[0]);
-  //   })
-  //   //send to client
-  //   .then(function (messageRow) {
-  //     console.log('messages', messageRow);
-  //   });
-
-  // };
-
-  // //add new message to the room
-  // //-------------------------------------
-  // fnHash.newMessage = function (userId, message, whoFrom, whoFor, room) {
-
-  //   var roomId;
-  //   var recipientId;
-  //   //get the roomId
-  //   return knex.select('r_id').from('rooms').where('name', room)
-  //   .then(function (room) {
-  //     roomId = room[0];
-  //     //get the id of the person to send the message to ------- here not verifying that they are frineds as would not seem them to message if not friends
-  //     return knex.select('u_id').from('users').where('username', whoFor);
-  //   })
-  //   .then(function (userId) {
-  //     recipientId = userId[0];
-  //     //insert the roomId, message, sender, and reciever into the messages table
-  //     return knex('messages').insert(
-  //       [
-  //         {
-  //           sender_id: userId,
-  //           reciever_id: recipientId,
-  //           message: message
-  //         }
-  //       ], '*');
-  //   })
-  //   .then(function (insertedMessages) {
-  //     console.log('inserted message', insertedMessages);
-  //   });
-
-  // };
-
-    
-  // };
+  };
 
 
 

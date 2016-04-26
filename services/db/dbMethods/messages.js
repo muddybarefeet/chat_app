@@ -21,7 +21,9 @@ module.exports = function (knex) {
       },'*');
     })
     .then(function (insertedMessageRow) {
-      return insertedMessageRow[0];
+      return knex.select()
+      .from('messages')
+      .orderBy('created_at', 'asc');
     })
     .catch(function (err) {
       console.log('err in send message', err);

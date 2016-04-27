@@ -78,34 +78,47 @@ module.exports = function (knex) {
   //click on the room --> send request and check that the room is public and then insert the user into the table with accepted true
   fnHash.joinRoom = function (userId, roomName) {
 
+    var room_id;
+    //get the id of the room
     return knex.select()
     .from('rooms')
     .where('name', roomName)
     .then(function (roomArr) {
+      room_id = roomArr[0].r_id;
       //insert / update the user in users rooms table
       //get the user that matches the usrId if no matches then insert
-      return knew.select()
+      return knex.select()
       .from('users_rooms')
       .where('userId', userId)
-      .then(function (selectedData) {
-        if (!selectedData[0]) {
-          return knex('users_rooms').insert([{
-            roomId: roomArr[0].r_id,
-            userId: userId,
-            accepted: true
-          }],'*');
-        } else {
-          return ["Already Inserted"];
-        }
-      })
-      .then(function (insertedData) {
-        return insertedData[0];
-      })
-      .catch(function (err) {
-        console.log('error in joining a room', err);
+      .andWhere('roomId', room_id);
+    })
+    .then(function (selectedData) {
+      if (selectedData.length === 0) {
+        return knex('users_rooms').insert([{
+          roomId: room_id,
+          userId: userId,
+          accepted: true
+        }],'*');
+      } else {
+        return knex('users_rooms')
+        .where('userId', userId)
+        .andWhere('accepted', false)
+        .update({
+          accepted: true
+        }, '*');
+      }
+    })
+    .then(function (insertedData) {
+      if (insertedData.length === 0) {
+        console.log('noting inseerted or updated in join room');
         throw err;
-      });
-
+      }
+      return insertedData;
+    })
+    .catch(function (err) {
+      console.log('error in joining a room', err);
+      throw err;
+    });
   };
 
   //see pending room requests for the user
@@ -157,14 +170,14 @@ module.exports = function (knex) {
       return knex.select()
       .from('rooms')
       .where('type', 'public')
-      .andWhere('creator', '<>', userId)
+      .andWhere('creator', '<>', userId);
     })
     .then(function (roomsNotIn) {
       return roomsNotIn.map(function (room) {
         if (partOf[room.r_id]) {
           return room;
         }
-      })
+      });
     })
     .catch(function (err) {
       console.log('error in finding rooms you can join', err);
@@ -201,7 +214,7 @@ module.exports = function (knex) {
   };
 
   //send message
-  fnHash.sendMessages = function (userId, roomName, message) {
+  fnHash.sendMessage = function (userId, roomName, message) {
 
     //insert the message into the rooms messages table
     return knex.select('r_id')
@@ -224,7 +237,7 @@ module.exports = function (knex) {
     .catch(function (err) {
       console.log('err in sending message', err);
       throw err;
-    })
+    });
 
   };
 
@@ -244,7 +257,7 @@ module.exports = function (knex) {
     .catch(function (err) {
       console.log('err in getting messages', err);
       throw err;
-    })
+    });
 
   };
 
@@ -252,7 +265,7 @@ module.exports = function (knex) {
 
   // //leave a room
   // //-------------------
-  // fnHash.getJoinableRooms = function (userId) {
+  // fnHash.leaveRooms = function (userId) {
 
   //   //go to the users/rooms table and delete the entry for the user ------ extend to just have an isActive field
   //   return knex('users_rooms').where('userId', userId).update({isActive: false}, '*')

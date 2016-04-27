@@ -58,7 +58,7 @@ describe('Friends Controller', function () {
   describe('createRoom', function () {
 
     //not going to check that the two users ar friends as this has been taken care of in the getFriends function
-    it('should create a public room in the rooms table and insert the maker into the users_room table', function () {
+    it('should create a public room in the rooms table and insert the maker into the users_room table', function (done) {
       //userId, roomName, status, invited
       var user = users[0];
       return roomsController.createRoom(user.u_id, "testRoom", "public")
@@ -69,8 +69,25 @@ describe('Friends Controller', function () {
         .where('name', "testRoom");
       })
       .then(function (usersReturn) {
-        console.log(usersReturn);
         expect(usersReturn[0].type).to.equal("public");
+        expect(usersReturn[0].creator).to.equal(user.u_id);
+        done();
+      });
+
+    });
+
+    it('should create a PRIVATE room in the rooms table and insert the maker into the users_room table', function (done) {
+      //userId, roomName, status, invited
+      var user = users[3];
+      return roomsController.createRoom(user.u_id, "testRoom2", "private")
+      .then(function (returnRow) {
+        expect(returnRow[0].accepted).to.equal(true);
+        return knex.select()
+        .from('rooms')
+        .where('name', "testRoom2");
+      })
+      .then(function (usersReturn) {
+        expect(usersReturn[0].type).to.equal("private");
         expect(usersReturn[0].creator).to.equal(user.u_id);
         done();
       });
@@ -84,11 +101,10 @@ describe('Friends Controller', function () {
     it('should invite users to a room', function (done) {
       //have for either public/private rooms
       var user = users[1];
-      roomsController.inviteUsers(user.u_id, "testRoom", ['TESTannaUser','TESTrohanUser','TESTruanUser'])
+      roomsController.inviteUsers(user.u_id, "testRoom", ['TESTannaUser','TESTrohanUser'])
         .then(function (returnRow) {
-          console.log('returning', returnRow);
-          expect(returnRow).to.have.lengthOf(3);
-          expect(returnRow.accepted).to.equal(false); //false as invited and not yet accepted invite
+          expect(returnRow).to.have.lengthOf(2);
+          expect(returnRow[0].accepted).to.equal(false); //false as invited and not yet accepted invite
           done();
         });
 
@@ -99,16 +115,37 @@ describe('Friends Controller', function () {
 
   describe('joinRoom', function () {
 
+    //not testing users joining rooms that they are already part of as this will not be possible on the front end 
+
     it('should add a user to a room', function (done) {
+      var user = users[3];
+      roomsController.joinRoom(user.u_id, "testRoom")
+        .then(function (response) {
+          expect(response).to.have.lengthOf(1);
+          expect(response[0].accepted).to.equal(true);
+          expect(response[0].userId).to.equal(user.u_id);
+          done();
+        });
+    });
+
+    it('should update the accepted status of invited users in the users_rooms table', function (done) {
       var user = users[2];
       roomsController.joinRoom(user.u_id, "testRoom")
         .then(function (response) {
-          console.log('testing the return', response);
-          // expect(response).to.have.lengthOf(2);
+          expect(response).to.have.lengthOf(1);
+          expect(response[0].accepted).to.equal(true);
+          expect(response[0].userId).to.equal(user.u_id);
           done();
         });
     });
 
   });
+
+  //pendingRequests
+  //notJoinedYet
+  //seeRoomsIn
+  //sendMessage
+  //getMessages
+  //leaveRooms
 
 });

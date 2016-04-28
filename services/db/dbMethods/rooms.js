@@ -38,23 +38,35 @@ module.exports = function (knex) {
 
     var usersArr;
 
-    return knex.select('u_id')
+    return knex.select()
     .from('users')
     .whereIn('username', inviteeUsernames)
     .then(function (userIdsArray) {
       usersArr = userIdsArray;
       //get the id of the room inviting to
-      return knex.select('r_id', 'type')
+      return knex.select('r_id')
       .from('rooms')
       .where('name', roomName);
     })
     .then(function (arrOfId) {
+
+      var rId = arrOfId[0].r_id;
+
+      return knex.select('userId')
+      .from('users_rooms')
+      .whereIn('roomId', rId);
+    })
+    .then(function (usersAlreadyInvitedArr) {
+      //returns an array of users already inserted into the users rooms table THESE USER IDs do not want to be invited
       return Promise.map(usersArr, function (user) {
-        return knex('users_rooms').insert([{
-          roomId: arrOfId[0].r_id,
-          userId: user.u_id,
-          accepted: false
-        }],'*');
+        //if the user is in the previous return then dont insert
+        if (usersAlreadyInvitedArr.indexOf(user.u_id) === -1) {
+          return knex('users_rooms').insert([{
+            roomId: arrOfId[0].r_id,
+            userId: user.u_id,
+            accepted: false
+          }],'*');
+        }
       });
     })
     .then(function (dataReturned) {
@@ -125,7 +137,7 @@ module.exports = function (knex) {
   //-------------------------
   //go to the users_rooms and get all accepted false that relate to the user
   //once have the array of these then get the room data for each one and return
-  fnHash.pendingRequests = function (userId) {
+  fnHash.getPeningRequests = function (userId) {
 
     return knex.select('roomId')
     .from('users_rooms')
@@ -136,11 +148,9 @@ module.exports = function (knex) {
       var idsArray = returnRows.map(function (roomIdentifier) {
         return roomIdentifier.roomId;
       });
-
       return knex.select()
       .from('rooms')
       .whereIn('r_id', idsArray);
-
     })
     .catch(function (err) {
       console.log('error in seeing pending room invites', err);
@@ -166,7 +176,6 @@ module.exports = function (knex) {
       returnRows.forEach(function (id) {
         partOf[id.roomId] = true;
       });
-      //---------CAN I USE A WHERE IN HERE??
       return knex.select()
       .from('rooms')
       .where('type', 'public')
@@ -174,7 +183,7 @@ module.exports = function (knex) {
     })
     .then(function (roomsNotIn) {
       return roomsNotIn.map(function (room) {
-        if (partOf[room.r_id]) {
+        if (!partOf[room.r_id]) {
           return room;
         }
       });
@@ -191,7 +200,7 @@ module.exports = function (knex) {
   //---------------------------
   //users_rooms get all rows you are in and then get the room data accociated with these inputs
   fnHash.seeRoomsIn = function (userId) {
-    var roomData;
+    var roomData = [];
     //select all the rows from the users rooms table that is in and then get this data from the rooms table
     return knex.select('roomId')
     .from('users_rooms')
@@ -200,7 +209,7 @@ module.exports = function (knex) {
     .then(function (returnRows) {
       //flatten the array of into one hash
       returnRows.forEach(function (id) {
-        roomData[id.roomId] = true;
+        roomData.push(id.roomId);
       });
       return knex.select()
       .from('rooms')

@@ -6,6 +6,7 @@ var friends = require('../schemas/friends.js');
 var rooms = require('../schemas/rooms.js');
 var messages = require('../schemas/messages.js');
 var usersRooms = require('../schemas/users_rooms.js');
+var messagesRooms = require('../schemas/rooms_messages.js');
 
 //knex connection
 var knex = require('knex');

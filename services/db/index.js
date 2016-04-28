@@ -9,5 +9,6 @@ var methods = {};
 methods.users = require('./dbMethods/users')(knex);
 methods.friends = require('./dbMethods/friends')(knex);
 methods.messages = require('./dbMethods/messages')(knex);
+methods.rooms = require('./dbMethods/rooms')(knex);
 
 module.exports = methods;

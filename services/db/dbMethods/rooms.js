@@ -280,17 +280,34 @@ module.exports = function (knex) {
 
 
 
-  // //leave a room
-  // //-------------------
-  // fnHash.leaveRooms = function (userId) {
+  //leave a room
+  //-------------------
+  fnHash.leaveRooms = function (userId, roomName) {
+    //go to the users/rooms table and delete the entry for the user ------ extend to just have an isActive field
+    //get the room id
+    //get the user from the users_rooms table and delete
+    return knex.select('r_id')
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomIdArr) {
+      //check the room name correct
+      if (roomIdArr.length !== 1) {
+        throw new Error("Room: "+roomName+" does not exist");
+      }
+      return knex('users_rooms')
+      .where('userId', userId)
+      .andWhere('roomId', roomIdArr[0].r_id)
+      .del();
+    })
+    .then(function (removedRow) {
+      return true;
+    })
+    .catch (function (err) {
+      console.log('error in leaving room controller',err);
+      throw err;
+    });
 
-  //   //go to the users/rooms table and delete the entry for the user ------ extend to just have an isActive field
-  //   return knex('users_rooms').where('userId', userId).update({isActive: false}, '*')
-  //   .then(function (updatedRow) {
-  //     console.log('update row in usersRooms table',updatedRow); //-------------------check need this then block
-  //   });
-
-  // };
+  };
 
   return fnHash;
 

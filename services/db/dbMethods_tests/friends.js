@@ -88,7 +88,6 @@ describe('Friends Controller', function () {
 
     it('should instert a new row into the friends table to confirm the previous friend request', function (done) {
       
-      //could this be a better test?
       var user = users[1];
       var recipient = users[0];
       friendsController.confirmRequest(user.u_id, recipient.username)

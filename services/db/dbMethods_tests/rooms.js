@@ -42,18 +42,21 @@ describe('Friends Controller', function () {
   });
 
   // ============= Teardown ============= \\
-  // after(function (done) {
-  //   return knex('users_rooms').del()
-  //   .then(function () {
-  //     return knex('rooms').del();
-  //   })
-  //   .then(function (delCount) {
-  //     return knex('users').del();
-  //   })
-  //   .then(function (count) {
-  //     done();
-  //   });
-  // });
+  after(function (done) {
+    return knex('rooms_messages').del()
+    .then(function () {
+      return knex('users_rooms').del();
+    })
+    .then(function () {
+      return knex('rooms').del();
+    })
+    .then(function (delCount) {
+      return knex('users').del();
+    })
+    .then(function (count) {
+      done();
+    });
+  });
 
   describe('createRoom', function () {
 
@@ -140,6 +143,9 @@ describe('Friends Controller', function () {
         });
     });
 
+    //not inset room that does not exist
+    //not insert user not exist
+
   });
 
 
@@ -166,6 +172,7 @@ describe('Friends Controller', function () {
           done();
         });
     });
+    //not inset room that does not exist
 
   });
 
@@ -210,6 +217,7 @@ describe('Friends Controller', function () {
         });
     });
 
+
   });
 
   describe('sendMessage', function () {
@@ -224,7 +232,7 @@ describe('Friends Controller', function () {
           done();
         });
     });
-
+    //not inset room that does not exist
     //make second test to show the user is part of this room/not insert messgae for user not in the room
 
   });
@@ -235,7 +243,6 @@ describe('Friends Controller', function () {
       var user = users[3];
       roomsController.getMessages(user.u_id, "testRoom2")
         .then(function (response) {
-          console.log('things', response);
           expect(response).to.have.lengthOf(1);
           expect(response[0].message).to.equal("This is the first message in testRoom2!");
           done();
@@ -251,24 +258,34 @@ describe('Friends Controller', function () {
         });
     });
 
+    //not inset room that does not exist
     //make third test to show the user is part of this room and so can get messages from it
 
   });
 
-  xdescribe('leaveRooms', function () {
+  describe('leaveRooms', function () {
 
     it('should remove the user from a room', function (done) {
-      var user = users[1];
-      console.log(user);
-      roomsController.leaveRooms(user.u_id)
+      var user = users[3];
+      roomsController.leaveRooms(user.u_id, "testRoom")
         .then(function (response) {
           console.log('things', response);
-          // expect(response).to.have.lengthOf(1);
-          // expect(response[0].creator).to.not.equal(user.u_id);
-          // expect(response[0].userId).to.equal(user.u_id);
+          expect(response).to.equal(true);
           done();
         });
     });
+
+    it('should not accept a room that does not exist', function (done) {
+      var user = users[3];
+      roomsController.leaveRooms(user.u_id, "gobldyGookRoom")
+        .then(function (response) {
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("Room: gobldyGookRoom does not exist");
+          done();
+        });
+    });
+
 
   });
 

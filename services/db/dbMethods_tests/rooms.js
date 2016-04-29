@@ -121,12 +121,23 @@ describe('Friends Controller', function () {
       var user = users[0];
       roomsController.inviteUsers(user.u_id, "testRoom", ['TESTkateUser','TESTrohanUser'])
         .then(function (returnRow) {
-          // console.log('returned ROW', returnRow);
           expect(returnRow).to.have.lengthOf(2);
           expect(returnRow[0].accepted).to.equal(false); //false as invited and not yet accepted invite
           done();
         });
 
+    });
+
+    it('should not invite users to a room that have not already been invited', function (done) {
+      //have for either public/private rooms
+      var user = users[0];
+      roomsController.inviteUsers(user.u_id, "testRoom", ['TESTrohanUser'])
+        .then(function (returnRow) {
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("User has already been invited");
+          done();
+        });
     });
 
   });
@@ -140,7 +151,6 @@ describe('Friends Controller', function () {
       roomsController.joinRoom(user.u_id, "testRoom")
         .then(function (response) {
           expect(response).to.have.lengthOf(1);
-          expect(response[0].accepted).to.equal(true);
           expect(response[0].userId).to.equal(user.u_id);
           done();
         });
@@ -160,7 +170,7 @@ describe('Friends Controller', function () {
   });
 
   describe('getPeningRequests', function () {
-    //WHY NOT WORKING becuase invite is not working
+
     it('should get all pending requests that a user has not accepted', function (done) {
       var user = users[1];
 
@@ -175,14 +185,12 @@ describe('Friends Controller', function () {
 
   });
 
-  xdescribe('notJoinedYet', function () {
-    //will not work currently due to previous broken functions
-    it('should show all the rooms that one has not yet joined yet that are public', function (done) {
-      var user = users[1];
-      console.log(user);
+  describe('notJoinedYet', function () {
+
+    it('should show all the public rooms that one has not yet joined yet', function (done) {
+      var user = users[0];
       roomsController.notJoinedYet(user.u_id)
         .then(function (response) {
-          console.log('things', response);
           expect(response).to.have.lengthOf(1);
           expect(response[0].type).to.equal("public");
           done();
@@ -193,11 +201,10 @@ describe('Friends Controller', function () {
 
   describe('seeRoomsIn', function () {
     it('should return all the rooms that you are part of', function (done) {
-      var user = users[0];
-      console.log(user);
+      var user = users[3];
       roomsController.seeRoomsIn(user.u_id)
         .then(function (response) {
-          expect(response).to.have.lengthOf(1);
+          expect(response).to.have.lengthOf(3);
           expect(response[0].name).to.equal("testRoom");
           done();
         });
@@ -205,37 +212,46 @@ describe('Friends Controller', function () {
 
   });
 
-  xdescribe('sendMessage', function () {
-
+  describe('sendMessage', function () {
+    //-----------------------------------------------------check one has joined this room!!
     it('should post a message in a room', function (done) {
       var user = users[3];
-      console.log(user);
       roomsController.sendMessage(user.u_id, "testRoom2", "This is the first message in testRoom2!")
         .then(function (response) {
-          console.log('things', response);
-          // expect(response).to.have.lengthOf(1);
-          // expect(response[0].creator).to.not.equal(user.u_id);
-          // expect(response[0].userId).to.equal(user.u_id);
+          expect(response).to.have.lengthOf(1);
+          expect(response[0].sender).to.equal(user.u_id);
+          expect(response[0].message).to.equal("This is the first message in testRoom2!");
           done();
         });
     });
+
+    //make second test to show the user is part of this room/not insert messgae for user not in the room
 
   });
 
-  xdescribe('getMessages', function () {
-
+  describe('getMessages', function () {
+    //-----------------------------------------------------check one has joined this room!!
     it('should get all the messages in a certain room', function (done) {
-      var user = users[1];
-      console.log(user);
-      roomsController.getMessages(user.u_id)
+      var user = users[3];
+      roomsController.getMessages(user.u_id, "testRoom2")
         .then(function (response) {
           console.log('things', response);
-          // expect(response).to.have.lengthOf(1);
-          // expect(response[0].creator).to.not.equal(user.u_id);
-          // expect(response[0].userId).to.equal(user.u_id);
+          expect(response).to.have.lengthOf(1);
+          expect(response[0].message).to.equal("This is the first message in testRoom2!");
           done();
         });
     });
+
+    it('should return an empty array for rooms that have no messages', function (done) {
+      var user = users[0];
+      roomsController.getMessages(user.u_id, "testRoom")
+        .then(function (response) {
+          expect(response).to.have.lengthOf(0);
+          done();
+        });
+    });
+
+    //make third test to show the user is part of this room and so can get messages from it
 
   });
 

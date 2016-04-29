@@ -37,6 +37,7 @@ module.exports = function (knex) {
   fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
 
     var usersArr;
+    var rId;
 
     return knex.select()
     .from('users')
@@ -50,22 +51,28 @@ module.exports = function (knex) {
     })
     .then(function (arrOfId) {
 
-      var rId = arrOfId[0].r_id;
+      rId = arrOfId[0].r_id;
 
       return knex.select('userId')
       .from('users_rooms')
       .whereIn('roomId', rId);
     })
     .then(function (usersAlreadyInvitedArr) {
+      //flatten arr of objects
+      var idsAlreadyInserted = usersAlreadyInvitedArr.map(function (user) {
+        return user.userId;
+      });
       //returns an array of users already inserted into the users rooms table THESE USER IDs do not want to be invited
       return Promise.map(usersArr, function (user) {
         //if the user is in the previous return then dont insert
-        if (usersAlreadyInvitedArr.indexOf(user.u_id) === -1) {
+        if (idsAlreadyInserted.indexOf(user.u_id) === -1) {
           return knex('users_rooms').insert([{
-            roomId: arrOfId[0].r_id,
+            roomId: rId,
             userId: user.u_id,
             accepted: false
           }],'*');
+        } else {
+          throw new Error("User has already been invited");
         }
       });
     })
@@ -75,7 +82,8 @@ module.exports = function (knex) {
       });
     })
     .catch(function (err) {
-      console.log('error in inviting users to a private room ', err);
+      //do logic to catch custom errors before this(see users)
+      console.log('error inviting users to a private room ', err);
       throw err;
     });
   };
@@ -183,7 +191,7 @@ module.exports = function (knex) {
     })
     .then(function (roomsNotIn) {
       return roomsNotIn.map(function (room) {
-        if (!partOf[room.r_id]) {
+        if ( !partOf.hasOwnProperty(room.r_id) ) {
           return room;
         }
       });

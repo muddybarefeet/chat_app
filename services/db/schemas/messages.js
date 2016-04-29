@@ -12,7 +12,7 @@ module.exports = function (knex) {
             .references('u_id')
             .inTable('users')
             .notNullable();
-        table.string('message')
+        table.text('message')
             .notNullable();
         table.boolean('has_been_read')
             .notNullable();

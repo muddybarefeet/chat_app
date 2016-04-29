@@ -40,6 +40,9 @@ var up = function (knex) {
   .then(function () {
     return usersRooms(knex);
   })
+  .then(function () {
+    return messagesRooms(knex);
+  })
   .catch(function (err) {
     console.log('error setting up tables', err);
   });

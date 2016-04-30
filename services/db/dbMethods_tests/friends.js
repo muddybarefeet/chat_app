@@ -82,6 +82,9 @@ describe('Friends Controller', function () {
         });
     });
 
+    //should not be able to send friend requests to friends already friends with
+
+
   });
 
   describe('confirmRequest', function () {
@@ -98,6 +101,8 @@ describe('Friends Controller', function () {
         });
 
     });
+
+    //should not confirm request with user that does not exist
 
   });
 

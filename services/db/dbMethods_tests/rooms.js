@@ -60,9 +60,7 @@ describe('Friends Controller', function () {
 
   describe('createRoom', function () {
 
-    //not going to check that the two users ar friends as this has been taken care of in the getFriends function
     it('should create a public room in the rooms table and insert the maker into the users_room table', function (done) {
-      //userId, roomName, status, invited
       var user = users[0];
       return roomsController.createRoom(user.u_id, "testRoom", "public")
       .then(function (returnRow) {
@@ -172,7 +170,9 @@ describe('Friends Controller', function () {
           done();
         });
     });
+
     //not inset room that does not exist
+    //not insert user that is not in the users table
 
   });
 
@@ -190,6 +190,8 @@ describe('Friends Controller', function () {
         });
     });
 
+    //user should exist
+
   });
 
   describe('notJoinedYet', function () {
@@ -204,9 +206,13 @@ describe('Friends Controller', function () {
         });
     });
 
+    //it should not show private rooms
+
+
   });
 
   describe('seeRoomsIn', function () {
+
     it('should return all the rooms that you are part of', function (done) {
       var user = users[3];
       roomsController.seeRoomsIn(user.u_id)
@@ -217,11 +223,10 @@ describe('Friends Controller', function () {
         });
     });
 
-
   });
 
   describe('sendMessage', function () {
-    //-----------------------------------------------------check one has joined this room!!
+
     it('should post a message in a room', function (done) {
       var user = users[3];
       roomsController.sendMessage(user.u_id, "testRoom2", "This is the first message in testRoom2!")
@@ -232,7 +237,7 @@ describe('Friends Controller', function () {
           done();
         });
     });
-    //not inset room that does not exist
+    //not insert room that does not exist
     //make second test to show the user is part of this room/not insert messgae for user not in the room
 
   });
@@ -258,7 +263,7 @@ describe('Friends Controller', function () {
         });
     });
 
-    //not inset room that does not exist
+    //not insert room that does not exist
     //make third test to show the user is part of this room and so can get messages from it
 
   });

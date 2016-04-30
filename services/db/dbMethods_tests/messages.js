@@ -56,7 +56,7 @@ describe('Friends Controller', function () {
 
   describe('sendMessage', function () {
 
-    //not going to check that the two users ar friends as this has been taken care of in the getFriends function
+
     it('should insert the sender and recipient and their message into the messages table', function () {
 
       var user = users[0];
@@ -64,10 +64,12 @@ describe('Friends Controller', function () {
       return messagesController.sendMessage(user.u_id, recipient.username, "This is the first message!")
       .then(function (returnRow) {
         console.log('returning', returnRow);
-        // expect(returnRow.message).to.equal("This is the first message!");
-        // expect(returnRow.reciever_id).to.equal(recipient.u_id);
-        // expect(returnRow.has_been_read).to.equal(false);
+        expect(returnRow[0].message).to.equal("This is the first message!");
+        expect(returnRow[0].reciever_id).to.equal(recipient.u_id);
+        expect(returnRow[0].has_been_read).to.equal(false);
       });
+
+      //should not send a message to a user that the user is not friends with
 
     });
 
@@ -127,6 +129,8 @@ describe('Friends Controller', function () {
           done();
         });
     });
+
+    //should not get messages for a room nmae that does not exist
 
   });
 

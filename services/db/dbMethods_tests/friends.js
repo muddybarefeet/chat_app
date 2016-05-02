@@ -82,8 +82,6 @@ describe('Friends Controller', function () {
         });
     });
 
-    //should not be able to send friend requests to friends already friends with
-
 
   });
 
@@ -102,10 +100,36 @@ describe('Friends Controller', function () {
 
     });
 
-    //should not confirm request with user that does not exist
+    //------------------implement
+    xit('should NOT confirm request with user that does not exist', function (done) {
+      
+      var user = users[1];
+      var recipient = users[0];
+      friendsController.confirmRequest(user.u_id, recipient.username)
+        .then(function (insetedRow) {
+          console.log('returning confirm request', insetedRow);
+          done();
+        });
+
+    });
 
   });
 
+  //working on this function------- next implement feature in the controller
+  describe('makeConnection', function () {
+
+    it('should NOT be able to send friend requests to friends already friends with', function (done) {
+
+        var user = users[0];
+        var friendee = users[3];
+        friendsController.makeConnection(user.u_id, friendee.username)
+          .then(function (returnRow) {
+            console.log('return ', returnRow);
+            done();
+          });
+      });
+
+  });
 
   describe('getFriends', function () {
 

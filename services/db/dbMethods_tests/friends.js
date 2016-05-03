@@ -54,13 +54,13 @@ describe('Friends Controller', function () {
     });
   });
 
-  describe('makeConnection', function () {
+  describe('sendFriendReqest', function () {
 
     it('should insert a user id into the friends table as the friendor', function () {
 
       var user = users[0];
       var friendee = users[1];
-      return friendsController.makeConnection(user.u_id, friendee.username)
+      return friendsController.sendFriendReqest(user.u_id, friendee.username)
         .then(function (returnRow) {
           return expect(returnRow.friendor).to.equal(user.u_id);
         });
@@ -71,7 +71,7 @@ describe('Friends Controller', function () {
 
       var user = users[0];
       var friendee = users[3];
-      friendsController.makeConnection(user.u_id, friendee.username)
+      friendsController.sendFriendReqest(user.u_id, friendee.username)
         .then(function (returnRow) {
           expect(returnRow.friendor).to.equal(user.u_id);
           return knex.select().from('users').orderBy('u_id', 'asc');
@@ -100,7 +100,6 @@ describe('Friends Controller', function () {
 
     });
 
-    //------------------implement
     it('should NOT confirm request with user that does not exist', function (done) {
       
       var user = users[1];
@@ -113,35 +112,6 @@ describe('Friends Controller', function () {
         });
 
     });
-
-  });
-
-  //working on this function------- next implement feature in the controller
-  describe('sendFriendRequest', function () {
-
-    it('should NOT be able to send friend requests to friends already friends with', function (done) {
-
-      var user = users[0];
-      var friendee = users[3];
-      friendsController.sendFriendRequest(user.u_id, friendee.username)
-        .then(function (returnRow) {
-          console.log('return ', returnRow);
-          done();
-        });
-    });
-
-    it('should NOT be able to send a friend request to a user that does not exist', function (done) {
-
-        var user = users[0];
-        var friendee = users[3];
-        friendsController.sendFriendRequest(user.u_id, "totoro")
-          .then(function (returnRow) {
-          })
-          .catch(function (err) {
-            expect(err.message).to.equal("The user: berryBot does not exist");
-            done();
-          });
-      });
 
   });
 

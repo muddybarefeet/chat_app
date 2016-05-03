@@ -6,7 +6,7 @@ module.exports = function (knex) {
 
 //enters into the friends table the user making a friend request
 //-------------------------------------
-  fnHash.sendFriendRequest = function (userId, nameOfRecipiant) {
+  fnHash.sendFriendReqest = function (userId, nameOfRecipiant) {
     var recipientId;
     //get the user ids of both users
     //should have user who sent the requests on the jwt
@@ -55,7 +55,7 @@ module.exports = function (knex) {
       }, '*');
     })
     .then(function (newRow) {
-      return newRow[0];//this returns inserted row
+      return newRow[0];
     })
     .catch(function (err) {
       console.log('this is an error from the confirmRequest fn in the controller');
@@ -64,13 +64,14 @@ module.exports = function (knex) {
 
   };
 
+  
   // looks at the fiends table and returns all users friends from the users table
   //-------------------------------------
   //JOIN the tables want and then filter out what not want!
-  // join the users and friends tables then filter?
+  // join the users and friends tables then filter
 
   fnHash.getFriends = function (userId) {
-    //final hash
+
     var friendsData = {
       pendingResquestOut: {},
       pendingResquestIn: {},

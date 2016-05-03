@@ -101,7 +101,7 @@ module.exports = function (knex) {
   //2.can ask to join a room if public
   //click on the room --> send request and check that the room is public and then insert the user into the table with accepted true
   fnHash.joinRoom = function (userId, roomName) {
-    
+
     var room_id;
     var roomType;
     //get the id of the room
@@ -114,7 +114,6 @@ module.exports = function (knex) {
       }
       room_id = roomArr[0].r_id;
       roomType = roomArr[0].type;
-      console.log('room type', roomType);
       //insert / update the user in users rooms table
       //get the user that matches the usrId if no matches then insert
       return knex.select()

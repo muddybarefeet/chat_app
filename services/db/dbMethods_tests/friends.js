@@ -104,7 +104,8 @@ describe('Friends Controller', function () {
       
       var user = users[1];
       friendsController.confirmRequest(user.u_id, "berryBot")
-        .then(function (insetedRow) {
+        .then(function (response) {
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("The user: berryBot does not exist");

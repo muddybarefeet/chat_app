@@ -126,22 +126,25 @@ describe('Friends Controller', function () {
 
     });
 
-    it('should not invite users to a room that have already been invited', function (done) {
+    it('should not invite users to a room that they have already been invited to', function (done) {
       var user = users[0];
-      roomsController.inviteUsers(user.u_id, "testRoom", ['TESTrohanUser'])
+      roomsController.inviteUsers(user.u_id, "testRoom2", ['TESTrohanUser'])
         .then(function (returnRow) {
+          expect(returnRow).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("User: TESTrohanUser has already been invited");
           done();
         });
+
     });
 
 
     it('should not invite users to a room that does not exist', function (done) {
       var user = users[0];
       roomsController.inviteUsers(user.u_id, "fakeRoom", ['TESTrohanUser'])
-        .then(function (returnRow) {
+        .then(function (response) {
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("Room: fakeRoom does not exist");
@@ -153,7 +156,8 @@ describe('Friends Controller', function () {
     it('should not invite a user that does not exist', function (done) {
       var user = users[0];
       roomsController.inviteUsers(user.u_id, "testRoom", ['huggada'])
-        .then(function (returnRow) {
+        .then(function (response) {
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("Users invited do not all exist");
@@ -178,9 +182,10 @@ describe('Friends Controller', function () {
     });
 
     it('should not allow a user to join a private room if they have not been invited', function (done) {
-      var user = users[3];
+      var user = users[0];
       roomsController.joinRoom(user.u_id, "testRoom2")
         .then(function (response) {
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("User not allowed to join private room without being invited");
@@ -188,12 +193,11 @@ describe('Friends Controller', function () {
         });
     });
 
-    xit('should update the accepted status of invited users in the users_rooms table', function (done) {
+    it('should update the accepted status of invited users in the users_rooms table', function (done) {
       var user = users[2];
       roomsController.joinRoom(user.u_id, "testRoom")
         .then(function (response) {
-          console.log('response', response);
-          expect(response).to.have.lengthOf(2);
+          expect(response).to.have.lengthOf(1);
           expect(response[0].accepted).to.equal(true);
           expect(response[0].userId).to.equal(user.u_id);
           done();
@@ -213,7 +217,7 @@ describe('Friends Controller', function () {
 
   });
 
-  xdescribe('getPeningRequests', function () {
+  describe('getPeningRequests', function () {
 
     it('should get all pending requests that a user has not accepted', function (done) {
       var user = users[1];
@@ -222,7 +226,7 @@ describe('Friends Controller', function () {
         .then(function (response) {
           expect(response).to.have.lengthOf(1);
           expect(response[0].creator).to.not.equal(user.u_id);
-          expect(response[0].name).to.equal("testRoom");
+          expect(response[0].name).to.equal("testRoom2");
           done();
         });
     });
@@ -242,6 +246,7 @@ describe('Friends Controller', function () {
     });
 
 
+    //START FROM HERE TOMORROW
     xit('should not show private rooms to users that are not part of them', function (done) {
       var user = users[3];
       roomsController.notJoinedYet(user.u_id)

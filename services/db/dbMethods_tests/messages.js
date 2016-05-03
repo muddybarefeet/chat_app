@@ -110,8 +110,8 @@ describe('Friends Controller', function () {
       var user = users[2];
       var recipient = users[0];
       return messagesController.sendMessage(user.u_id, recipient.username, "I am not friends with you")
-      .then(function (returnRow) {
-        console.log('return value send message', returnRow);
+      .then(function (response) {
+        expect(response).to.equal(null);
       })
       .catch(function (err) {
         expect(err.message).to.equal("You cannot send: TESTannaUser a request as you are not friends yet");
@@ -124,8 +124,8 @@ describe('Friends Controller', function () {
 
       var user = users[1];
       return messagesController.sendMessage(user.u_id, "ickyThump", "I am not a user")
-      .then(function (returnRow) {
-        console.log('return value send message', returnRow);
+      .then(function (response) {
+        expect(response).to.equal(null);
       })
       .catch(function (err) {
         expect(err.message).to.equal("No user exists with the username: ickyThump");
@@ -188,7 +188,7 @@ describe('Friends Controller', function () {
       var recipient = users[0];
       messagesController.getMessagesFromFriend(user.u_id, "redRackum")
         .then(function (response) {
-          console.log('response', response);
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("The username: redRackum does not exist");

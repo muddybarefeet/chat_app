@@ -101,13 +101,14 @@ describe('Friends Controller', function () {
     });
 
     //------------------implement
-    xit('should NOT confirm request with user that does not exist', function (done) {
+    it('should NOT confirm request with user that does not exist', function (done) {
       
       var user = users[1];
-      var recipient = users[0];
-      friendsController.confirmRequest(user.u_id, recipient.username)
+      friendsController.confirmRequest(user.u_id, "berryBot")
         .then(function (insetedRow) {
-          console.log('returning confirm request', insetedRow);
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("The user: berryBot does not exist");
           done();
         });
 
@@ -116,15 +117,28 @@ describe('Friends Controller', function () {
   });
 
   //working on this function------- next implement feature in the controller
-  describe('makeConnection', function () {
+  describe('sendFriendRequest', function () {
 
     it('should NOT be able to send friend requests to friends already friends with', function (done) {
 
+      var user = users[0];
+      var friendee = users[3];
+      friendsController.sendFriendRequest(user.u_id, friendee.username)
+        .then(function (returnRow) {
+          console.log('return ', returnRow);
+          done();
+        });
+    });
+
+    it('should NOT be able to send a friend request to a user that does not exist', function (done) {
+
         var user = users[0];
         var friendee = users[3];
-        friendsController.makeConnection(user.u_id, friendee.username)
+        friendsController.sendFriendRequest(user.u_id, "totoro")
           .then(function (returnRow) {
-            console.log('return ', returnRow);
+          })
+          .catch(function (err) {
+            expect(err.message).to.equal("The user: berryBot does not exist");
             done();
           });
       });

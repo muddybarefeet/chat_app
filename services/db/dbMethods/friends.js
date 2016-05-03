@@ -6,12 +6,16 @@ module.exports = function (knex) {
 
 //enters into the friends table the user making a friend request
 //-------------------------------------
-  fnHash.makeConnection = function (userId, nameOfRecipiant) {
+  fnHash.sendFriendRequest = function (userId, nameOfRecipiant) {
     var recipientId;
     //get the user ids of both users
     //should have user who sent the requests on the jwt
-    return knex('users').where('username', nameOfRecipiant)
+    return knex('users')
+    .where('username', nameOfRecipiant)
     .then(function (user) {
+      if (user.length !== 1) {
+        throw new Error("The user: "+nameOfRecipiant+" does not exist");
+      }
       //get the nameOfRecipiant id
       recipientId = user[0].u_id;
       //then insert both ids to the friends table
@@ -37,8 +41,12 @@ module.exports = function (knex) {
   fnHash.confirmRequest = function (userId, withWho) {
     //take the confirmed id and look for it in the friends table
     //get the userId id from the jwt
-    return knex('users').where('username', withWho)
+    return knex('users')
+    .where('username', withWho)
     .then(function (user) {
+      if (user.length !== 1) {
+        throw new Error("The user: "+withWho+" does not exist");
+      }
       //insert a new row into the friends table
       return knex('friends')
       .insert({

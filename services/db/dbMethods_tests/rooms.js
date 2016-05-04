@@ -350,7 +350,18 @@ describe('Friends Controller', function () {
         });
     });
 
-    //make third test to show the user is part of this room and so can get messages from it
+
+    it('should not get messages for a room that the user is not part of', function (done) {
+      var user = users[0];
+      roomsController.getMessages(user.u_id, "testRoom3")
+        .then(function (response) {
+          expect(response).to.equal(null);
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("You are not currently part of this room");
+          done();
+        });
+    });
 
   });
 

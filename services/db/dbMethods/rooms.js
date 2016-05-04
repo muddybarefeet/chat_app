@@ -285,6 +285,7 @@ module.exports = function (knex) {
 
   //get messages
   fnHash.getMessages = function (userId, roomName) {
+    var rId;
     //go to the rooms table and the the id
     //then insert into the messages table
     return knex.select('r_id')
@@ -294,9 +295,21 @@ module.exports = function (knex) {
       if (roomIdArr.length !== 1) {
         throw new Error("Room: fakeRoom does not exist");
       }
+      rId = roomIdArr[0].r_id;
+      // check the user is part of this room
+      return knex.select()
+      .from('users_rooms')
+      .where('userId', userId)
+      .andWhere('roomId', rId)
+      .andWhere('accepted', true);
+    })
+    .then(function (checkUser) {
+      if (checkUser.length !== 1) {
+        throw new Error("You are not currently part of this room");
+      }
       return knex.select()
       .from('rooms_messages')
-      .where('room_id', roomIdArr[0].r_id)
+      .where('room_id', rId)
       .orderBy('created_at', 'asc');
     })
     .catch(function (err) {

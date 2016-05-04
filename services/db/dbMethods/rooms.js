@@ -131,6 +131,9 @@ module.exports = function (knex) {
       } else if (selectedData.length === 0 && roomType === "private") {
         //if the user was not already in the users_rooms table and the room is private then they cant join
         throw new Error("User not allowed to join private room without being invited");
+      } else if (selectedData[0].accepted === true) {
+        // if they are already part of this room then just return room
+        return selectedData;
       } else {
         return knex('users_rooms')
         .where('userId', userId)

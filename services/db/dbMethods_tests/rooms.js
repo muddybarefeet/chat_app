@@ -215,7 +215,16 @@ describe('Friends Controller', function () {
         });
     });
 
-    //should not join a room already part of
+    it('should not join a room already joined, just return row that shows this', function (done) {
+      var user = users[3];
+      roomsController.joinRoom(user.u_id, "testRoom")
+        .then(function (response) {
+          console.log('response', response);
+          expect(response).to.have.lengthOf(1);
+          expect(response[0].accepted).to.equal(true);
+          done();
+        });
+    });
 
   });
 
@@ -318,7 +327,7 @@ describe('Friends Controller', function () {
   });
 
   describe('getMessages', function () {
-    //-----------------------------------------------------check one has joined this room!!
+
     it('should get all the messages in a certain room', function (done) {
       var user = users[3];
       roomsController.getMessages(user.u_id, "testRoom2")

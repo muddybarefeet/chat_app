@@ -18,8 +18,8 @@ module.exports = function (knex) {
     .then(function (insertedRowArray) {
       return knex('users_rooms')
       .insert([{
-        roomId: insertedRowArray[0].r_id,
-        userId: userId,
+        room_id: insertedRowArray[0].r_id,
+        user_id: userId,
         accepted: true
       }], '*');
     })
@@ -57,22 +57,22 @@ module.exports = function (knex) {
         throw new Error("Room: "+roomName+" does not exist");
       }
       rId = arrOfId[0].r_id;
-      return knex.select('userId')
+      return knex.select('user_id')
       .from('users_rooms')
-      .whereIn('roomId', rId);
+      .whereIn('room_id', rId);
     })
     .then(function (usersAlreadyInvitedArr) {
       //flatten arr of objects
       var idsAlreadyInserted = usersAlreadyInvitedArr.map(function (user) {
-        return user.userId;
+        return user.user_id;
       });
       //returns an array of users already inserted into the users rooms table THESE USER IDs do not want to be invited
       return Promise.map(usersArr, function (user) {
         //if the user is in the previous return then dont insert
         if (idsAlreadyInserted.indexOf(user.u_id) === -1) {
           return knex('users_rooms').insert([{
-            roomId: rId,
-            userId: user.u_id,
+            room_id: rId,
+            user_id: user.u_id,
             accepted: false
           }],'*');
         } else {
@@ -118,14 +118,14 @@ module.exports = function (knex) {
       //get the user that matches the usrId if no matches then insert
       return knex.select()
       .from('users_rooms')
-      .where('userId', userId)
-      .andWhere('roomId', room_id);
+      .where('user_id', userId)
+      .andWhere('room_id', room_id);
     })
     .then(function (selectedData) {
       if (selectedData.length === 0 && roomType === "public") {
         return knex('users_rooms').insert([{
-          roomId: room_id,
-          userId: userId,
+          room_id: room_id,
+          user_id: userId,
           accepted: true
         }],'*');
       } else if (selectedData.length === 0 && roomType === "private") {
@@ -136,7 +136,7 @@ module.exports = function (knex) {
         return selectedData;
       } else {
         return knex('users_rooms')
-        .where('userId', userId)
+        .where('user_id', userId)
         .andWhere('accepted', false)
         .update({
           accepted: true
@@ -158,15 +158,16 @@ module.exports = function (knex) {
   //once have the array of these then get the room data for each one and return
   fnHash.getPeningRequests = function (userId) {
 
-    return knex.select('roomId')
+    return knex.select('room_id')
     .from('users_rooms')
-    .where('userId', userId)
+    .where('user_id', userId)
     .andWhere('accepted', false)
     .then(function (returnRows) {
       //loop through the array of roomIds and get the data from the rooms table and return
       var idsArray = returnRows.map(function (roomIdentifier) {
-        return roomIdentifier.roomId;
+        return roomIdentifier.room_id;
       });
+
       return knex.select()
       .from('rooms')
       .whereIn('r_id', idsArray);
@@ -187,9 +188,9 @@ module.exports = function (knex) {
     var partOf = {};
     //get list of all rooms part of
     //then get list of all public rooms that not already joined
-    return knex.select('roomId')
+    return knex.select('room_id')
     .from('users_rooms')
-    .where('userId', userId)
+    .where('user_id', userId)
     .then(function (returnRows) {
       //flatten the array of into one hash
       returnRows.forEach(function (id) {
@@ -221,14 +222,14 @@ module.exports = function (knex) {
   fnHash.seeRoomsIn = function (userId) {
     var roomData = [];
     //select all the rows from the users rooms table that is in and then get this data from the rooms table
-    return knex.select('roomId')
+    return knex.select('room_id')
     .from('users_rooms')
-    .where('userId', userId)
+    .where('user_id', userId)
     .andWhere('accepted', true)
     .then(function (returnRows) {
       //flatten the array of into one hash
       returnRows.forEach(function (id) {
-        roomData.push(id.roomId);
+        roomData.push(id.room_id);
       });
       return knex.select()
       .from('rooms')
@@ -257,8 +258,8 @@ module.exports = function (knex) {
       // check that the user is in this room
       return knex.select()
       .from('users_rooms')
-      .where('userId', userId)
-      .andWhere('roomId', roomId[0].r_id)
+      .where('user_id', userId)
+      .andWhere('room_id', roomId[0].r_id)
       .andWhere('accepted', true);
     })
     .then(function (userCheck) {
@@ -302,8 +303,8 @@ module.exports = function (knex) {
       // check the user is part of this room
       return knex.select()
       .from('users_rooms')
-      .where('userId', userId)
-      .andWhere('roomId', rId)
+      .where('user_id', userId)
+      .andWhere('room_id', rId)
       .andWhere('accepted', true);
     })
     .then(function (checkUser) {
@@ -339,8 +340,8 @@ module.exports = function (knex) {
         throw new Error("Room: "+roomName+" does not exist");
       }
       return knex('users_rooms')
-      .where('userId', userId)
-      .andWhere('roomId', roomIdArr[0].r_id)
+      .where('user_id', userId)
+      .andWhere('room_id', roomIdArr[0].r_id)
       .del();
     })
     .then(function (removedRow) {

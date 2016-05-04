@@ -4,11 +4,11 @@ module.exports = function (knex) {
     return knex.schema.createTableIfNotExists('users_rooms', function (table) {
         table.increments('usersRooms_id')
             .primary();
-        table.integer('roomId')
+        table.integer('room_id')
             .references('r_id')
             .inTable('rooms')
             .notNullable();
-        table.integer('userId')
+        table.integer('user_id')
             .references('u_id')
             .inTable('users')
             .notNullable();

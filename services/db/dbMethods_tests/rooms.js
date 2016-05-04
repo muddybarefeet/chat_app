@@ -130,6 +130,7 @@ describe('Friends Controller', function () {
       var user = users[0];
       roomsController.inviteUsers(user.u_id, "testRoom2", ['TESTrohanUser'])
         .then(function (returnRow) {
+          console.log('resturn', returnRow);
           expect(returnRow).to.equal(null);
         })
         .catch(function (err) {
@@ -175,7 +176,7 @@ describe('Friends Controller', function () {
       roomsController.joinRoom(user.u_id, "testRoom")
         .then(function (response) {
           expect(response).to.have.lengthOf(1);
-          expect(response[0].userId).to.equal(user.u_id);
+          expect(response[0].user_id).to.equal(user.u_id);
           done();
         });
     });
@@ -198,7 +199,7 @@ describe('Friends Controller', function () {
         .then(function (response) {
           expect(response).to.have.lengthOf(1);
           expect(response[0].accepted).to.equal(true);
-          expect(response[0].userId).to.equal(user.u_id);
+          expect(response[0].user_id).to.equal(user.u_id);
           done();
         });
     });

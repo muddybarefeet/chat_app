@@ -170,7 +170,6 @@ describe('Friends Controller', function () {
 
   describe('joinRoom', function () {
 
-    //not testing users joining rooms that they are already part of as this will not be possible on the front end 
     it('should add a user to a room', function (done) {
       var user = users[3];
       roomsController.joinRoom(user.u_id, "testRoom")
@@ -208,12 +207,15 @@ describe('Friends Controller', function () {
       var user = users[2];
       roomsController.joinRoom(user.u_id, "fakeRoom")
         .then(function (response) {
+          expect(response).to.equal(null);
         })
         .catch(function (err) {
           expect(err.message).to.equal("Room: fakeRoom does not exist");
           done();
         });
     });
+
+    //should not join a room already part of
 
   });
 
@@ -246,14 +248,14 @@ describe('Friends Controller', function () {
     });
 
 
-    //START FROM HERE TOMORROW
-    xit('should not show private rooms to users that are not part of them', function (done) {
-      var user = users[3];
+
+    it('should not show private rooms to users that are not part of', function (done) {
+      var user = users[1];
       roomsController.notJoinedYet(user.u_id)
         .then(function (response) {
-          console.log('response', response);
-          //expect(response).to.have.lengthOf(1);
+          expect(response).to.have.lengthOf(2);
           expect(response[0].type).to.not.equal("private");
+          expect(response[1].type).to.not.equal("private");
           done();
         });
     });
@@ -287,8 +289,31 @@ describe('Friends Controller', function () {
           done();
         });
     });
-    //not insert room that does not exist
-    //make second test to show the user is part of this room/not insert messgae for user not in the room
+
+    it('should not insert room that does not exist', function (done) {
+      var user = users[3];
+      roomsController.sendMessage(user.u_id, "fakeRoom", "This is the first message in testRoom2!")
+        .then(function (response) {
+          expect(response).to.equal(null);
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("Room: fakeRoom does not exist");
+          done();
+        });
+    });
+
+    it('should not allow a user to send a message in a room they are not part of', function (done) {
+      var user = users[0];
+      roomsController.sendMessage(user.u_id, "testRoom3", "HEllO all!")
+        .then(function (response) {
+          expect(response).to.equal(null);
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("You are not currently part of this room");
+          done();
+        });
+    });
+
 
   });
 
@@ -313,7 +338,18 @@ describe('Friends Controller', function () {
         });
     });
 
-    //not insert room that does not exist
+    it('should not insert room that does not exist', function (done) {
+      var user = users[0];
+      roomsController.getMessages(user.u_id, "fakeRoom")
+        .then(function (response) {
+          expect(response).to.equal(null);
+        })
+        .catch(function (err) {
+          expect(err.message).to.equal("Room: fakeRoom does not exist");
+          done();
+        });
+    });
+
     //make third test to show the user is part of this room and so can get messages from it
 
   });

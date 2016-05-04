@@ -47,6 +47,7 @@ module.exports = function (knex) {
       return bcrypt.hashAsync(password, salt);
     })
     .then(function(hash) {
+      console.log('hash', hash);
       return knex('users')
       .insert({
         username: username,

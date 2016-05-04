@@ -241,14 +241,31 @@ module.exports = function (knex) {
   //send message
   fnHash.sendMessage = function (userId, roomName, message) {
 
+    var rId;
     //insert the message into the rooms messages table
     return knex.select('r_id')
     .from('rooms')
     .where('name', roomName)
     .then(function (roomId) {
+      if (roomId.length !== 1) {
+        throw new Error("Room: "+roomName+" does not exist");
+      }
+      rId = roomId[0].r_id;
+      // check that the user is in this room
+      return knex.select()
+      .from('users_rooms')
+      .where('userId', userId)
+      .andWhere('roomId', roomId[0].r_id)
+      .andWhere('accepted', true);
+    })
+    .then(function (userCheck) {
+      if (userCheck.length !== 1) {
+        throw new Error("You are not currently part of this room");
+      }
+      // now know the user was returned then insert message
       return knex('rooms_messages')
         .insert([{
-        room_id: roomId[0].r_id,
+        room_id: rId,
         sender: userId,
         message: message
       }],'*');
@@ -274,6 +291,9 @@ module.exports = function (knex) {
     .from('rooms')
     .where('name', roomName)
     .then(function (roomIdArr) {
+      if (roomIdArr.length !== 1) {
+        throw new Error("Room: fakeRoom does not exist");
+      }
       return knex.select()
       .from('rooms_messages')
       .where('room_id', roomIdArr[0].r_id)

@@ -78,28 +78,6 @@ module.exports = function (services) {
       });
 
 
-    //get all people not friends 
-    //-----------------------------------
-    router.route('/showWhoCanFriend')
-      .get(function (req, res) {
-
-        var userId = req.__userId;
-
-        services.db.friends.showWhoCanFriend(userId)
-        .then(function (response) {
-          res.json({
-            data: response
-          });
-        })
-        .catch(function(err){
-          console.log('err', err);
-          res.status(404).json({
-              message: err.message
-          });
-        });
-
-      });
-
 
   return router;
 };

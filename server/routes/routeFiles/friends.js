@@ -17,7 +17,7 @@ module.exports = function (services) {
       var userId = req.__userId;
       var requestFor = req.body.recipient;
 
-      services.db.friends.makeConnection(userId, requestFor)
+      services.db.friends.sendFriendReqest(userId, requestFor)
       .then(function(response) {
         res.json({
           data: response

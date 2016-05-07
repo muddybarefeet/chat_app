@@ -1,8 +1,3 @@
-
-
-// fnHash.getMessagesFromFriend = function (userId, otherUsername)
-
-
 var express = require('express');
 var router = express.Router();
 var checkAuth = require('./../../../services/jwts/index.js').checkAuth;
@@ -13,7 +8,7 @@ module.exports = function (services) {
 
   //send a message
   //-----------------------------------
-  router.route('/sendMessage')
+  router.route('/send')
     .post(function (req, res) {
 
       console.log('in post to add friend');
@@ -38,7 +33,7 @@ module.exports = function (services) {
 
   //mark a massage as read
   //-----------------------------------
-  router.route('/readMessage')
+  router.route('/read')
     .put(function (req, res) {
       var userId = req.__userId;
       var toRespondTo = req.body.toRespond;
@@ -61,7 +56,7 @@ module.exports = function (services) {
 
     //get unread messages
     //-----------------------------------
-    router.route('/get')
+    router.route('/getUnread')
       .get(function (req, res) {
 
         var userId = req.__userId;
@@ -83,7 +78,7 @@ module.exports = function (services) {
 
     //get messages from a certain friend
     //-----------------------------------
-    router.route('/get')
+    router.route('/getall')
       .get(function (req, res) {
 
         var userId = req.__userId;

@@ -82,6 +82,7 @@ module.exports = function (services) {
       .get(function (req, res) {
 
         var userId = req.__userId;
+        // GET THE FRIEND USERNAME FROM THE REQUEST
 
         services.db.messages.getMessagesFromFriend(userId, friendsUsername)
         .then(function (response) {

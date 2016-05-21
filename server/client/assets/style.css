@@ -5844,11 +5844,7 @@ button.close {
       background: none; }
 
 #wrapper {
-  padding-left: 0;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
+  padding-left: 0; }
   #wrapper .toggled {
     padding-left: 250px; }
   #wrapper .toggled .sidebar-wrapper {
@@ -5863,30 +5859,14 @@ button.close {
   padding: 15px; }
 
 .sidebar-wrapper {
-  z-index: 1000;
+  z-index: 10;
   position: fixed;
   right: 0;
   width: 0;
   height: 100%;
   overflow-y: auto;
-  background: #000;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
+  background: #000; }
 
 @media (min-width: 768px) {
-  #wrapper {
-    padding-right: 250px; }
-  #wrapper.toggled {
-    padding-left: 0; }
   .sidebar-wrapper {
-    width: 250px; }
-  #wrapper.toggled .sidebar-wrapper {
-    width: 0; }
-  .page-content-wrapper {
-    padding: 20px;
-    position: relative; }
-  #wrapper.toggled .page-content-wrapper {
-    position: relative;
-    margin-right: 0; } }
+    width: 450px; } }

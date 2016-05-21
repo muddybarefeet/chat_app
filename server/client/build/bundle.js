@@ -58,118 +58,159 @@
 	var Auth = __webpack_require__(216);
 	var Chat = __webpack_require__(233);
 
-	var Nav = React.createClass({
-	  displayName: 'Nav',
+	var Chat = React.createClass({
+	    displayName: 'Chat',
 
 
-	  render: function render() {
+	    handleChatClick: function () {
+	        console.log('clicked!');
+	    },
 
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'nav',
-	        { className: 'navbar navbar-default' },
-	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
-	          React.createElement(
+	    render: function render() {
+
+	        return React.createElement(
 	            'div',
-	            { className: 'navbar-header' },
+	            null,
 	            React.createElement(
-	              'button',
-	              { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#bs-example-navbar-collapse-1', 'aria-expanded': 'false' },
-	              React.createElement(
-	                'span',
-	                { className: 'sr-only' },
-	                'Toggle navigation'
-	              ),
-	              React.createElement('span', { className: 'icon-bar' }),
-	              React.createElement('span', { className: 'icon-bar' }),
-	              React.createElement('span', { className: 'icon-bar' })
-	            ),
-	            React.createElement(
-	              'a',
-	              { className: 'navbar-brand', href: '#' },
-	              'Anna Chat'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'collapse navbar-collapse', id: 'bs-example-navbar-collapse-1' },
-	            React.createElement(
-	              'ul',
-	              { className: 'nav navbar-nav navbar-right' },
-	              React.createElement(
-	                'li',
-	                { className: 'dropdown' },
+	                'div',
+	                { id: 'wrapper' },
 	                React.createElement(
-	                  'a',
-	                  { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-	                  'Settings',
-	                  React.createElement('span', { className: 'caret' })
+	                    'div',
+	                    { className: 'sidebar-wrapper' },
+	                    React.createElement(
+	                        'ul',
+	                        { className: 'sidebar-nav' },
+	                        React.createElement(
+	                            'li',
+	                            { className: 'sidebar-brand' },
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Start Bootstrap'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Dashboard'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Shortcuts'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Overview'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Events'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'About'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Services'
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'li',
+	                            null,
+	                            React.createElement(
+	                                'a',
+	                                { href: '#' },
+	                                'Contact'
+	                            )
+	                        )
+	                    )
 	                ),
 	                React.createElement(
-	                  'ul',
-	                  { className: 'dropdown-menu' },
-	                  React.createElement(
-	                    'li',
-	                    null,
+	                    'div',
+	                    { classN: 'page-content-wrapper' },
 	                    React.createElement(
-	                      'a',
-	                      { href: '#' },
-	                      'Action'
+	                        'div',
+	                        { className: 'container-fluid' },
+	                        React.createElement(
+	                            'div',
+	                            { className: 'row' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'col-lg-12 text-left' },
+	                                React.createElement(
+	                                    'h1',
+	                                    null,
+	                                    'Simple Sidebar'
+	                                ),
+	                                React.createElement(
+	                                    'p',
+	                                    null,
+	                                    'This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.'
+	                                ),
+	                                React.createElement(
+	                                    'p',
+	                                    null,
+	                                    'Make sure to keep all page content within the ',
+	                                    React.createElement(
+	                                        'code',
+	                                        null,
+	                                        '#page-content-wrapper'
+	                                    ),
+	                                    '.'
+	                                ),
+	                                React.createElement(
+	                                    'a',
+	                                    { className: 'btn btn-default', id: 'menu-toggle', onclick: 'this.handleChatClick' },
+	                                    'Toggle Menu'
+	                                )
+	                            )
+	                        )
 	                    )
-	                  ),
-	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'a',
-	                      { href: '#' },
-	                      'Another action'
-	                    )
-	                  ),
-	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'a',
-	                      { href: '#' },
-	                      'Something else here'
-	                    )
-	                  ),
-	                  React.createElement('li', { role: 'separator', className: 'divider' }),
-	                  React.createElement(
-	                    'li',
-	                    null,
-	                    React.createElement(
-	                      'a',
-	                      { href: '#' },
-	                      'Separated link'
-	                    )
-	                  )
 	                )
-	              )
-	            )
-	          )
-	        )
-	      ),
-	      this.props.children
-	    );
-	  }
+	            ),
+	            this.props.children
+	        );
+	    }
 
 	});
 
 	ReactDOM.render(React.createElement(
-	  Router,
-	  { history: hashHistory },
-	  React.createElement(
-	    Route,
-	    { path: '/', component: Nav },
-	    React.createElement(Route, { path: '/auth', component: Auth }),
-	    React.createElement(Route, { path: '/chat', component: Chat })
-	  )
+	    Router,
+	    { history: hashHistory },
+	    React.createElement(
+	        Route,
+	        { path: '/', component: Chat },
+	        React.createElement(Route, { path: '/auth', component: Auth })
+	    )
 	), document.getElementById('app'));
 
 /***/ },
@@ -27292,46 +27333,22 @@
 
 	  render: function () {
 
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'h1',
-	        null,
-	        'Chat Page'
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement('input', { type: 'text', className: 'form-control', id: 'messageBox' })
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'button', className: 'btn btn-warning', onClick: this.handleAddFriendClick },
-	        'Add friend'
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'button', className: 'btn btn-default', onClick: this.handleConfirmFriend },
-	        'Confirm Friend'
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'button', className: 'btn btn-info', onClick: this.handleGetFriendsClick },
-	        'See Friends'
-	      ),
-	      React.createElement(
-	        'button',
-	        { type: 'button', className: 'btn btn-success', onClick: this.handleNewFriendsClick },
-	        'See new Friends'
-	      ),
-	      React.createElement('div', { id: 'messageHistory' })
-	    );
+	    return React.createElement('div', null);
 	  }
 
 	});
 
 	module.exports = Chat;
+
+	// <div className="container">
+	//   <input type="text" className="form-control" id="messageBox" />
+	// </div>
+	// <button type="button" className="btn btn-warning" onClick={this.handleAddFriendClick}>Add friend</button>
+	// <button type="button" className="btn btn-default" onClick={this.handleConfirmFriend}>Confirm Friend</button>
+	// <button type="button" className="btn btn-info" onClick={this.handleGetFriendsClick}>See Friends</button>
+	// <button type="button" className="btn btn-success" onClick={this.handleNewFriendsClick}>See new Friends</button>
+
+	// <div id="messageHistory"></div>
 
 /***/ },
 /* 234 */

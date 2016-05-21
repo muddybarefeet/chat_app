@@ -12,41 +12,64 @@ var IndexRoute = require('react-router').IndexRoute;
 var Auth = require('./components/auth.jsx');
 var Chat = require('./components/chat/index.jsx');
 
-var Nav = React.createClass({
+var Chat = React.createClass({
+
+  handleChatClick: function () {
+    console.log('clicked!');
+  },
 
   render: function render () {
 
     return (
       <div>
 
-        <nav className="navbar navbar-default">
-          <div className="container-fluid">
-            <div className="navbar-header">
-              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-              </button>
-              <a className="navbar-brand" href="#">Anna Chat</a>
-            </div>
+        <div id="wrapper">
 
-            <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              <ul className="nav navbar-nav navbar-right">
-                <li className="dropdown">
-                  <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings<span className="caret"></span></a>
-                  <ul className="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" className="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                  </ul>
-                </li>
+          <div className="sidebar-wrapper">
+              <ul className="sidebar-nav">
+                  <li className="sidebar-brand">
+                      <a href="#">
+                          Start Bootstrap
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#">Dashboard</a>
+                  </li>
+                  <li>
+                      <a href="#">Shortcuts</a>
+                  </li>
+                  <li>
+                      <a href="#">Overview</a>
+                  </li>
+                  <li>
+                      <a href="#">Events</a>
+                  </li>
+                  <li>
+                      <a href="#">About</a>
+                  </li>
+                  <li>
+                      <a href="#">Services</a>
+                  </li>
+                  <li>
+                      <a href="#">Contact</a>
+                  </li>
               </ul>
-            </div>
           </div>
-        </nav>
+
+          <div classN="page-content-wrapper">
+              <div className="container-fluid">
+                  <div className="row">
+                      <div className="col-lg-12 text-left">
+                          <h1>Simple Sidebar</h1>
+                          <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
+                          <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+                          <a className="btn btn-default" id="menu-toggle" onclick="this.handleChatClick">Toggle Menu</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+        </div>
         
         {this.props.children}
       </div>
@@ -57,9 +80,8 @@ var Nav = React.createClass({
 
 ReactDOM.render(
   <Router history={hashHistory}>
-    <Route path="/" component={Nav} >
+    <Route path="/" component={Chat} >
       <Route path="/auth" component={Auth} />
-      <Route path="/chat" component={Chat} />
     </Route>
   </Router>
 , document.getElementById('app'));

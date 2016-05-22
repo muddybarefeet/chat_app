@@ -5,7 +5,11 @@
 
 @import 'bootstrap/sass/bootstrap-custom';
 
-//chat bar
+
+body {
+  background-image: url('images/photo.jpg');
+  background-size: cover;
+}
 
 .sidebar-nav {
   position: absolute;
@@ -86,7 +90,7 @@
 
 @media(min-width:768px) {
     .sidebar-wrapper {
-        width: 450px;
+        /*width: 450px;*/
     }
 }
 

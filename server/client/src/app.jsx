@@ -29,6 +29,7 @@ var Chat = React.createClass({
   },
 
   render: function render () {
+    
 
     return (
       <div>
@@ -36,11 +37,15 @@ var Chat = React.createClass({
         <div id="wrapper">
 
           <div className={"sidebar-wrapper " + (this.state.toggle ? '' : 'slide')}>
-              <ul className="sidebar-nav">
-                  <li className="sidebar-brand">
-                      <a href="#">
-                          Chat
-                      </a>
+              <ul className="sidebar-nav row">
+                  <li className="sidebar-brand col-md-4">
+                    <button type="button" className="btn btn-default">Friends</button>
+                  </li>
+                  <li className="sidebar-brand col-md-4">
+                    <button type="button" className="btn btn-default">Rooms</button>
+                  </li>
+                  <li className="sidebar-brand col-md-4">
+                    <button type="button" className="btn btn-default">Add</button>
                   </li>
               </ul>
           </div>
@@ -49,10 +54,8 @@ var Chat = React.createClass({
               <div className="container-fluid">
                   <div className="row">
                       <div className="col-lg-12 text-left">
-                          <a className="btn btn-default" id="menu-toggle" style={{"position":"fixed", "zIndex":"20", "right":"0"}} onClick={this.handleChatClick}><i className="fa fa-comment-o fa-2x" aria-hidden="true"></i></a>
-                          <h1>Simple Sidebar</h1>
-                          <p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
-                          <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>
+                        <a className="btn btn-default chat-button" id="menu-toggle" onClick={this.handleChatClick}><i className="fa fa-comment-o fa-2x" aria-hidden="true"></i></a>
+                        <h1>Good Morning Anna!</h1>
                       </div>
                   </div>
               </div>

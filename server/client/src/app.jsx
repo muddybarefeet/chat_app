@@ -16,68 +16,34 @@ var Chat = React.createClass({
 
   getInitialState: function() {
     return {
-      clicked: false
+      toggle: false
     };
   },
 
   handleChatClick: function () {
     console.log('clicked!');
-    if (this.state.clicked) {
-      this.setState({
-        clicked: false
-      });
-    } else {
-      this.setState({
-        clicked: true
-      });
-    }
-    // console.log('state', this.state.clicked);
+    this.setState({
+      toggle: this.state.toggle ? false : true
+    });
+
   },
 
   render: function render () {
-
-    var sidebar;
-
-    if (this.state.clicked) {
-      sidebar = 
-      (<div className="sidebar-wrapper">
-          <ul className="sidebar-nav">
-              <li className="sidebar-brand">
-                  <a href="#">
-                      Start Bootstrap
-                  </a>
-              </li>
-              <li>
-                  <a href="#">Dashboard</a>
-              </li>
-              <li>
-                  <a href="#">Shortcuts</a>
-              </li>
-              <li>
-                  <a href="#">Overview</a>
-              </li>
-              <li>
-                  <a href="#">Events</a>
-              </li>
-              <li>
-                  <a href="#">About</a>
-              </li>
-              <li>
-                  <a href="#">Services</a>
-              </li>
-              <li>
-                  <a href="#">Contact</a>
-              </li>
-          </ul>
-      </div>);
-    }
 
     return (
       <div>
 
         <div id="wrapper">
 
-          {sidebar}
+          <div className={"sidebar-wrapper " + (this.state.toggle ? '' : 'slide')}>
+              <ul className="sidebar-nav">
+                  <li className="sidebar-brand">
+                      <a href="#">
+                          Chat
+                      </a>
+                  </li>
+              </ul>
+          </div>
 
           <div classN="page-content-wrapper">
               <div className="container-fluid">

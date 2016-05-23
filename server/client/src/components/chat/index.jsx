@@ -6,31 +6,27 @@ var Link = require('react-router').Link;
 
 var Chat = React.createClass({
 
-  handleAddFriendClick: function () {
-    friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-  },
+  // handleAddFriendClick: function () {
+  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+  // },
 
-  handleConfirmFriend: function () {
-    friendActions.confirmRequest('anna');
-  },
+  // handleConfirmFriend: function () {
+  //   friendActions.confirmRequest('anna');
+  // },
 
-  handleGetFriendsClick: function () {
-    friendActions.getFriends();
-  },
+  // handleGetFriendsClick: function () {
+  //   friendActions.getFriends();
+  // },
 
-  handleNewFriendsClick: function () {
-    friendActions.getFriends();
-  },
+  // handleNewFriendsClick: function () {
+  //   friendActions.getFriends();
+  // },
 
   render: function () {
 
     return (
       <div>
-
-
-
-
-
+        
       </div>
     );
   }

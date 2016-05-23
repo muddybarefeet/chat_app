@@ -8,32 +8,20 @@
 
 body {
   background-image: url('images/photo.jpg');
-  background-size: cover;
+  /*background-size: cover;*/
+  background-repeat: no-repeat;
 }
 
 .sidebar-nav {
   position: absolute;
   top: 0;
-  width: 250px;
   margin: 0;
   padding: 0;
   list-style: none;
   li {
     text-indent: 20px;
     line-height: 40px;
-  }
-  li a {
-    display: block;
-    text-decoration: none;
-    color: #999999;
-    &:hover {
-      text-decoration: none;
-      color: #fff;
-      background: rgba(255,255,255,0.2);
-    }
-    &:active, &:focus {
-      text-decoration: none;
-    }
+    display: inline;
   }
   .sidebar-brand {
     color: #999999;
@@ -88,11 +76,16 @@ body {
   width: 450px;
 }
 
-@media(min-width:768px) {
-    .sidebar-wrapper {
-        /*width: 450px;*/
-    }
+.chat-button {
+  position:fixed;
+  z-index:20;
+  right:0;
 }
 
+.chat-button {
+  position: fixed;
+  z-index: 20;
+  right: 0; 
+}
 
 

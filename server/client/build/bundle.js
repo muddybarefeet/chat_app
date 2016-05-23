@@ -57,160 +57,36 @@
 	// components to require below
 	var Auth = __webpack_require__(216);
 	var Chat = __webpack_require__(233);
+	var Main = __webpack_require__(235);
 
 	var Chat = React.createClass({
-	    displayName: 'Chat',
+	  displayName: 'Chat',
 
 
-	    handleChatClick: function () {
-	        console.log('clicked!');
-	    },
+	  render: function render() {
 
-	    render: function render() {
-
-	        return React.createElement(
-	            'div',
-	            null,
-	            React.createElement(
-	                'div',
-	                { id: 'wrapper' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'sidebar-wrapper' },
-	                    React.createElement(
-	                        'ul',
-	                        { className: 'sidebar-nav' },
-	                        React.createElement(
-	                            'li',
-	                            { className: 'sidebar-brand' },
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Start Bootstrap'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Dashboard'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Shortcuts'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Overview'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Events'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'About'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Services'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'li',
-	                            null,
-	                            React.createElement(
-	                                'a',
-	                                { href: '#' },
-	                                'Contact'
-	                            )
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { classN: 'page-content-wrapper' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'container-fluid' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'row' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'col-lg-12 text-left' },
-	                                React.createElement(
-	                                    'h1',
-	                                    null,
-	                                    'Simple Sidebar'
-	                                ),
-	                                React.createElement(
-	                                    'p',
-	                                    null,
-	                                    'This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.'
-	                                ),
-	                                React.createElement(
-	                                    'p',
-	                                    null,
-	                                    'Make sure to keep all page content within the ',
-	                                    React.createElement(
-	                                        'code',
-	                                        null,
-	                                        '#page-content-wrapper'
-	                                    ),
-	                                    '.'
-	                                ),
-	                                React.createElement(
-	                                    'a',
-	                                    { className: 'btn btn-default', id: 'menu-toggle', onclick: 'this.handleChatClick' },
-	                                    'Toggle Menu'
-	                                )
-	                            )
-	                        )
-	                    )
-	                )
-	            ),
-	            this.props.children
-	        );
-	    }
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { id: 'wrapper' },
+	        React.createElement(Main, null)
+	      ),
+	      this.props.children
+	    );
+	  }
 
 	});
 
 	ReactDOM.render(React.createElement(
-	    Router,
-	    { history: hashHistory },
-	    React.createElement(
-	        Route,
-	        { path: '/', component: Chat },
-	        React.createElement(Route, { path: '/auth', component: Auth })
-	    )
+	  Router,
+	  { history: hashHistory },
+	  React.createElement(
+	    Route,
+	    { path: '/', component: Chat },
+	    React.createElement(Route, { path: '/auth', component: Auth })
+	  )
 	), document.getElementById('app'));
 
 /***/ },
@@ -27315,21 +27191,21 @@
 	  displayName: 'Chat',
 
 
-	  handleAddFriendClick: function () {
-	    friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  },
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
 
-	  handleConfirmFriend: function () {
-	    friendActions.confirmRequest('anna'); //
-	  },
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
 
-	  handleGetFriendsClick: function () {
-	    friendActions.getFriends();
-	  },
+	  // handleGetFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
 
-	  handleNewFriendsClick: function () {
-	    friendActions.getFriends();
-	  },
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
 
 	  render: function () {
 
@@ -27339,16 +27215,6 @@
 	});
 
 	module.exports = Chat;
-
-	// <div className="container">
-	//   <input type="text" className="form-control" id="messageBox" />
-	// </div>
-	// <button type="button" className="btn btn-warning" onClick={this.handleAddFriendClick}>Add friend</button>
-	// <button type="button" className="btn btn-default" onClick={this.handleConfirmFriend}>Confirm Friend</button>
-	// <button type="button" className="btn btn-info" onClick={this.handleGetFriendsClick}>See Friends</button>
-	// <button type="button" className="btn btn-success" onClick={this.handleNewFriendsClick}>See new Friends</button>
-
-	// <div id="messageHistory"></div>
 
 /***/ },
 /* 234 */
@@ -27401,6 +27267,111 @@
 	};
 
 	module.exports = friendsActions;
+
+/***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Main = React.createClass({
+	  displayName: 'Main',
+
+
+	  getInitialState: function () {
+	    return {
+	      toggle: false
+	    };
+	  },
+
+	  handleChatClick: function () {
+	    console.log('clicked!');
+	    this.setState({
+	      toggle: this.state.toggle ? false : true
+	    });
+	  },
+
+	  getFriends: function () {
+	    console.log('clicked get friends!');
+	    // send query to the back end to return all friends to the friends store
+	  },
+
+	  render: function () {
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: "sidebar-wrapper " + (this.state.toggle ? '' : 'slide') },
+	        React.createElement(
+	          'ul',
+	          { className: 'sidebar-nav row' },
+	          React.createElement(
+	            'li',
+	            { className: 'sidebar-brand col-md-4' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default', onClick: this.getFriends },
+	              'Friends'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { className: 'sidebar-brand col-md-4' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default' },
+	              'Rooms'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { className: 'sidebar-brand col-md-4' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default' },
+	              'Add'
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { classN: 'page-content-wrapper' },
+	        React.createElement(
+	          'div',
+	          { className: 'container-fluid' },
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'col-lg-12 text-left' },
+	              React.createElement(
+	                'a',
+	                { className: 'btn btn-default chat-button', id: 'menu-toggle', onClick: this.handleChatClick },
+	                React.createElement('i', { className: 'fa fa-comment-o fa-2x', 'aria-hidden': 'true' })
+	              ),
+	              React.createElement(
+	                'h1',
+	                null,
+	                'Good Morning Anna!'
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Main;
 
 /***/ }
 /******/ ]);

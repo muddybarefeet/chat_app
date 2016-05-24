@@ -23,13 +23,6 @@ body {
     line-height: 40px;
     display: inline;
   }
-  .sidebar-brand {
-    color: #999999;
-    &:hover {
-      color: #fff;
-      background: none;
-    }
-  }
 }
 
 #wrapper {
@@ -86,6 +79,10 @@ body {
   position: fixed;
   z-index: 20;
   right: 0; 
+}
+
+#chat-space-top {
+  margin-top:50px;
 }
 
 

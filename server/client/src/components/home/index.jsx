@@ -35,19 +35,21 @@ var Main = React.createClass({
       <div>
         <div className={"sidebar-wrapper " + (this.state.toggle ? '' : 'slide')}>
             <ul className="sidebar-nav row">
-                <li className="sidebar-brand col-md-4">
+                <li className="col-md-4">
                   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>
-                  <Friends></Friends>
                 </li>
-                <li className="sidebar-brand col-md-4">
+                <li className="col-md-4">
                   <button type="button" className="btn btn-default">Rooms</button>
-                  <Rooms></Rooms>
                 </li>
-                <li className="sidebar-brand col-md-4">
+                <li className="col-md-4">
                   <button type="button" className="btn btn-default">Add</button>
-                  <Add></Add>
                 </li>
             </ul>
+            <div id="chat-space-top">
+              <Friends></Friends>
+              <Rooms></Rooms>
+              <Add></Add>
+            </div>
         </div>
 
         <div classN="page-content-wrapper">

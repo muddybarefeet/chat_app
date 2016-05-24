@@ -24757,7 +24757,7 @@
 
 	  _onChangeEvent: function () {
 	    // console.log('jwt in component', localStorage.username)
-	    window.location.hash = "#/chat";
+	    window.location.hash = "#/";
 	  },
 
 	  //-------methods for login-------
@@ -27296,34 +27296,38 @@
 	          { className: 'sidebar-nav row' },
 	          React.createElement(
 	            'li',
-	            { className: 'sidebar-brand col-md-4' },
+	            { className: 'col-md-4' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default', onClick: this.getFriends },
 	              'Friends'
-	            ),
-	            React.createElement(Friends, null)
+	            )
 	          ),
 	          React.createElement(
 	            'li',
-	            { className: 'sidebar-brand col-md-4' },
+	            { className: 'col-md-4' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default' },
 	              'Rooms'
-	            ),
-	            React.createElement(Rooms, null)
+	            )
 	          ),
 	          React.createElement(
 	            'li',
-	            { className: 'sidebar-brand col-md-4' },
+	            { className: 'col-md-4' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default' },
 	              'Add'
-	            ),
-	            React.createElement(Add, null)
+	            )
 	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { id: 'chat-space-top' },
+	          React.createElement(Friends, null),
+	          React.createElement(Rooms, null),
+	          React.createElement(Add, null)
 	        )
 	      ),
 	      React.createElement(
@@ -27370,7 +27374,25 @@
 
 	  render: function () {
 
-	    return React.createElement('div', null);
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        'Friends'
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        'Pending Requests To Me'
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        'Pending Requests Sent Out'
+	      )
+	    );
 	  }
 
 	});

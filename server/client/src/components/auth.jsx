@@ -22,7 +22,7 @@ var Login = React.createClass({
 
   _onChangeEvent: function () {
     // console.log('jwt in component', localStorage.username)
-    window.location.hash="#/chat";
+    window.location.hash="#/";
   },
 
   //-------methods for login-------

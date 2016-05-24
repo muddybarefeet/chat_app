@@ -22,7 +22,9 @@ var Friends = React.createClass({
 
     return (
       <div>
-
+        <div>Friends</div>
+        <div>Pending Requests To Me</div>
+        <div>Pending Requests Sent Out</div>
       </div>
     );
   }

@@ -40,7 +40,6 @@ var friendsActions = {
     .get('friends/get', jwt)
     .end(function (err, response) {
       console.log('response getting friends', response);
-
     });
 
   },

@@ -5832,11 +5832,6 @@ body {
     text-indent: 20px;
     line-height: 40px;
     display: inline; }
-  .sidebar-nav .sidebar-brand {
-    color: #999999; }
-    .sidebar-nav .sidebar-brand:hover {
-      color: #fff;
-      background: none; }
 
 #wrapper {
   padding-left: 0;
@@ -5882,3 +5877,6 @@ body {
   position: fixed;
   z-index: 20;
   right: 0; }
+
+#chat-space-top {
+  margin-top: 50px; }

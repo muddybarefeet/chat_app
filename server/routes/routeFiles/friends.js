@@ -61,6 +61,7 @@ module.exports = function (services) {
       .get(function (req, res) {
 
         var userId = req.__userId;
+        console.log('userID sending request: ', userId);
 
         services.db.friends.getFriends(userId)
         .then(function (response) {

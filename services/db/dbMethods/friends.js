@@ -71,7 +71,7 @@ module.exports = function (knex) {
   // join the users and friends tables then filter
 
   fnHash.getFriends = function (userId) {
-
+    console.log('userID METHOD: ', userId);
     var friendsData = {
       pendingResquestOut: {},
       pendingResquestIn: {},

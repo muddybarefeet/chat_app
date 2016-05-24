@@ -33,7 +33,7 @@ var Main = React.createClass({
 
     return (
       <div>
-        <div className={"sidebar-wrapper " + (this.state.toggle ? '' : 'slide')}>
+        <div className={"sidebar-wrapper " + (this.state.toggle ? 'slide' : '')}>
             <ul className="sidebar-nav row">
                 <li className="col-md-4">
                   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>

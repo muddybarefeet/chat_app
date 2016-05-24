@@ -57,7 +57,7 @@
 	// components to require below
 	var Auth = __webpack_require__(216);
 	// var Chat = require('./components/chat/index.jsx');
-	var Home = __webpack_require__(239);
+	var Home = __webpack_require__(233);
 
 	var Chat = React.createClass({
 	  displayName: 'Chat',
@@ -27191,64 +27191,7 @@
 
 
 /***/ },
-/* 233 */,
-/* 234 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var requestHelper = __webpack_require__(222);
-
-	var jwt = __webpack_require__(223).jwt;
-
-	var friendsActions = {
-
-	  addFriend: function (whoFor) {
-
-	    requestHelper.post('friends/add', { recipient: whoFor }, jwt).end(function (err, response) {
-
-	      if (response.status === 200) {
-	        AppDispatcher.handleServerAction({
-	          actionType: "ADD_FRIEND",
-	          data: response.data
-	        });
-	      } else {
-	        console.log('err', err);
-	      }
-	    });
-	  },
-
-	  confirmRequest: function (friendToConfirm) {
-
-	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
-	      console.log('response from db on confiming/reject friend a friend', response);
-	    });
-	  },
-
-	  getFriends: function () {
-
-	    requestHelper.get('friends/get', jwt).end(function (err, response) {
-	      console.log('response getting friends', response);
-	    });
-	  },
-
-	  showWhoCanFriend: function () {
-
-	    requestHelper.get('friends/showWhoCanFriend', jwt).end(function (err, response) {
-	      console.log('response show who can be friended', response);
-	    });
-	  }
-
-	};
-
-	module.exports = friendsActions;
-
-/***/ },
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
@@ -27256,9 +27199,9 @@
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
-	var Friends = __webpack_require__(240);
-	var Rooms = __webpack_require__(241);
-	var Add = __webpack_require__(242);
+	var Friends = __webpack_require__(235);
+	var Rooms = __webpack_require__(236);
+	var Add = __webpack_require__(237);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27290,7 +27233,7 @@
 	      null,
 	      React.createElement(
 	        'div',
-	        { className: "sidebar-wrapper " + (this.state.toggle ? '' : 'slide') },
+	        { className: "sidebar-wrapper " + (this.state.toggle ? 'slide' : '') },
 	        React.createElement(
 	          'ul',
 	          { className: 'sidebar-nav row' },
@@ -27347,11 +27290,67 @@
 	module.exports = Main;
 
 /***/ },
-/* 240 */
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var friendsActions = {
+
+	  addFriend: function (whoFor) {
+
+	    requestHelper.post('friends/add', { recipient: whoFor }, jwt).end(function (err, response) {
+
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "ADD_FRIEND",
+	          data: response.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
+	  },
+
+	  confirmRequest: function (friendToConfirm) {
+
+	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	    });
+	  },
+
+	  getFriends: function () {
+
+	    requestHelper.get('friends/get', jwt).end(function (err, response) {
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_FRIENDS",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  showWhoCanFriend: function () {
+
+	    requestHelper.get('friends/showWhoCanFriend', jwt).end(function (err, response) {
+	      console.log('response show who can be friended', response);
+	    });
+	  }
+
+	};
+
+	module.exports = friendsActions;
+
+/***/ },
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
 	var friendActions = __webpack_require__(234);
+	var friendsStore = __webpack_require__(238);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27359,6 +27358,19 @@
 	var Friends = React.createClass({
 	  displayName: 'Friends',
 
+
+	  componentDidMount: function () {
+	    friendsStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    friendsStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    console.log('on change event in firends');
+	    // window.location.hash="#/";
+	  },
 
 	  // handleAddFriendClick: function () {
 	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
@@ -27400,7 +27412,7 @@
 	module.exports = Friends;
 
 /***/ },
-/* 241 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
@@ -27439,7 +27451,7 @@
 	module.exports = Rooms;
 
 /***/ },
-/* 242 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
@@ -27476,6 +27488,72 @@
 	});
 
 	module.exports = Add;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var EventEmitter = __webpack_require__(232).EventEmitter;
+
+	var CHANGE_EVENT = "change";
+
+	var _friendDetails = {
+	  friends: [],
+	  notYetFriends: [],
+	  pendingRequestIn: [],
+	  pendingRequestOut: [],
+	  friendRequestSent: null
+	};
+
+	var friendsStore = Object.assign(new EventEmitter(), {
+
+	  getFriendData: function () {
+	    return _friendDetails;
+	  },
+
+	  emitChange: function () {
+	    this.emit(CHANGE_EVENT);
+	  },
+
+	  addChangeListener: function (callback) {
+	    this.addListener(CHANGE_EVENT, callback);
+	  },
+
+	  removeChangeListener: function (callback) {
+	    this.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	});
+
+	AppDispatcher.register(function (payload) {
+	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
+	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
+	  console.log('action in here');
+	  // if(action.actionType === "ADD_FRIEND") {
+	  //   console.log('action', action.data);
+	  //   //think about if want anything back to the user
+	  // }
+
+	  if (action.actionType === "GET_FRIENDS") {
+	    console.log('action in here', action.data);
+	    // for ( var key in action.data.friendsHash ) {
+	    //   _friendDetails.friends.push(action.data.friendsHash[key]);
+	    // }
+	    friendsStore.emitChange();
+	  }
+
+	  // if (action.actionType === "USER_LOGIN_ERROR") {
+
+	  // }
+
+	  // if (action.actionType === "USER_SIGNUP_ERROR") {
+
+	  // }
+	});
+
+	module.exports = friendsStore;
 
 /***/ }
 /******/ ]);

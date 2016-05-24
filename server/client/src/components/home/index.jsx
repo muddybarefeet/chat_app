@@ -3,6 +3,9 @@ var friendActions = require('./../../actions/friendActions.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
+var Friends = require('./chat/friends.jsx');
+var Rooms = require('./chat/rooms.jsx');
+var Add = require('./chat/add.jsx');
 
 var Main = React.createClass({
 
@@ -23,38 +26,32 @@ var Main = React.createClass({
   getFriends: function () {
     console.log('clicked get friends!');
     // send query to the back end to return all friends to the friends store
-
+    friendActions.getFriends();
   },
 
   render: function () {
 
     return (
       <div>
-
         <div className={"sidebar-wrapper " + (this.state.toggle ? '' : 'slide')}>
             <ul className="sidebar-nav row">
                 <li className="sidebar-brand col-md-4">
                   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>
-                {/*here have component to display the friends*/}
+                  <Friends></Friends>
                 </li>
                 <li className="sidebar-brand col-md-4">
                   <button type="button" className="btn btn-default">Rooms</button>
+                  <Rooms></Rooms>
                 </li>
                 <li className="sidebar-brand col-md-4">
                   <button type="button" className="btn btn-default">Add</button>
+                  <Add></Add>
                 </li>
             </ul>
         </div>
 
         <div classN="page-content-wrapper">
-          <div className="container-fluid">
-              <div className="row">
-                  <div className="col-lg-12 text-left">
-                    <a className="btn btn-default chat-button" id="menu-toggle" onClick={this.handleChatClick}><i className="fa fa-comment-o fa-2x" aria-hidden="true"></i></a>
-                    <h1>Good Morning Anna!</h1>
-                  </div>
-              </div>
-          </div>
+          <a className="btn btn-default chat-button" id="menu-toggle" onClick={this.handleChatClick}><i className="fa fa-comment-o fa-2x" aria-hidden="true"></i></a>
         </div>
 
       </div>

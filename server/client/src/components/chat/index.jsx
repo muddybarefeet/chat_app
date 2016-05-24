@@ -26,7 +26,19 @@ var Chat = React.createClass({
 
     return (
       <div>
-        
+        <h1>IAM</h1>
+        // <ul className="sidebar-nav row">
+            // <li className="sidebar-brand col-md-4">
+            //   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>
+            // {/*here have component to display the friends*/}
+            // </li>
+            // <li className="sidebar-brand col-md-4">
+            //   <button type="button" className="btn btn-default">Rooms</button>
+            // </li>
+            // <li className="sidebar-brand col-md-4">
+            //   <button type="button" className="btn btn-default">Add</button>
+            // </li>
+        // </ul>
       </div>
     );
   }

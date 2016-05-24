@@ -10,10 +10,24 @@ var IndexRoute = require('react-router').IndexRoute;
 
 // components to require below
 var Auth = require('./components/auth.jsx');
-var Chat = require('./components/chat/index.jsx');
-var Main = require('./components/main/index.jsx');
+// var Chat = require('./components/chat/index.jsx');
+var Home = require('./components/home/index.jsx');
 
 var Chat = React.createClass({
+
+  getInitialState: function() {
+    return {
+      toggle: false
+    };
+  },
+
+  handleChatClick: function () {
+    console.log('clicked!');
+    this.setState({
+      toggle: this.state.toggle ? false : true
+    });
+
+  },
 
   render: function render () {
 
@@ -22,7 +36,7 @@ var Chat = React.createClass({
 
         <div id="wrapper">
 
-          <Main></Main>
+          <Home></Home>
 
         </div>
         

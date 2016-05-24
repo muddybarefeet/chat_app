@@ -56,12 +56,25 @@
 
 	// components to require below
 	var Auth = __webpack_require__(216);
-	var Chat = __webpack_require__(233);
-	var Main = __webpack_require__(235);
+	// var Chat = require('./components/chat/index.jsx');
+	var Home = __webpack_require__(239);
 
 	var Chat = React.createClass({
 	  displayName: 'Chat',
 
+
+	  getInitialState: function () {
+	    return {
+	      toggle: false
+	    };
+	  },
+
+	  handleChatClick: function () {
+	    console.log('clicked!');
+	    this.setState({
+	      toggle: this.state.toggle ? false : true
+	    });
+	  },
 
 	  render: function render() {
 
@@ -71,7 +84,7 @@
 	      React.createElement(
 	        'div',
 	        { id: 'wrapper' },
-	        React.createElement(Main, null)
+	        React.createElement(Home, null)
 	      ),
 	      this.props.children
 	    );
@@ -27178,45 +27191,7 @@
 
 
 /***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//this is the index for the main page of the app! to be made ....
-	var friendActions = __webpack_require__(234);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Chat = React.createClass({
-	  displayName: 'Chat',
-
-
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
-
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
-
-	  // handleGetFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  render: function () {
-
-	    return React.createElement('div', null);
-	  }
-
-	});
-
-	module.exports = Chat;
-
-/***/ },
+/* 233 */,
 /* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27269,7 +27244,11 @@
 	module.exports = friendsActions;
 
 /***/ },
-/* 235 */
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//this is the index for the main page of the app! to be made ....
@@ -27277,6 +27256,9 @@
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
+	var Friends = __webpack_require__(240);
+	var Rooms = __webpack_require__(241);
+	var Add = __webpack_require__(242);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27298,6 +27280,7 @@
 	  getFriends: function () {
 	    console.log('clicked get friends!');
 	    // send query to the back end to return all friends to the friends store
+	    friendActions.getFriends();
 	  },
 
 	  render: function () {
@@ -27318,7 +27301,8 @@
 	              'button',
 	              { type: 'button', className: 'btn btn-default', onClick: this.getFriends },
 	              'Friends'
-	            )
+	            ),
+	            React.createElement(Friends, null)
 	          ),
 	          React.createElement(
 	            'li',
@@ -27327,7 +27311,8 @@
 	              'button',
 	              { type: 'button', className: 'btn btn-default' },
 	              'Rooms'
-	            )
+	            ),
+	            React.createElement(Rooms, null)
 	          ),
 	          React.createElement(
 	            'li',
@@ -27336,7 +27321,8 @@
 	              'button',
 	              { type: 'button', className: 'btn btn-default' },
 	              'Add'
-	            )
+	            ),
+	            React.createElement(Add, null)
 	          )
 	        )
 	      ),
@@ -27344,26 +27330,9 @@
 	        'div',
 	        { classN: 'page-content-wrapper' },
 	        React.createElement(
-	          'div',
-	          { className: 'container-fluid' },
-	          React.createElement(
-	            'div',
-	            { className: 'row' },
-	            React.createElement(
-	              'div',
-	              { className: 'col-lg-12 text-left' },
-	              React.createElement(
-	                'a',
-	                { className: 'btn btn-default chat-button', id: 'menu-toggle', onClick: this.handleChatClick },
-	                React.createElement('i', { className: 'fa fa-comment-o fa-2x', 'aria-hidden': 'true' })
-	              ),
-	              React.createElement(
-	                'h1',
-	                null,
-	                'Good Morning Anna!'
-	              )
-	            )
-	          )
+	          'a',
+	          { className: 'btn btn-default chat-button', id: 'menu-toggle', onClick: this.handleChatClick },
+	          React.createElement('i', { className: 'fa fa-comment-o fa-2x', 'aria-hidden': 'true' })
 	        )
 	      )
 	    );
@@ -27372,6 +27341,119 @@
 	});
 
 	module.exports = Main;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Friends = React.createClass({
+	  displayName: 'Friends',
+
+
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
+
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
+
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  render: function () {
+
+	    return React.createElement('div', null);
+	  }
+
+	});
+
+	module.exports = Friends;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Rooms = React.createClass({
+	  displayName: 'Rooms',
+
+
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
+
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
+
+	  // handleGetFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  render: function () {
+
+	    return React.createElement('div', null);
+	  }
+
+	});
+
+	module.exports = Rooms;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Add = React.createClass({
+	  displayName: 'Add',
+
+
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
+
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
+
+	  // handleGetFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  render: function () {
+
+	    return React.createElement('div', null);
+	  }
+
+	});
+
+	module.exports = Add;
 
 /***/ }
 /******/ ]);

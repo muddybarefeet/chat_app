@@ -5,7 +5,7 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = "change";
 
 var _friendDetails = {
-  friends: [],
+  friendsHash: [],
   notYetFriends: [],
   pendingRequestIn: [],
   pendingRequestOut: [],
@@ -41,10 +41,16 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
   // }
 
   if (action.actionType === "GET_FRIENDS") {
-    console.log('action in here', action.data);
-    // for ( var key in action.data.friendsHash ) {
-    //   _friendDetails.friends.push(action.data.friendsHash[key]);
-    // }
+    // split the db return into the correct bucket
+    var options = ['friendsHash','notYetFriends','pendingRequestIn','pendingRequestOut'];
+    options.forEach(function (option) {
+      for ( var key in action.data[option] ) {
+        console.log(option);
+        _friendDetails[option].push(action.data[option][key]);
+      }
+    });
+
+    console.log('new', _friendDetails);
     friendsStore.emitChange();
   }
 

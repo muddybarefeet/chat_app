@@ -27200,8 +27200,8 @@
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 	var Friends = __webpack_require__(235);
-	var Rooms = __webpack_require__(236);
-	var Add = __webpack_require__(237);
+	var Rooms = __webpack_require__(237);
+	var Add = __webpack_require__(238);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27350,7 +27350,7 @@
 
 	//this is the index for the main page of the app! to be made ....
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(238);
+	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27369,7 +27369,13 @@
 
 	  _onChangeEvent: function () {
 	    console.log('on change event in firends');
-	    // window.location.hash="#/";
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      friends: friendsStore.friends,
+	      notYetFriends: friendsStore.notYetFriends,
+	      pendingRequestIn: friendsStore.pendingRequestIn,
+	      pendingRequestOut: friendsStore.pendingRequestOut
+	    });
 	  },
 
 	  // handleAddFriendClick: function () {
@@ -27415,84 +27421,6 @@
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//this is the index for the main page of the app! to be made ....
-	var friendActions = __webpack_require__(234);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Rooms = React.createClass({
-	  displayName: 'Rooms',
-
-
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
-
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
-
-	  // handleGetFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  render: function () {
-
-	    return React.createElement('div', null);
-	  }
-
-	});
-
-	module.exports = Rooms;
-
-/***/ },
-/* 237 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//this is the index for the main page of the app! to be made ....
-	var friendActions = __webpack_require__(234);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Add = React.createClass({
-	  displayName: 'Add',
-
-
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
-
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
-
-	  // handleGetFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  render: function () {
-
-	    return React.createElement('div', null);
-	  }
-
-	});
-
-	module.exports = Add;
-
-/***/ },
-/* 238 */
-/***/ function(module, exports, __webpack_require__) {
-
 	
 	var AppDispatcher = __webpack_require__(218);
 	var EventEmitter = __webpack_require__(232).EventEmitter;
@@ -27500,7 +27428,7 @@
 	var CHANGE_EVENT = "change";
 
 	var _friendDetails = {
-	  friends: [],
+	  friendsHash: [],
 	  notYetFriends: [],
 	  pendingRequestIn: [],
 	  pendingRequestOut: [],
@@ -27537,10 +27465,16 @@
 	  // }
 
 	  if (action.actionType === "GET_FRIENDS") {
-	    console.log('action in here', action.data);
-	    // for ( var key in action.data.friendsHash ) {
-	    //   _friendDetails.friends.push(action.data.friendsHash[key]);
-	    // }
+	    // split the db return into the correct bucket
+	    var options = ['friendsHash', 'notYetFriends', 'pendingRequestIn', 'pendingRequestOut'];
+	    options.forEach(function (option) {
+	      for (var key in action.data[option]) {
+	        console.log(option);
+	        _friendDetails[option].push(action.data[option][key]);
+	      }
+	    });
+
+	    console.log('new', _friendDetails);
 	    friendsStore.emitChange();
 	  }
 
@@ -27554,6 +27488,84 @@
 	});
 
 	module.exports = friendsStore;
+
+/***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Rooms = React.createClass({
+	  displayName: 'Rooms',
+
+
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
+
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
+
+	  // handleGetFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  render: function () {
+
+	    return React.createElement('div', null);
+	  }
+
+	});
+
+	module.exports = Rooms;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//this is the index for the main page of the app! to be made ....
+	var friendActions = __webpack_require__(234);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Add = React.createClass({
+	  displayName: 'Add',
+
+
+	  // handleAddFriendClick: function () {
+	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
+	  // },
+
+	  // handleConfirmFriend: function () {
+	  //   friendActions.confirmRequest('anna');
+	  // },
+
+	  // handleGetFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  // handleNewFriendsClick: function () {
+	  //   friendActions.getFriends();
+	  // },
+
+	  render: function () {
+
+	    return React.createElement('div', null);
+	  }
+
+	});
+
+	module.exports = Add;
 
 /***/ }
 /******/ ]);

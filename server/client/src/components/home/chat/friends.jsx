@@ -17,7 +17,13 @@ var Friends = React.createClass({
 
   _onChangeEvent: function () {
     console.log('on change event in firends');
-    // window.location.hash="#/";
+    // friends have been got and now they need to be displayed
+    this.setState({
+      friends: friendsStore.friends,
+      notYetFriends: friendsStore.notYetFriends,
+      pendingRequestIn: friendsStore.pendingRequestIn,
+      pendingRequestOut: friendsStore.pendingRequestOut
+    });
   },
 
   // handleAddFriendClick: function () {

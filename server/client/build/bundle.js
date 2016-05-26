@@ -27359,6 +27359,15 @@
 	  displayName: 'Friends',
 
 
+	  getInitialState() {
+	    return {
+	      friends: friendsStore.getFriendData().friends,
+	      notYetFriends: friendsStore.getFriendData().notYetFriends,
+	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+	    };
+	  },
+
 	  componentDidMount: function () {
 	    friendsStore.addChangeListener(this._onChangeEvent);
 	  },
@@ -27371,11 +27380,12 @@
 	    console.log('on change event in firends');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      friends: friendsStore.friends,
-	      notYetFriends: friendsStore.notYetFriends,
-	      pendingRequestIn: friendsStore.pendingRequestIn,
-	      pendingRequestOut: friendsStore.pendingRequestOut
+	      friends: friendsStore.getFriendData().friends,
+	      notYetFriends: friendsStore.getFriendData().notYetFriends,
+	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
 	    });
+	    this.render();
 	  },
 
 	  // handleAddFriendClick: function () {
@@ -27389,7 +27399,6 @@
 	  // handleNewFriendsClick: function () {
 	  //   friendActions.getFriends();
 	  // },
-
 	  render: function () {
 
 	    return React.createElement(
@@ -27398,17 +27407,23 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        'Friends'
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        'Pending Requests To Me'
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        'Pending Requests Sent Out'
+	        React.createElement(
+	          'h3',
+	          null,
+	          'Friends'
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          this.state.notYetFriends.map(function (person, id) {
+	            console.log('in map');
+	            return React.createElement(
+	              'li',
+	              { key: id },
+	              person.username
+	            );
+	          })
+	        )
 	      )
 	    );
 	  }

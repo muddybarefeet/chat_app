@@ -27359,12 +27359,9 @@
 	  displayName: 'Friends',
 
 
-	  getInitialState() {
+	  getInitialState: function () {
 	    return {
-	      friends: friendsStore.getFriendData().friends,
-	      notYetFriends: friendsStore.getFriendData().notYetFriends,
-	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+	      friends: friendsStore.getFriendData().friends
 	    };
 	  },
 
@@ -27380,12 +27377,8 @@
 	    console.log('on change event in firends');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      friends: friendsStore.getFriendData().friends,
-	      notYetFriends: friendsStore.getFriendData().notYetFriends,
-	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+	      friends: friendsStore.getFriendData().friends
 	    });
-	    this.render();
 	  },
 
 	  // handleAddFriendClick: function () {
@@ -27399,6 +27392,7 @@
 	  // handleNewFriendsClick: function () {
 	  //   friendActions.getFriends();
 	  // },
+
 	  render: function () {
 
 	    return React.createElement(
@@ -27415,7 +27409,7 @@
 	        React.createElement(
 	          'ul',
 	          null,
-	          this.state.notYetFriends.map(function (person, id) {
+	          this.state.friends.map(function (person, id) {
 	            console.log('in map');
 	            return React.createElement(
 	              'li',
@@ -27443,7 +27437,7 @@
 	var CHANGE_EVENT = "change";
 
 	var _friendDetails = {
-	  friendsHash: [],
+	  friends: [],
 	  notYetFriends: [],
 	  pendingRequestIn: [],
 	  pendingRequestOut: [],
@@ -27488,8 +27482,6 @@
 	        _friendDetails[option].push(action.data[option][key]);
 	      }
 	    });
-
-	    console.log('new', _friendDetails);
 	    friendsStore.emitChange();
 	  }
 

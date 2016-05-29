@@ -5,7 +5,7 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = "change";
 
 var _friendDetails = {
-  friendsHash: [],
+  friends: [],
   notYetFriends: [],
   pendingRequestIn: [],
   pendingRequestOut: [],
@@ -14,7 +14,7 @@ var _friendDetails = {
 
 var friendsStore = Object.assign(new EventEmitter (), {
   
-  getFriendData: function(){
+  getFriendData: function () {
     return _friendDetails;
   },
 
@@ -49,8 +49,6 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
         _friendDetails[option].push(action.data[option][key]);
       }
     });
-
-    console.log('new', _friendDetails);
     friendsStore.emitChange();
   }
 

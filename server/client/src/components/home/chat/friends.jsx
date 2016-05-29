@@ -7,13 +7,10 @@ var Link = require('react-router').Link;
 
 var Friends = React.createClass({
 
-  getInitialState() {
-      return {
-          friends: friendsStore.getFriendData().friends,
-          notYetFriends: friendsStore.getFriendData().notYetFriends,
-          pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-          pendingRequestOut: friendsStore.getFriendData().pendingRequestOut  
-      };
+  getInitialState: function () {
+    return {
+      friends: friendsStore.getFriendData().friends
+    };
   },
 
   componentDidMount: function () {
@@ -28,12 +25,8 @@ var Friends = React.createClass({
     console.log('on change event in firends');
     // friends have been got and now they need to be displayed
     this.setState({
-      friends: friendsStore.getFriendData().friends,
-      notYetFriends: friendsStore.getFriendData().notYetFriends,
-      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+      friends: friendsStore.getFriendData().friends
     });
-    this.render();
   },
 
   // handleAddFriendClick: function () {
@@ -50,51 +43,18 @@ var Friends = React.createClass({
 
 
   render: function () {
-    // var details = [];
-    // if (this.state.notYetFriends) {
-    //   this.state.notYetFriends.map(function(person) {
-    //     details.push(person.username);
-    //   });
-    // }
 
     return (
       <div>
         <div>
           <h3>Friends</h3>
           <ul>  
-            {this.state.notYetFriends.map(function(person, id) {
+            {this.state.friends.map(function(person, id) {
                 console.log('in map');
                return <li key={id} >{person.username}</li>;
             })}
           </ul>
         </div>
-        {/*<div>
-          <h3>Pending Requests To Me</h3>
-          <ul>  
-            {this.state.notYetFriends.map(function(person, id) {
-                console.log('in map');
-               return <li key={id} >{person.username}</li>;
-            })}
-          </ul>
-        </div>
-        <div>
-          <h3>Pending Requests Sent Out</h3>
-          <ul>  
-            {this.state.notYetFriends.map(function(person, id) {
-                console.log('in map');
-               return <li key={id} >{person.username}</li>;
-            })}
-          </ul>
-        </div>
-        <div>
-          <h3>Not Yet Friends</h3>
-          <ul>  
-            {this.state.notYetFriends.map(function(person, id) {
-                console.log('in map');
-               return <li key={id} >{person.username}</li>;
-            })}
-          </ul>
-        </div>*/}
       </div>
     );
   }

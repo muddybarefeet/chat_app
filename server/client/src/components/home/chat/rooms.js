@@ -1,1 +1,0 @@
-// component to show rooms and on click go the room and its message hitsory

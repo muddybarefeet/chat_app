@@ -27500,42 +27500,9 @@
 
 /***/ },
 /* 237 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	//this is the index for the main page of the app! to be made ....
-	var friendActions = __webpack_require__(234);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Rooms = React.createClass({
-	  displayName: 'Rooms',
-
-
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
-
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
-
-	  // handleGetFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
-	  render: function () {
-
-	    return React.createElement('div', null);
-	  }
-
-	});
-
-	module.exports = Rooms;
+	// component to show rooms and on click go the room and its message hitsory
 
 /***/ },
 /* 238 */

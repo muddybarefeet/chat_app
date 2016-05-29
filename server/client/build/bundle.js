@@ -27348,7 +27348,9 @@
 /* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//this is the index for the main page of the app! to be made ....
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+
 	var friendActions = __webpack_require__(234);
 	var friendsStore = __webpack_require__(236);
 

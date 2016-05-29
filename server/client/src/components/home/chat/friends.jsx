@@ -1,4 +1,6 @@
-//this is the index for the main page of the app! to be made ....
+//page to get the users friends and display them on the page
+// on clicking on a friend a user can chat to that one friend
+
 var friendActions = require('./../../../actions/friendActions.js');
 var friendsStore = require('./../../../stores/friendsStore.js');
 

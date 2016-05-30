@@ -28,6 +28,12 @@ var Chat = React.createClass({
 
   },
 
+  logout: function () {
+    console.log('logging out');
+    localStorage.clear();
+    window.location.hash = "#/auth";
+  },
+
   render: function render () {
 
     return (
@@ -36,6 +42,7 @@ var Chat = React.createClass({
         <div id="wrapper">
 
           <Home></Home>
+          <button type="button" className="btn btn-primary" onClick={this.logout}>Logout</button>
 
         </div>
         

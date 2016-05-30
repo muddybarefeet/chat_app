@@ -75,6 +75,12 @@
 	    });
 	  },
 
+	  logout: function () {
+	    console.log('logging out');
+	    localStorage.clear();
+	    window.location.hash = "#/auth";
+	  },
+
 	  render: function render() {
 
 	    return React.createElement(
@@ -83,7 +89,12 @@
 	      React.createElement(
 	        'div',
 	        { id: 'wrapper' },
-	        React.createElement(Home, null)
+	        React.createElement(Home, null),
+	        React.createElement(
+	          'button',
+	          { type: 'button', className: 'btn btn-primary', onClick: this.logout },
+	          'Logout'
+	        )
 	      ),
 	      this.props.children
 	    );

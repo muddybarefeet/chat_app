@@ -31,6 +31,10 @@ var Friends = React.createClass({
     });
   },
 
+  seeFriendMessages: function () {
+    console.log('want to see chat History!');
+  },
+
   // handleAddFriendClick: function () {
   //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
   // },
@@ -48,12 +52,13 @@ var Friends = React.createClass({
 
     return (
       <div>
+        <h1>Friends</h1>
         <div>
           <h3>Friends</h3>
           <ul>  
             {this.state.friends.map(function(person, id) {
                 console.log('in map');
-               return <li key={id} >{person.username}</li>;
+               return <li key={id} onClick={this.seeFriendMessages} >{person.username}</li>;
             })}
           </ul>
         </div>

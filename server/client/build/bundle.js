@@ -27383,6 +27383,10 @@
 	    });
 	  },
 
+	  seeFriendMessages: function () {
+	    console.log('want to see chat History!');
+	  },
+
 	  // handleAddFriendClick: function () {
 	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
 	  // },
@@ -27401,6 +27405,11 @@
 	      'div',
 	      null,
 	      React.createElement(
+	        'h1',
+	        null,
+	        'Friends'
+	      ),
+	      React.createElement(
 	        'div',
 	        null,
 	        React.createElement(
@@ -27415,7 +27424,7 @@
 	            console.log('in map');
 	            return React.createElement(
 	              'li',
-	              { key: id },
+	              { key: id, onClick: this.seeFriendMessages },
 	              person.username
 	            );
 	          })

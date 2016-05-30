@@ -27201,6 +27201,7 @@
 	var Friends = __webpack_require__(235);
 	var Rooms = __webpack_require__(237);
 	var Add = __webpack_require__(239);
+	var Pending = __webpack_require__(240);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27211,12 +27212,16 @@
 	      toggle: false,
 	      friends: true,
 	      rooms: false,
-	      add: false
+	      add: false,
+	      pending: false
 	    };
 	  },
 
+	  componentWillMount: function () {
+	    friendActions.getFriends();
+	  },
+
 	  handleChatClick: function () {
-	    console.log('clicked!');
 	    this.setState({
 	      toggle: this.state.toggle ? false : true
 	    });
@@ -27224,6 +27229,13 @@
 
 	  getFriends: function () {
 	    // send query to the back end to return all friends to the friends store
+	    this.setState({
+	      // set the state to update the view
+	      friends: true,
+	      rooms: false,
+	      add: false,
+	      pending: false
+	    });
 	    friendActions.getFriends();
 	  },
 
@@ -27233,7 +27245,20 @@
 	      // set the state to update the view
 	      friends: false,
 	      rooms: false,
-	      add: true
+	      add: true,
+	      pending: false
+	    });
+	    friendActions.getFriends();
+	  },
+
+	  pendingPage: function () {
+	    // open page of pending friends requests
+	    this.setState({
+	      // set the state to update the view
+	      friends: false,
+	      rooms: false,
+	      add: false,
+	      pending: true
 	    });
 	    friendActions.getFriends();
 	  },
@@ -27243,6 +27268,7 @@
 	    var friends = this.state.friends;
 	    var rooms = this.state.rooms;
 	    var add = this.state.add;
+	    var pending = this.state.pending;
 
 	    toShow = "";
 
@@ -27254,6 +27280,9 @@
 	    }
 	    if (add) {
 	      toShow = React.createElement(Add, null);
+	    }
+	    if (pending) {
+	      toShow = React.createElement(Pending, null);
 	    }
 
 	    return React.createElement(
@@ -27267,7 +27296,7 @@
 	          { className: 'sidebar-nav row' },
 	          React.createElement(
 	            'li',
-	            { className: 'col-md-4' },
+	            { className: 'col-md-3' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default', onClick: this.getFriends },
@@ -27276,7 +27305,7 @@
 	          ),
 	          React.createElement(
 	            'li',
-	            { className: 'col-md-4' },
+	            { className: 'col-md-3' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default' },
@@ -27285,11 +27314,20 @@
 	          ),
 	          React.createElement(
 	            'li',
-	            { className: 'col-md-4' },
+	            { className: 'col-md-3' },
 	            React.createElement(
 	              'button',
 	              { type: 'button', className: 'btn btn-default', onClick: this.addFriendsPage },
 	              'Find New Friends'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { className: 'col-md-3' },
+	            React.createElement(
+	              'button',
+	              { type: 'button', className: 'btn btn-default', onClick: this.pendingPage },
+	              'Pending'
 	            )
 	          )
 	        ),
@@ -27350,7 +27388,6 @@
 	  },
 
 	  getFriends: function () {
-
 	    requestHelper.get('friends/get', jwt).end(function (err, response) {
 	      AppDispatcher.handleClientAction({
 	        actionType: "GET_FRIENDS",
@@ -27506,12 +27543,16 @@
 	  if (action.actionType === "GET_FRIENDS") {
 	    // split the db return into the correct bucket
 	    console.log('getting friends in store');
-	    var options = ['friendsHash', 'notYetFriends', 'pendingRequestIn', 'pendingRequestOut'];
+
+	    var options = ['friends', 'notYetFriends', 'pendingRequestIn', 'pendingRequestOut'];
+
 	    options.forEach(function (option) {
+	      _friendDetails[option] = [];
 	      for (var key in action.data[option]) {
 	        _friendDetails[option].push(action.data[option][key]);
 	      }
 	    });
+
 	    friendsStore.emitChange();
 	  }
 
@@ -27556,10 +27597,9 @@
 	    };
 	  },
 
-	  addFriend: function (e) {
+	  addFriend: function (id) {
 	    // get the username from the add friend request and then sent to actions
-	    console.log('adding ...', e.target);
-
+	    console.log(id.target.attributes);
 	    // friendActions.addFriend();
 	  },
 
@@ -27621,6 +27661,113 @@
 	});
 
 	module.exports = Add;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+
+	var friendActions = __webpack_require__(234);
+	var friendsStore = __webpack_require__(236);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Pending = React.createClass({
+	  displayName: 'Pending',
+
+
+	  getInitialState: function () {
+	    return {
+	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+	    };
+	  },
+
+	  componentDidMount: function () {
+	    friendsStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    friendsStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    console.log('on change event in pending');
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+	      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+	    });
+	  },
+
+	  seeFriendMessages: function () {
+	    console.log('want to see chat History!');
+	  },
+
+	  render: function () {
+	    var that = this;
+
+	    var pendingIn = this.state.pendingRequestIn.map(function (person, id) {
+	      return React.createElement(
+	        'li',
+	        { key: id },
+	        person.username
+	      );
+	    });
+
+	    var pendingOut = this.state.pendingRequestOut.map(function (person, id) {
+	      return React.createElement(
+	        'li',
+	        { key: id },
+	        person.username
+	      );
+	    });
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Pending Requests'
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h3',
+	          null,
+	          'Pending Friends Requests to Me'
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          pendingIn
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h3',
+	          null,
+	          'Pending Friends Requests I Have Made'
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          pendingOut
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Pending;
 
 /***/ }
 /******/ ]);

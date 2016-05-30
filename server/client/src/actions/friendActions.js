@@ -35,7 +35,6 @@ var friendsActions = {
   },
 
   getFriends: function () {
-
     requestHelper
     .get('friends/get', jwt)
     .end(function (err, response) {

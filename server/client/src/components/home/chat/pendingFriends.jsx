@@ -1,70 +1,77 @@
-// //page to get the users friends and display them on the page
-// // on clicking on a friend a user can chat to that one friend
+//page to get the users friends and display them on the page
+// on clicking on a friend a user can chat to that one friend
 
-// var friendActions = require('./../../../actions/friendActions.js');
-// var friendsStore = require('./../../../stores/friendsStore.js');
+var friendActions = require('./../../../actions/friendActions.js');
+var friendsStore = require('./../../../stores/friendsStore.js');
 
-// var React = require('react');
-// var Link = require('react-router').Link;
+var React = require('react');
+var Link = require('react-router').Link;
 
-// var Pending = React.createClass({
+var Pending = React.createClass({
 
-//   getInitialState: function () {
-//     return {
-//       pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-//       pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
-//     };
-//   },
+  getInitialState: function () {
+    return {
+      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+    };
+  },
 
-//   componentDidMount: function () {
-//     friendsStore.addChangeListener(this._onChangeEvent);
-//   },
+  componentDidMount: function () {
+    friendsStore.addChangeListener(this._onChangeEvent);
+  },
 
-//   componentWillUnmount: function () {
-//     friendsStore.removeChangeListener(this._onChangeEvent);
-//   },
+  componentWillUnmount: function () {
+    friendsStore.removeChangeListener(this._onChangeEvent);
+  },
 
-//   _onChangeEvent: function () {
-//     console.log('on change event in firends');
-//     // friends have been got and now they need to be displayed
-//     this.setState({
-//       pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
-//       pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
-//     });
-//   },
+  _onChangeEvent: function () {
+    console.log('on change event in pending');
+    // friends have been got and now they need to be displayed
+    this.setState({
+      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
+      pendingRequestOut: friendsStore.getFriendData().pendingRequestOut
+    });
+  },
 
-//   seeFriendMessages: function () {
-//     console.log('want to see chat History!');
-//   },
+  seeFriendMessages: function () {
+    console.log('want to see chat History!');
+  },
 
-//   render: function () {
+  render: function () {
+    var that = this;
 
-//     return (
-//       <div>
-//         <h1>Pending Requests</h1>
-//         <div>
-//           <h3>Pending Friends Requests to Me</h3>
-//           <ul>  
-//             {this.state.pendingRequestIn.map(function(person, id) {
-//                 console.log('in map');
-//                return <li key={id} onClick={this.seeFriendMessages} >{person.username}</li>;
-//             })}
-//           </ul>
-//         </div>
-//         <div>
-//           <h3>Pending Friends Requests I Have Made</h3>
-//           <ul>  
-//             {this.state.pendingRequestIn.map(function(person, id) {
-//                 console.log('in map');
-//                return <li key={id} onClick={this.seeFriendMessages} >{person.username}</li>;
-//             })}
-//           </ul>
-//         </div>
-//       </div>
-//     );
-//   }
+    var pendingIn = this.state.pendingRequestIn.map(function(person, id) {
+        return (
+          <li key={id}>{person.username}</li>
+        );
+    });
 
-// });
+    var pendingOut = this.state.pendingRequestOut.map(function(person, id) {
+      return (
+        <li key={id}>{person.username}</li>
+      );
+    });
 
-// module.exports = Pending;
+    return (
+      <div>
+        <h1>Pending Requests</h1>
+        <div>
+          <h3>Pending Friends Requests to Me</h3>
+          <ul>  
+            {pendingIn}
+          </ul>
+        </div>
+        <div>
+          <h3>Pending Friends Requests I Have Made</h3>
+          <ul>  
+            {pendingOut}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+
+});
+
+module.exports = Pending;
 

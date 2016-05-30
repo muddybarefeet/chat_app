@@ -41,13 +41,17 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
 
   if (action.actionType === "GET_FRIENDS") {
     // split the db return into the correct bucket
-    console.log('getting friends in store')
-    var options = ['friendsHash','notYetFriends','pendingRequestIn','pendingRequestOut'];
+    console.log('getting friends in store');
+
+    var options = ['friends','notYetFriends','pendingRequestIn','pendingRequestOut'];
+
     options.forEach(function (option) {
+      _friendDetails[option] = [];
       for ( var key in action.data[option] ) {
         _friendDetails[option].push(action.data[option][key]);
       }
     });
+
     friendsStore.emitChange();
   }
 

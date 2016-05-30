@@ -6,6 +6,7 @@ var Link = require('react-router').Link;
 var Friends = require('./chat/friends.jsx');
 var Rooms = require('./chat/rooms.jsx');
 var Add = require('./chat/addFriends.jsx');
+var Pending = require('./chat/pendingFriends.jsx');
 
 var Main = React.createClass({
 
@@ -14,12 +15,16 @@ var Main = React.createClass({
       toggle: false,
       friends: true,
       rooms : false,
-      add: false
+      add: false,
+      pending: false
     };
   },
 
+  componentWillMount: function () {
+    friendActions.getFriends();
+  },
+
   handleChatClick: function () {
-    console.log('clicked!');
     this.setState({
       toggle: this.state.toggle ? false : true
     });
@@ -28,6 +33,13 @@ var Main = React.createClass({
 
   getFriends: function () {
     // send query to the back end to return all friends to the friends store
+    this.setState({
+      // set the state to update the view
+      friends: true,
+      rooms : false,
+      add: false,
+      pending: false
+    });
     friendActions.getFriends();
   },
 
@@ -37,7 +49,20 @@ var Main = React.createClass({
       // set the state to update the view
       friends: false,
       rooms : false,
-      add: true
+      add: true,
+      pending: false
+    });
+    friendActions.getFriends();
+  },
+
+  pendingPage: function () {
+    // open page of pending friends requests
+    this.setState({
+      // set the state to update the view
+      friends: false,
+      rooms : false,
+      add: false,
+      pending: true
     });
     friendActions.getFriends();
   },
@@ -47,6 +72,7 @@ var Main = React.createClass({
     var friends = this.state.friends;
     var rooms = this.state.rooms;
     var add = this.state.add;
+    var pending = this.state.pending;
 
     toShow = "";
 
@@ -59,19 +85,25 @@ var Main = React.createClass({
     if (add) {
       toShow = <Add></Add>
     }
+    if (pending) {
+      toShow = <Pending></Pending>
+    }
 
     return (
       <div>
         <div className={"sidebar-wrapper " + (this.state.toggle ? 'slide' : '')}>
             <ul className="sidebar-nav row">
-                <li className="col-md-4">
+                <li className="col-md-3">
                   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>
                 </li>
-                <li className="col-md-4">
+                <li className="col-md-3">
                   <button type="button" className="btn btn-default">Rooms</button>
                 </li>
-                <li className="col-md-4">
+                <li className="col-md-3">
                   <button type="button" className="btn btn-default" onClick={this.addFriendsPage}>Find New Friends</button>
+                </li>
+                <li className="col-md-3">
+                  <button type="button" className="btn btn-default" onClick={this.pendingPage}>Pending</button>
                 </li>
             </ul>
             <div id="chat-space-top">

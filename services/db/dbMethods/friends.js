@@ -73,7 +73,7 @@ module.exports = function (knex) {
   fnHash.getFriends = function (userId) {
     console.log('userID METHOD: ', userId);
     var friendsData = {
-      pendingResquestOut: {},
+      pendingRequestOut: {},
       pendingResquestIn: {},
       friendsHash: {},
       notYetFriends: {}
@@ -111,12 +111,12 @@ module.exports = function (knex) {
         }
 
         //loop through the elements in the array of hashes. if the friendor id is the user then put it in pendingOut(if not already there)
-        if (element.friendor === userId && !friendsData.pendingResquestOut[friendId]) {
-          friendsData.pendingResquestOut[friendId] = true;
+        if (element.friendor === userId && !friendsData.pendingRequestOut[friendId]) {
+          friendsData.pendingRequestOut[friendId] = true;
         } else if (element.friendor === friendId) {
         //if this friend is already in the pendingOut and the friendor is not the user then add here, else add to friends
-          if (friendsData.pendingResquestOut[friendId]) {
-            delete friendsData.pendingResquestOut[friendId];
+          if (friendsData.pendingRequestOut[friendId]) {
+            delete friendsData.pendingRequestOut[friendId];
             friendsData.friendsHash[friendId] = true;
           } else {
             friendsData.pendingResquestIn[friendId] = true;
@@ -128,8 +128,8 @@ module.exports = function (knex) {
       //if the u_id is not in any of the other hashes then put the user object in the friendsData.notyetfriends hash
       usersData.forEach(function (user) {
         //look in the three hashes for the user.u_id
-        if (friendsData.pendingResquestOut[user.u_id]) {
-          friendsData.pendingResquestOut[user.u_id] = user;
+        if (friendsData.pendingRequestOut[user.u_id]) {
+          friendsData.pendingRequestOut[user.u_id] = user;
         } else if (friendsData.pendingResquestIn[user.u_id]) {
           friendsData.pendingResquestIn[user.u_id] = user;
         } else if (friendsData.friendsHash[user.u_id]) {

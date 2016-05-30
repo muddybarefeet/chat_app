@@ -15,10 +15,9 @@ var Add = React.createClass({
     };
   },
 
-  addFriend: function (e) {
+  addFriend: function (id) {
     // get the username from the add friend request and then sent to actions
-    console.log('adding ...',e.target);
-
+    console.log(id.target.attributes)
     // friendActions.addFriend();
   },
 

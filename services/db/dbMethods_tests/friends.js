@@ -116,6 +116,40 @@ describe('Friends Controller', function () {
 
   });
 
+  // not test until the onClicks are fixed!
+  xdescribe('rejectRequest', function () {
+
+    it('should NOT instert a new row into the friends', function (done) {
+      
+      // insert a user and then reject them user 3 reject user 0
+      var user = users[3];
+      var recipient = users[0];
+      friendsController.rejectRequest(user.u_id, recipient.username)
+        .then(function (deletedRow) {
+          console.log('deleted row');c
+          // expect(insetedRow.friendor).to.equal(users[1].u_id);
+          // expect(insetedRow.friendee).to.equal(users[0].u_id);
+          done();
+        });
+
+    });
+
+    it('should NOT confirm request with user that does not exist', function (done) {
+      
+        var user = users[1];
+        friendsController.confirmRequest(user.u_id, "berryBot")
+          .then(function (response) {
+            expect(response).to.equal(null);
+          })
+          .catch(function (err) {
+            expect(err.message).to.equal("The user: berryBot does not exist");
+            done();
+          });
+
+    });
+
+  });
+
   describe('getFriends', function () {
 
     it('should return a hash of the users friends, pending requests made and other people\'s friend requests to them', function (done) {

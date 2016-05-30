@@ -27393,13 +27393,21 @@
 
 	  confirmRequest: function (friendToConfirm) {
 
-	    requestHelper.post('friends/confirmRequest', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
+	    requestHelper.post('friends/confirm', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	    });
+	  },
+
+	  rejectRequest: function (friendToConfirm) {
+
+	    requestHelper.post('friends/reject', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
 	      console.log('response from db on confiming/reject friend a friend', response);
 	    });
 	  },
 
 	  getFriends: function () {
 	    requestHelper.get('friends/get', jwt).end(function (err, response) {
+	      console.log('friend data got', response.body.data);
 	      AppDispatcher.handleClientAction({
 	        actionType: "GET_FRIENDS",
 	        data: response.body.data
@@ -27611,6 +27619,7 @@
 	  addFriend: function (id) {
 	    // get the username from the add friend request and then sent to actions
 	    console.log(id.target.attributes);
+	    // GET THE VALUE OF THE THING THAT I CLICKED ON!! and in pending
 	    // friendActions.addFriend();
 	  },
 
@@ -27628,10 +27637,6 @@
 	    this.setState({
 	      notYetFriends: friendsStore.getFriendData().notYetFriends
 	    });
-	  },
-
-	  seeFriendMessages: function () {
-	    console.log('want to see chat History!');
 	  },
 
 	  render: function () {
@@ -27706,7 +27711,6 @@
 	  },
 
 	  _onChangeEvent: function () {
-	    console.log('on change event in pending');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
@@ -27714,8 +27718,14 @@
 	    });
 	  },
 
-	  seeFriendMessages: function () {
-	    console.log('want to see chat History!');
+	  acceptAdd: function (event) {
+	    // console.log('add friend', event, arguments);
+	    // send the datd to the store and then round to the list item and the confirm/get parent value here?
+	  },
+
+	  rejectAdd: function () {
+	    console.log('reject friend');
+	    // test route for this on the back end!
 	  },
 
 	  render: function () {
@@ -27725,7 +27735,17 @@
 	      return React.createElement(
 	        'li',
 	        { key: id },
-	        person.username
+	        person.username,
+	        React.createElement(
+	          'span',
+	          { onClick: that.acceptAdd },
+	          React.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' })
+	        ),
+	        React.createElement(
+	          'span',
+	          { onClick: that.rejectAdd },
+	          React.createElement('i', { className: 'fa fa-times', 'aria-hidden': 'true' })
+	        )
 	      );
 	    });
 

@@ -34,7 +34,7 @@ module.exports = function (services) {
 
   //Confirm that you want to make a new connection with a request sent to you
   //-----------------------------------
-  router.route('/confirmRequest')
+  router.route('/confirm')
     .post(function (req, res) {
       var userId = req.__userId;
       var toRespondTo = req.body.toRespond;
@@ -54,29 +54,51 @@ module.exports = function (services) {
 
     });
 
+  //Reject friend connection sent to you
+  //-----------------------------------
+  router.route('/reject')
+    .post(function (req, res) {
+      var userId = req.__userId;
+      var toRespondTo = req.body.toRespond;
 
-    //get all friends
-    //-----------------------------------
-    router.route('/get')
-      .get(function (req, res) {
-
-        var userId = req.__userId;
-        console.log('userID sending request: ', userId);
-
-        services.db.friends.getFriends(userId)
-        .then(function (response) {
-          res.json({
-            data: response
-          });
-        })
-        .catch(function(err){
-          console.log('err', err);
-          res.status(404).json({
-              message: err.message
-          });
+      services.db.friends.rejectRequest(userId, toRespondTo)
+      .then(function (response) {
+        res.json({
+          data: response
         });
-
+      })
+      .catch(function(err){
+        console.log('err', err);
+        res.status(404).json({
+            message: err.message
+        });
       });
+
+    });
+
+
+  //get all friends
+  //-----------------------------------
+  router.route('/get')
+    .get(function (req, res) {
+
+      var userId = req.__userId;
+      console.log('userID sending request: ', userId);
+
+      services.db.friends.getFriends(userId)
+      .then(function (response) {
+        res.json({
+          data: response
+        });
+      })
+      .catch(function(err){
+        console.log('err', err);
+        res.status(404).json({
+            message: err.message
+        });
+      });
+
+    });
 
 
 

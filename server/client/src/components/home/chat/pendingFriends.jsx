@@ -25,7 +25,6 @@ var Pending = React.createClass({
   },
 
   _onChangeEvent: function () {
-    console.log('on change event in pending');
     // friends have been got and now they need to be displayed
     this.setState({
       pendingRequestIn: friendsStore.getFriendData().pendingRequestIn,
@@ -33,8 +32,14 @@ var Pending = React.createClass({
     });
   },
 
-  seeFriendMessages: function () {
-    console.log('want to see chat History!');
+  acceptAdd: function (event) {
+    // console.log('add friend', event, arguments);
+    // send the datd to the store and then round to the list item and the confirm/get parent value here?
+  },
+
+  rejectAdd: function () {
+    console.log('reject friend');
+    // test route for this on the back end!
   },
 
   render: function () {
@@ -42,7 +47,14 @@ var Pending = React.createClass({
 
     var pendingIn = this.state.pendingRequestIn.map(function(person, id) {
         return (
-          <li key={id}>{person.username}</li>
+          <li key={id}>{person.username}
+            <span onClick={that.acceptAdd}>
+              <i className="fa fa-check" aria-hidden="true"></i>
+            </span>
+            <span onClick={that.rejectAdd}>
+              <i className="fa fa-times" aria-hidden="true"></i>
+            </span>
+          </li>
         );
     });
 

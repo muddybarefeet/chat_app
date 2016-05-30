@@ -17,7 +17,8 @@ var Add = React.createClass({
 
   addFriend: function (id) {
     // get the username from the add friend request and then sent to actions
-    console.log(id.target.attributes)
+    console.log(id.target.attributes);
+    // GET THE VALUE OF THE THING THAT I CLICKED ON!! and in pending
     // friendActions.addFriend();
   },
 
@@ -35,10 +36,6 @@ var Add = React.createClass({
     this.setState({
       notYetFriends: friendsStore.getFriendData().notYetFriends
     });
-  },
-
-  seeFriendMessages: function () {
-    console.log('want to see chat History!');
   },
 
   render: function () {

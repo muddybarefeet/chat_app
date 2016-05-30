@@ -36,8 +36,8 @@ module.exports = function (knex) {
   };
 
 
-// enters into the friends table the confimer friend request
-// -------------------------------------
+// enters into the friends table the confirmed friend request
+// ---------------------------------------------------------
   fnHash.confirmRequest = function (userId, withWho) {
     //take the confirmed id and look for it in the friends table
     //get the userId id from the jwt
@@ -64,6 +64,30 @@ module.exports = function (knex) {
 
   };
 
+
+  // remove the friend from your pending request friends to notYetFriends pile
+  // ------------------------------------------------------------------------
+  fnHash.rejectRequest = function (userId, withWho) {
+    return knex('users')
+    .where('username', withWho)
+    .then(function (user) {
+      if (user.length !== 1) {
+        throw new Error("The user: "+withWho+" does not exist");
+      }
+      //insert a new row into the friends table
+      return knex('friends')
+      .where('friendor', user[0].u_id)
+      .del();
+    })
+    .then(function(data) {
+      return data;
+    })
+    .catch(function (err) {
+      console.log('this is an error from the rejectRequest fn in the controller');
+      throw err;
+    });
+  };
+
   
   // looks at the fiends table and returns all users friends from the users table
   //-------------------------------------
@@ -74,7 +98,7 @@ module.exports = function (knex) {
     console.log('userID METHOD: ', userId);
     var friendsData = {
       pendingRequestOut: {},
-      pendingResquestIn: {},
+      pendingRequestIn: {},
       friendsHash: {},
       notYetFriends: {}
     };
@@ -119,7 +143,7 @@ module.exports = function (knex) {
             delete friendsData.pendingRequestOut[friendId];
             friendsData.friendsHash[friendId] = true;
           } else {
-            friendsData.pendingResquestIn[friendId] = true;
+            friendsData.pendingRequestIn[friendId] = true;
           }
         }
 
@@ -130,8 +154,8 @@ module.exports = function (knex) {
         //look in the three hashes for the user.u_id
         if (friendsData.pendingRequestOut[user.u_id]) {
           friendsData.pendingRequestOut[user.u_id] = user;
-        } else if (friendsData.pendingResquestIn[user.u_id]) {
-          friendsData.pendingResquestIn[user.u_id] = user;
+        } else if (friendsData.pendingRequestIn[user.u_id]) {
+          friendsData.pendingRequestIn[user.u_id] = user;
         } else if (friendsData.friendsHash[user.u_id]) {
           friendsData.friendsHash[user.u_id] = user;
         } else if (user.u_id !== userId) {

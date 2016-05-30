@@ -22,7 +22,6 @@ var Chat = React.createClass({
   },
 
   handleChatClick: function () {
-    console.log('clicked!');
     this.setState({
       toggle: this.state.toggle ? false : true
     });

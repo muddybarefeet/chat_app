@@ -70,7 +70,6 @@
 	  },
 
 	  handleChatClick: function () {
-	    console.log('clicked!');
 	    this.setState({
 	      toggle: this.state.toggle ? false : true
 	    });
@@ -27201,7 +27200,7 @@
 	var Link = __webpack_require__(159).Link;
 	var Friends = __webpack_require__(235);
 	var Rooms = __webpack_require__(237);
-	var Add = __webpack_require__(238);
+	var Add = __webpack_require__(239);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27209,7 +27208,10 @@
 
 	  getInitialState: function () {
 	    return {
-	      toggle: false
+	      toggle: false,
+	      friends: true,
+	      rooms: false,
+	      add: false
 	    };
 	  },
 
@@ -27221,12 +27223,38 @@
 	  },
 
 	  getFriends: function () {
-	    console.log('clicked get friends!');
 	    // send query to the back end to return all friends to the friends store
 	    friendActions.getFriends();
 	  },
 
+	  addFriendsPage: function () {
+	    //gets all the data to do with who the user is friends with and who they are not friends with
+	    this.setState({
+	      // set the state to update the view
+	      friends: false,
+	      rooms: false,
+	      add: true
+	    });
+	    friendActions.getFriends();
+	  },
+
 	  render: function () {
+
+	    var friends = this.state.friends;
+	    var rooms = this.state.rooms;
+	    var add = this.state.add;
+
+	    toShow = "";
+
+	    if (friends) {
+	      toShow = React.createElement(Friends, null);
+	    }
+	    if (rooms) {
+	      toShow = React.createElement(Rooms, null);
+	    }
+	    if (add) {
+	      toShow = React.createElement(Add, null);
+	    }
 
 	    return React.createElement(
 	      'div',
@@ -27260,17 +27288,15 @@
 	            { className: 'col-md-4' },
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default' },
-	              'Add'
+	              { type: 'button', className: 'btn btn-default', onClick: this.addFriendsPage },
+	              'Find New Friends'
 	            )
 	          )
 	        ),
 	        React.createElement(
 	          'div',
 	          { id: 'chat-space-top' },
-	          React.createElement(Friends, null),
-	          React.createElement(Rooms, null),
-	          React.createElement(Add, null)
+	          toShow
 	        )
 	      ),
 	      React.createElement(
@@ -27376,7 +27402,6 @@
 	  },
 
 	  _onChangeEvent: function () {
-	    console.log('on change event in firends');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      friends: friendsStore.getFriendData().friends
@@ -27405,15 +27430,10 @@
 	      'div',
 	      null,
 	      React.createElement(
-	        'h1',
-	        null,
-	        'Friends'
-	      ),
-	      React.createElement(
 	        'div',
 	        null,
 	        React.createElement(
-	          'h3',
+	          'h1',
 	          null,
 	          'Friends'
 	        ),
@@ -27478,7 +27498,6 @@
 	AppDispatcher.register(function (payload) {
 	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
 	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
-	  console.log('action in here');
 	  // if(action.actionType === "ADD_FRIEND") {
 	  //   console.log('action', action.data);
 	  //   //think about if want anything back to the user
@@ -27486,10 +27505,10 @@
 
 	  if (action.actionType === "GET_FRIENDS") {
 	    // split the db return into the correct bucket
+	    console.log('getting friends in store');
 	    var options = ['friendsHash', 'notYetFriends', 'pendingRequestIn', 'pendingRequestOut'];
 	    options.forEach(function (option) {
 	      for (var key in action.data[option]) {
-	        console.log(option);
 	        _friendDetails[option].push(action.data[option][key]);
 	      }
 	    });
@@ -27514,11 +27533,15 @@
 	// component to show rooms and on click go the room and its message hitsory
 
 /***/ },
-/* 238 */
+/* 238 */,
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//this is the index for the main page of the app! to be made ....
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+
 	var friendActions = __webpack_require__(234);
+	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27527,25 +27550,72 @@
 	  displayName: 'Add',
 
 
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
+	  getInitialState: function () {
+	    return {
+	      notYetFriends: friendsStore.getFriendData().notYetFriends
+	    };
+	  },
 
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
+	  addFriend: function (e) {
+	    // get the username from the add friend request and then sent to actions
+	    console.log('adding ...', e.target);
 
-	  // handleGetFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
+	    // friendActions.addFriend();
+	  },
 
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
+	  componentDidMount: function () {
+	    friendsStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    friendsStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    console.log('adding friends update');
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      notYetFriends: friendsStore.getFriendData().notYetFriends
+	    });
+	  },
+
+	  seeFriendMessages: function () {
+	    console.log('want to see chat History!');
+	  },
 
 	  render: function () {
+	    var that = this;
+	    var ListItems = this.state.notYetFriends.map(function (person, id) {
 
-	    return React.createElement('div', null);
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'li',
+	          { key: id, onClick: that.addFriend },
+	          person.username
+	        )
+	      );
+	    });
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Add a New Friend'
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          ListItems
+	        )
+	      )
+	    );
 	  }
 
 	});

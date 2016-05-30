@@ -24,7 +24,6 @@ var Friends = React.createClass({
   },
 
   _onChangeEvent: function () {
-    console.log('on change event in firends');
     // friends have been got and now they need to be displayed
     this.setState({
       friends: friendsStore.getFriendData().friends
@@ -52,9 +51,8 @@ var Friends = React.createClass({
 
     return (
       <div>
-        <h1>Friends</h1>
         <div>
-          <h3>Friends</h3>
+          <h1>Friends</h1>
           <ul>  
             {this.state.friends.map(function(person, id) {
                 console.log('in map');

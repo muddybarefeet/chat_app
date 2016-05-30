@@ -34,7 +34,6 @@ var friendsStore = Object.assign(new EventEmitter (), {
 
 AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload 
   var action = payload.action;//payload is the object of data coming from dispactcher //action is the object passed from the actions file
-  console.log('action in here');
   // if(action.actionType === "ADD_FRIEND") {
   //   console.log('action', action.data);
   //   //think about if want anything back to the user
@@ -42,10 +41,10 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
 
   if (action.actionType === "GET_FRIENDS") {
     // split the db return into the correct bucket
+    console.log('getting friends in store')
     var options = ['friendsHash','notYetFriends','pendingRequestIn','pendingRequestOut'];
     options.forEach(function (option) {
       for ( var key in action.data[option] ) {
-        console.log(option);
         _friendDetails[option].push(action.data[option][key]);
       }
     });

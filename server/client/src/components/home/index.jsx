@@ -5,13 +5,16 @@ var React = require('react');
 var Link = require('react-router').Link;
 var Friends = require('./chat/friends.jsx');
 var Rooms = require('./chat/rooms.jsx');
-var Add = require('./chat/add.jsx');
+var Add = require('./chat/addFriends.jsx');
 
 var Main = React.createClass({
 
   getInitialState: function() {
     return {
-      toggle: false
+      toggle: false,
+      friends: true,
+      rooms : false,
+      add: false
     };
   },
 
@@ -24,12 +27,38 @@ var Main = React.createClass({
   },
 
   getFriends: function () {
-    console.log('clicked get friends!');
     // send query to the back end to return all friends to the friends store
     friendActions.getFriends();
   },
 
+  addFriendsPage: function () {
+    //gets all the data to do with who the user is friends with and who they are not friends with
+    this.setState({
+      // set the state to update the view
+      friends: false,
+      rooms : false,
+      add: true
+    });
+    friendActions.getFriends();
+  },
+
   render: function () {
+
+    var friends = this.state.friends;
+    var rooms = this.state.rooms;
+    var add = this.state.add;
+
+    toShow = "";
+
+    if (friends) {
+      toShow = <Friends></Friends>
+    }
+    if (rooms) {
+      toShow = <Rooms></Rooms>
+    }
+    if (add) {
+      toShow = <Add></Add>
+    }
 
     return (
       <div>
@@ -42,13 +71,11 @@ var Main = React.createClass({
                   <button type="button" className="btn btn-default">Rooms</button>
                 </li>
                 <li className="col-md-4">
-                  <button type="button" className="btn btn-default">Add</button>
+                  <button type="button" className="btn btn-default" onClick={this.addFriendsPage}>Find New Friends</button>
                 </li>
             </ul>
             <div id="chat-space-top">
-              <Friends></Friends>
-              <Rooms></Rooms>
-              <Add></Add>
+              {toShow}
             </div>
         </div>
 

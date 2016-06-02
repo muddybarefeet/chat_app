@@ -35,11 +35,14 @@ var Pending = React.createClass({
   acceptAdd: function (username) {
     console.log('add friend', username);
     // send the datd to the store and then round to the list item and the confirm/get parent value here?
+    friendActions.confirmRequest(username);
   },
 
   rejectAdd: function (username) {
     console.log('reject friend', username);
     // test route for this on the back end!
+    // TEST THIS ROUTE ON THE BACKEND FIRST
+    // friendActions.rejectRequest(username);
   },
 
   render: function () {

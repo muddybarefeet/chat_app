@@ -32,13 +32,13 @@ var Pending = React.createClass({
     });
   },
 
-  acceptAdd: function (event) {
-    // console.log('add friend', event, arguments);
+  acceptAdd: function (username) {
+    console.log('add friend', username);
     // send the datd to the store and then round to the list item and the confirm/get parent value here?
   },
 
-  rejectAdd: function () {
-    console.log('reject friend');
+  rejectAdd: function (username) {
+    console.log('reject friend', username);
     // test route for this on the back end!
   },
 
@@ -48,10 +48,10 @@ var Pending = React.createClass({
     var pendingIn = this.state.pendingRequestIn.map(function(person, id) {
         return (
           <li key={id}>{person.username}
-            <span onClick={that.acceptAdd}>
+            <span onClick={that.acceptAdd.bind(null,person.username)}>
               <i className="fa fa-check" aria-hidden="true"></i>
             </span>
-            <span onClick={that.rejectAdd}>
+            <span onClick={that.rejectAdd.bind(null,person.username)}>
               <i className="fa fa-times" aria-hidden="true"></i>
             </span>
           </li>

@@ -27616,11 +27616,9 @@
 	    };
 	  },
 
-	  addFriend: function (id) {
+	  addFriend: function (username) {
 	    // get the username from the add friend request and then sent to actions
-	    console.log(id.target.attributes);
-	    // GET THE VALUE OF THE THING THAT I CLICKED ON!! and in pending
-	    // friendActions.addFriend();
+	    friendActions.addFriend(username);
 	  },
 
 	  componentDidMount: function () {
@@ -27648,7 +27646,7 @@
 	        null,
 	        React.createElement(
 	          'li',
-	          { key: id, onClick: that.addFriend },
+	          { key: id, onClick: that.addFriend.bind(null, person.username) },
 	          person.username
 	        )
 	      );
@@ -27718,13 +27716,13 @@
 	    });
 	  },
 
-	  acceptAdd: function (event) {
-	    // console.log('add friend', event, arguments);
+	  acceptAdd: function (username) {
+	    console.log('add friend', username);
 	    // send the datd to the store and then round to the list item and the confirm/get parent value here?
 	  },
 
-	  rejectAdd: function () {
-	    console.log('reject friend');
+	  rejectAdd: function (username) {
+	    console.log('reject friend', username);
 	    // test route for this on the back end!
 	  },
 
@@ -27738,12 +27736,12 @@
 	        person.username,
 	        React.createElement(
 	          'span',
-	          { onClick: that.acceptAdd },
+	          { onClick: that.acceptAdd.bind(null, person.username) },
 	          React.createElement('i', { className: 'fa fa-check', 'aria-hidden': 'true' })
 	        ),
 	        React.createElement(
 	          'span',
-	          { onClick: that.rejectAdd },
+	          { onClick: that.rejectAdd.bind(null, person.username) },
 	          React.createElement('i', { className: 'fa fa-times', 'aria-hidden': 'true' })
 	        )
 	      );

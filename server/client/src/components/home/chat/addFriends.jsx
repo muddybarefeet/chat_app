@@ -15,11 +15,9 @@ var Add = React.createClass({
     };
   },
 
-  addFriend: function (id) {
+  addFriend: function (username) {
     // get the username from the add friend request and then sent to actions
-    console.log(id.target.attributes);
-    // GET THE VALUE OF THE THING THAT I CLICKED ON!! and in pending
-    // friendActions.addFriend();
+    friendActions.addFriend(username);
   },
 
   componentDidMount: function () {
@@ -42,11 +40,11 @@ var Add = React.createClass({
     var that = this;
     var ListItems = this.state.notYetFriends.map(function(person, id) {
 
-        return (
-          <div>
-            <li key={id} onClick={that.addFriend}>{person.username}</li>
-          </div>
-        )
+      return (
+        <div>
+          <li key={id} onClick={that.addFriend.bind(null,person.username)}>{person.username}</li>
+        </div>
+      )
 
     });
 

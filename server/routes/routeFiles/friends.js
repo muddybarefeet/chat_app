@@ -83,10 +83,11 @@ module.exports = function (services) {
     .get(function (req, res) {
 
       var userId = req.__userId;
-      console.log('userID sending request: ', userId);
+      console.log('userID sending request: ');
 
       services.db.friends.getFriends(userId)
       .then(function (response) {
+        console.log("RESPONSE", response);
         res.json({
           data: response
         });

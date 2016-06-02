@@ -27211,8 +27211,8 @@
 	var Link = __webpack_require__(159).Link;
 	var Friends = __webpack_require__(235);
 	var Rooms = __webpack_require__(237);
-	var Add = __webpack_require__(239);
-	var Pending = __webpack_require__(240);
+	var Add = __webpack_require__(238);
+	var Pending = __webpack_require__(239);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27593,8 +27593,7 @@
 	// component to show rooms and on click go the room and its message hitsory
 
 /***/ },
-/* 238 */,
-/* 239 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -27677,7 +27676,7 @@
 	module.exports = Add;
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -27720,6 +27719,7 @@
 	    console.log('add friend', username);
 	    // send the datd to the store and then round to the list item and the confirm/get parent value here?
 	    friendActions.confirmRequest(username);
+	    this.render();
 	  },
 
 	  rejectAdd: function (username) {
@@ -27727,9 +27727,11 @@
 	    // test route for this on the back end!
 	    // TEST THIS ROUTE ON THE BACKEND FIRST
 	    // friendActions.rejectRequest(username);
+	    this.render();
 	  },
 
 	  render: function () {
+	    console.log('this STATE', this.state);
 	    var that = this;
 
 	    var pendingIn = this.state.pendingRequestIn.map(function (person, id) {

@@ -49,7 +49,7 @@ var friendsActions = {
     requestHelper
     .get('friends/get', jwt)
     .end(function (err, response) {
-      console.log('friend data got',response.body.data)
+      console.log('friend data got',response.body.data);
       AppDispatcher.handleClientAction({
         actionType: "GET_FRIENDS",
         data: response.body.data

@@ -6,9 +6,11 @@ var knex = knex(config.db[ENV]);
 
 var methods = {};
 
-methods.users = require('./dbMethods/users')(knex);
-methods.friends = require('./dbMethods/friends')(knex);
-methods.messages = require('./dbMethods/messages')(knex);
-methods.rooms = require('./dbMethods/rooms')(knex);
+var helperFunctions = require('./dbMethods/helperFunctions')(knex);
+
+methods.users = require('./dbMethods/users')(knex, helperFunctions);
+methods.friends = require('./dbMethods/friends')(knex, helperFunctions);
+methods.messages = require('./dbMethods/messages')(knex, helperFunctions);
+methods.rooms = require('./dbMethods/rooms')(knex, helperFunctions);
 
 module.exports = methods;

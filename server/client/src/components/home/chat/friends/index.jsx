@@ -4,6 +4,7 @@
 var friendActions = require('./../../../../actions/friendActions.js');
 var messageActions = require('./../../../../actions/messageActions.js');
 var friendsStore = require('./../../../../stores/friendsStore.js');
+var Chat = require('./chat.jsx');
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -45,6 +46,8 @@ var Friends = React.createClass({
       showFriends:false
     });
 
+    this.render();
+
   },
 
 
@@ -53,11 +56,14 @@ var Friends = React.createClass({
     var that = this;
     var Friends; 
     var Messages;
+    var Title;
 
     // if chat is false in state then dont show else do show
     if (this.state.chat) {
+      Title = "Chat";
       Messages = (<Chat></Chat>);
     } else if (this.state.showFriends) {
+      Title = "Friends";
       Friends = this.state.friends.map(function(person, id) {
         return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
       });
@@ -66,7 +72,7 @@ var Friends = React.createClass({
     return (
       <div>
         <div>
-          <h1>Friends</h1>
+          <h1>{Title}</h1>
           <ul>  
             {Friends}
           </ul>

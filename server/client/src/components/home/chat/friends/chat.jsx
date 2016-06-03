@@ -17,6 +17,10 @@ var Chat = React.createClass({
     };
   },
 
+  componentWillMount: function () {
+    messageActions.getMessages();
+  },
+
   componentDidMount: function () {
     friendsStore.addChangeListener(this._onChangeEvent);
   },
@@ -51,7 +55,7 @@ var Chat = React.createClass({
         <div>
           <h1>Chat</h1>
           <ul>  
-
+            <li>THINGS</li>
           </ul>
         </div>
       </div>

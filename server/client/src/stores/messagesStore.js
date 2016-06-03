@@ -5,17 +5,13 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = "change";
 
 var _messageDetails = {
-  friends: [],
-  notYetFriends: [],
-  pendingRequestIn: [],
-  pendingRequestOut: [],
-  friendRequestSent: null
+  messages: []
 };
 
 var messagesStore = Object.assign(new EventEmitter (), {
   
-  getFriendData: function () {
-    return _friendDetails;
+  getMessagesData: function () {
+    return _messageDetails;
   },
 
   emitChange: function (){
@@ -48,7 +44,6 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
   // if (action.actionType === "NEW_MESSAGES") {
     
   // }
-
 
 });
 

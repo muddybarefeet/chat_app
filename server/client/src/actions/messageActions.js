@@ -8,7 +8,7 @@ var messageActions = {
 
   seeMessageHistory: function (username) {
     requestHelper
-    .get('messages/getall', jwt)
+    .get('messages/getall/' + username, jwt)
     .end(function (err, response) {
       console.log('friend data got',response.body.data);
       AppDispatcher.handleClientAction({

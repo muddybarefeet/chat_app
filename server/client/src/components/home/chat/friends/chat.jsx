@@ -3,7 +3,7 @@
 
 var friendActions = require('./../../../../actions/friendActions.js');
 var messageActions = require('./../../../../actions/messageActions.js');
-var friendsStore = require('./../../../../stores/friendsStore.js');
+var messagesStore = require('./../../../../stores/messagesStore.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -13,6 +13,7 @@ var Chat = React.createClass({
   getInitialState: function () {
     return {
       // trigger get all message function
+      messages: messagesStore.getMessageData().messages
     };
   },
 

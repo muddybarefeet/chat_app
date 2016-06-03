@@ -39,6 +39,12 @@ var Friends = React.createClass({
     // onclick need to go to new component and here to show the message history
     // redirect to messages page
 
+    // set the state to show the chat component and from there trigger request to get all messages
+    this.setState({
+      chat:true,
+      showFriends:false
+    });
+
   },
 
 

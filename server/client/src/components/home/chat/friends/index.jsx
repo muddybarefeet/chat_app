@@ -1,11 +1,9 @@
 //page to get the users friends and display them on the page
 // on clicking on a friend a user can chat to that one friend
-
 // TODO: unfriend button
-
-var friendActions = require('./../../../actions/friendActions.js');
-var messageActions = require('./../../../actions/messageActions.js');
-var friendsStore = require('./../../../stores/friendsStore.js');
+var friendActions = require('./../../../../actions/friendActions.js');
+var messageActions = require('./../../../../actions/messageActions.js');
+var friendsStore = require('./../../../../stores/friendsStore.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -14,7 +12,9 @@ var Friends = React.createClass({
 
   getInitialState: function () {
     return {
-      friends: friendsStore.getFriendData().friends
+      friends: friendsStore.getFriendData().friends,
+      chat: false,
+      showFriends: true
     };
   },
 
@@ -36,20 +36,26 @@ var Friends = React.createClass({
   seeFriendMessages: function (username) {
     console.log('want to see chat History!', username);
     // on click here we want to go to a new page that is the chat history between the users
-    messageActions.seeMessageHistory(username);
-
     // onclick need to go to new component and here to show the message history
     // redirect to messages page
+
   },
 
 
   render: function () {
 
     var that = this;
+    var Friends; 
+    var Messages;
 
-    var Friends = this.state.friends.map(function(person, id) {
-      return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
-    });
+    // if chat is false in state then dont show else do show
+    if (this.state.chat) {
+      Messages = (<Chat></Chat>);
+    } else if (this.state.showFriends) {
+      Friends = this.state.friends.map(function(person, id) {
+        return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
+      });
+    }
 
     return (
       <div>

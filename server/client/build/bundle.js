@@ -59,8 +59,8 @@
 	// var Chat = require('./components/chat/index.jsx');
 	var Home = __webpack_require__(233);
 
-	var Chat = React.createClass({
-	  displayName: 'Chat',
+	var App = React.createClass({
+	  displayName: 'App',
 
 
 	  getInitialState: function () {
@@ -107,7 +107,7 @@
 	  { history: hashHistory },
 	  React.createElement(
 	    Route,
-	    { path: '/', component: Chat },
+	    { path: '/', component: App },
 	    React.createElement(Route, { path: '/auth', component: Auth })
 	  )
 	), document.getElementById('app'));
@@ -27209,10 +27209,10 @@
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
-	var Friends = __webpack_require__(235);
-	var Rooms = __webpack_require__(237);
-	var Add = __webpack_require__(238);
-	var Pending = __webpack_require__(239);
+	var Friends = __webpack_require__(241);
+	var Rooms = __webpack_require__(242);
+	var Add = __webpack_require__(239);
+	var Pending = __webpack_require__(240);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27441,93 +27441,34 @@
 	module.exports = friendsActions;
 
 /***/ },
-/* 235 */
+/* 235 */,
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//page to get the users friends and display them on the page
-	// on clicking on a friend a user can chat to that one friend
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
 
-	// TODO: unfriend button
+	var jwt = __webpack_require__(223).jwt;
 
-	var friendActions = __webpack_require__(234);
-	var messageActions = __webpack_require__(241);
-	var friendsStore = __webpack_require__(236);
+	var messageActions = {
 
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Friends = React.createClass({
-	  displayName: 'Friends',
-
-
-	  getInitialState: function () {
-	    return {
-	      friends: friendsStore.getFriendData().friends
-	    };
-	  },
-
-	  componentDidMount: function () {
-	    friendsStore.addChangeListener(this._onChangeEvent);
-	  },
-
-	  componentWillUnmount: function () {
-	    friendsStore.removeChangeListener(this._onChangeEvent);
-	  },
-
-	  _onChangeEvent: function () {
-	    // friends have been got and now they need to be displayed
-	    this.setState({
-	      friends: friendsStore.getFriendData().friends
+	  seeMessageHistory: function (username) {
+	    requestHelper.get('messages/getall', jwt).end(function (err, response) {
+	      console.log('friend data got', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_FRIENDS",
+	        data: response.body.data
+	      });
 	    });
-	  },
-
-	  seeFriendMessages: function (username) {
-	    console.log('want to see chat History!', username);
-	    // on click here we want to go to a new page that is the chat history between the users
-	    messageActions.seeMessageHistory(username);
-
-	    // onclick need to go to new component and here to show the message history
-	    // redirect to messages page
-	  },
-
-	  render: function () {
-
-	    var that = this;
-
-	    var Friends = this.state.friends.map(function (person, id) {
-	      return React.createElement(
-	        'li',
-	        { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
-	        person.username
-	      );
-	    });
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'h1',
-	          null,
-	          'Friends'
-	        ),
-	        React.createElement(
-	          'ul',
-	          null,
-	          Friends
-	        )
-	      )
-	    );
 	  }
 
-	});
+	};
 
-	module.exports = Friends;
+	module.exports = messageActions;
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -27599,20 +27540,15 @@
 	module.exports = friendsStore;
 
 /***/ },
-/* 237 */
-/***/ function(module, exports) {
-
-	// component to show rooms and on click go the room and its message hitsory
-
-/***/ },
-/* 238 */
+/* 238 */,
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(236);
+	var friendsStore = __webpack_require__(237);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27687,14 +27623,14 @@
 	module.exports = Add;
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(236);
+	var friendsStore = __webpack_require__(237);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27814,31 +27750,101 @@
 	module.exports = Pending;
 
 /***/ },
-/* 240 */,
 /* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var AppDispatcher = __webpack_require__(218);
-	var requestHelper = __webpack_require__(222);
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+	// TODO: unfriend button
+	var friendActions = __webpack_require__(234);
+	var messageActions = __webpack_require__(236);
+	var friendsStore = __webpack_require__(237);
 
-	var jwt = __webpack_require__(223).jwt;
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
 
-	var messageActions = {
+	var Friends = React.createClass({
+	  displayName: 'Friends',
 
-	  seeMessageHistory: function (username) {
-	    requestHelper.get('messages/getall', jwt).end(function (err, response) {
-	      console.log('friend data got', response.body.data);
-	      AppDispatcher.handleClientAction({
-	        actionType: "GET_FRIENDS",
-	        data: response.body.data
-	      });
+
+	  getInitialState: function () {
+	    return {
+	      friends: friendsStore.getFriendData().friends,
+	      chat: false,
+	      showFriends: true
+	    };
+	  },
+
+	  componentDidMount: function () {
+	    friendsStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    friendsStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      friends: friendsStore.getFriendData().friends
 	    });
+	  },
+
+	  seeFriendMessages: function (username) {
+	    console.log('want to see chat History!', username);
+	    // on click here we want to go to a new page that is the chat history between the users
+	    // onclick need to go to new component and here to show the message history
+	    // redirect to messages page
+	  },
+
+	  render: function () {
+
+	    var that = this;
+	    var Friends;
+	    var Messages;
+
+	    // if chat is false in state then dont show else do show
+	    if (this.state.chat) {
+	      Messages = React.createElement(Chat, null);
+	    } else if (this.state.showFriends) {
+	      Friends = this.state.friends.map(function (person, id) {
+	        return React.createElement(
+	          'li',
+	          { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	          person.username
+	        );
+	      });
+	    }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'h1',
+	          null,
+	          'Friends'
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          Friends
+	        )
+	      )
+	    );
 	  }
 
-	};
+	});
 
-	module.exports = messageActions;
+	module.exports = Friends;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports) {
+
+	// component to show rooms and on click go the room and its message hitsory
 
 /***/ }
 /******/ ]);

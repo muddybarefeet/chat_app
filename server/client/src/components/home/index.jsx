@@ -3,8 +3,8 @@ var friendActions = require('./../../actions/friendActions.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
-var Friends = require('./chat/friends.jsx');
-var Rooms = require('./chat/rooms.jsx');
+var Friends = require('./chat/friends/index.jsx');
+var Rooms = require('./chat/rooms/index.jsx');
 var Add = require('./chat/addFriends.jsx');
 var Pending = require('./chat/pendingFriends.jsx');
 

@@ -13,7 +13,7 @@ var Auth = require('./components/auth.jsx');
 // var Chat = require('./components/chat/index.jsx');
 var Home = require('./components/home/index.jsx');
 
-var Chat = React.createClass({
+var App = React.createClass({
 
   getInitialState: function() {
     return {
@@ -55,7 +55,7 @@ var Chat = React.createClass({
 
 ReactDOM.render(
   <Router history={hashHistory}>
-    <Route path="/" component={Chat} >
+    <Route path="/" component={App} >
       <Route path="/auth" component={Auth} />
     </Route>
   </Router>

@@ -21,7 +21,9 @@ module.exports = function (knex) {
       usersData = usersRows;
       // loop though all users and as long as the user is not the current user then add the ud to the notYetFriends object
       usersData.forEach(function(user) {
-        friendsData.notYetFriends[user.u_id] = user.u_id;
+        if (user.u_id !== userId) {
+          friendsData.notYetFriends[user.u_id] = user.u_id;
+        }
       });
       // console.log('friends', friendsData.notYetFriends);
       return knex.select('friendor', 'friendee')
@@ -60,7 +62,6 @@ module.exports = function (knex) {
         }
 
       });
-      console.log('data:',friendsData);
       //loop through the users array of hashes
       //if the u_id is not in any of the other hashes then put the user object in the friendsData.notyetfriends hash
       usersData.forEach(function (user) {
@@ -80,7 +81,7 @@ module.exports = function (knex) {
 
     })
     .catch(function (err) {
-      console.log('this is an error from the getFriends fn in the controller');
+      console.log('this is an error from the getFriends fn in the helper methods');
       throw err;
     });
   };

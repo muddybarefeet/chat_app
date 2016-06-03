@@ -86,7 +86,6 @@ module.exports = function (services) {
 
       services.db.friends.getFriends(userId)
       .then(function (response) {
-        // console.log("RESPONSE", response);
         res.json({
           data: response
         });

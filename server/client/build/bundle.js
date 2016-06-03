@@ -27415,12 +27415,26 @@
 	    });
 	  },
 
-	  showWhoCanFriend: function () {
-
-	    requestHelper.get('friends/showWhoCanFriend', jwt).end(function (err, response) {
-	      console.log('response show who can be friended', response);
+	  seeMessageHistory: function (username) {
+	    requestHelper.get('messages/getall', jwt).end(function (err, response) {
+	      console.log('friend data got', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_FRIENDS",
+	        data: response.body.data
+	      });
 	    });
 	  }
+
+	  // showWhoCanFriend: function () {
+
+	  //   requestHelper
+	  //   .get('friends/showWhoCanFriend', jwt)
+	  //   .end(function (err, response) {
+	  //     console.log('response show who can be friended', response);
+
+	  //   });
+
+	  // },
 
 	};
 
@@ -27433,7 +27447,10 @@
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 
+	// TODO: unfriend button
+
 	var friendActions = __webpack_require__(234);
+	var messageActions = __webpack_require__(241);
 	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
@@ -27464,23 +27481,26 @@
 	    });
 	  },
 
-	  seeFriendMessages: function () {
-	    console.log('want to see chat History!');
+	  seeFriendMessages: function (username) {
+	    console.log('want to see chat History!', username);
+	    // on click here we want to go to a new page that is the chat history between the users
+	    messageActions.seeMessageHistory(username);
+
+	    // onclick need to go to new component and here to show the message history
+	    // redirect to messages page
 	  },
 
-	  // handleAddFriendClick: function () {
-	  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-	  // },
-
-	  // handleConfirmFriend: function () {
-	  //   friendActions.confirmRequest('anna');
-	  // },
-
-	  // handleNewFriendsClick: function () {
-	  //   friendActions.getFriends();
-	  // },
-
 	  render: function () {
+
+	    var that = this;
+
+	    var Friends = this.state.friends.map(function (person, id) {
+	      return React.createElement(
+	        'li',
+	        { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	        person.username
+	      );
+	    });
 
 	    return React.createElement(
 	      'div',
@@ -27496,13 +27516,7 @@
 	        React.createElement(
 	          'ul',
 	          null,
-	          this.state.friends.map(function (person, id) {
-	            return React.createElement(
-	              'li',
-	              { key: id, onClick: this.seeFriendMessages },
-	              person.username
-	            );
-	          })
+	          Friends
 	        )
 	      )
 	    );
@@ -27798,6 +27812,33 @@
 	});
 
 	module.exports = Pending;
+
+/***/ },
+/* 240 */,
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var messageActions = {
+
+	  seeMessageHistory: function (username) {
+	    requestHelper.get('messages/getall', jwt).end(function (err, response) {
+	      console.log('friend data got', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_FRIENDS",
+	        data: response.body.data
+	      });
+	    });
+	  }
+
+	};
+
+	module.exports = messageActions;
 
 /***/ }
 /******/ ]);

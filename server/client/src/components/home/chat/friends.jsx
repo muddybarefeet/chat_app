@@ -1,7 +1,10 @@
 //page to get the users friends and display them on the page
 // on clicking on a friend a user can chat to that one friend
 
+// TODO: unfriend button
+
 var friendActions = require('./../../../actions/friendActions.js');
+var messageActions = require('./../../../actions/messageActions.js');
 var friendsStore = require('./../../../stores/friendsStore.js');
 
 var React = require('react');
@@ -30,33 +33,30 @@ var Friends = React.createClass({
     });
   },
 
-  seeFriendMessages: function () {
-    console.log('want to see chat History!');
+  seeFriendMessages: function (username) {
+    console.log('want to see chat History!', username);
+    // on click here we want to go to a new page that is the chat history between the users
+    messageActions.seeMessageHistory(username);
+
+    // onclick need to go to new component and here to show the message history
+    // redirect to messages page
   },
-
-  // handleAddFriendClick: function () {
-  //   friendActions.addFriend('kate'); //hard coded in that I want to befriend dad currently to test!!
-  // },
-
-  // handleConfirmFriend: function () {
-  //   friendActions.confirmRequest('anna');
-  // },
-
-  // handleNewFriendsClick: function () {
-  //   friendActions.getFriends();
-  // },
 
 
   render: function () {
+
+    var that = this;
+
+    var Friends = this.state.friends.map(function(person, id) {
+      return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
+    });
 
     return (
       <div>
         <div>
           <h1>Friends</h1>
           <ul>  
-            {this.state.friends.map(function(person, id) {
-               return <li key={id} onClick={this.seeFriendMessages} >{person.username}</li>;
-            })}
+            {Friends}
           </ul>
         </div>
       </div>

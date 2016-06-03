@@ -58,16 +58,28 @@ var friendsActions = {
 
   },
 
-  showWhoCanFriend: function () {
-
+  seeMessageHistory: function (username) {
     requestHelper
-    .get('friends/showWhoCanFriend', jwt)
+    .get('messages/getall', jwt)
     .end(function (err, response) {
-      console.log('response show who can be friended', response);
-
+      console.log('friend data got',response.body.data);
+      AppDispatcher.handleClientAction({
+        actionType: "GET_FRIENDS",
+        data: response.body.data
+      });
     });
-
   }
+
+  // showWhoCanFriend: function () {
+
+  //   requestHelper
+  //   .get('friends/showWhoCanFriend', jwt)
+  //   .end(function (err, response) {
+  //     console.log('response show who can be friended', response);
+
+  //   });
+
+  // },
 
 };
 

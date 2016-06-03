@@ -94,7 +94,6 @@ module.exports = function (knex, helpers) {
   // join the users and friends tables then filter
 
   fnHash.getFriends = function (userId) {
-    console.log('userID METHOD: ', helpers);
     var friends = helpers.getFriends(userId);
     return friends;
   };

@@ -73,13 +73,14 @@ module.exports = function (knex, helpers) {
       if (user.length !== 1) {
         throw new Error("The user: "+withWho+" does not exist");
       }
-      //insert a new row into the friends table
+      // delete the row in the table that was the request to the user to be a friend
       return knex('friends')
       .where('friendor', user[0].u_id)
       .del();
     })
+    // when the get friends function is called the user that asked to be a friend will be put back into the notYetFriend hash
     .then(function(data) {
-      return data;
+      return helpers.getFriends(userId);
     })
     .catch(function (err) {
       console.log('this is an error from the rejectRequest fn in the controller');

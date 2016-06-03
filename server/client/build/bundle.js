@@ -27497,7 +27497,6 @@
 	          'ul',
 	          null,
 	          this.state.friends.map(function (person, id) {
-	            console.log('in map');
 	            return React.createElement(
 	              'li',
 	              { key: id, onClick: this.seeFriendMessages },
@@ -27561,7 +27560,6 @@
 
 	  if (action.actionType === "GET_FRIENDS") {
 	    // split the db return into the correct bucket
-	    console.log('getting friends in store');
 
 	    var options = ['friends', 'notYetFriends', 'pendingRequestIn', 'pendingRequestOut'];
 
@@ -27629,7 +27627,6 @@
 	  },
 
 	  _onChangeEvent: function () {
-	    console.log('adding friends update');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      notYetFriends: friendsStore.getFriendData().notYetFriends
@@ -27716,22 +27713,21 @@
 	  },
 
 	  acceptAdd: function (username) {
-	    console.log('add friend', username);
 	    // send the datd to the store and then round to the list item and the confirm/get parent value here?
 	    friendActions.confirmRequest(username);
-	    this.render();
+	    // this.render();
 	  },
 
+	  // TODO
 	  rejectAdd: function (username) {
 	    console.log('reject friend', username);
 	    // test route for this on the back end!
 	    // TEST THIS ROUTE ON THE BACKEND FIRST
 	    // friendActions.rejectRequest(username);
-	    this.render();
+	    // this.render();
 	  },
 
 	  render: function () {
-	    console.log('this STATE', this.state);
 	    var that = this;
 
 	    var pendingIn = this.state.pendingRequestIn.map(function (person, id) {

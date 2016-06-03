@@ -54,7 +54,7 @@ module.exports = function (knex, helpers) {
       }, '*');
     })
     .then(function (newRow) {
-      return newRow[0];
+      return helpers.getFriends(userId);
     })
     .catch(function (err) {
       console.log('this is an error from the confirmRequest fn in the controller');
@@ -94,8 +94,7 @@ module.exports = function (knex, helpers) {
   // join the users and friends tables then filter
 
   fnHash.getFriends = function (userId) {
-    var friends = helpers.getFriends(userId);
-    return friends;
+    return helpers.getFriends(userId);
   };
 
   return fnHash;

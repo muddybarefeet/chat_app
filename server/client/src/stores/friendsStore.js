@@ -41,7 +41,6 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
 
   if (action.actionType === "GET_FRIENDS") {
     // split the db return into the correct bucket
-    console.log('getting friends in store');
 
     var options = ['friends','notYetFriends','pendingRequestIn','pendingRequestOut'];
 

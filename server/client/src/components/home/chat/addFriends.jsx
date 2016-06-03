@@ -29,7 +29,6 @@ var Add = React.createClass({
   },
 
   _onChangeEvent: function () {
-    console.log('adding friends update')
     // friends have been got and now they need to be displayed
     this.setState({
       notYetFriends: friendsStore.getFriendData().notYetFriends

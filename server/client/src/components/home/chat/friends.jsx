@@ -55,7 +55,6 @@ var Friends = React.createClass({
           <h1>Friends</h1>
           <ul>  
             {this.state.friends.map(function(person, id) {
-                console.log('in map');
                return <li key={id} onClick={this.seeFriendMessages} >{person.username}</li>;
             })}
           </ul>

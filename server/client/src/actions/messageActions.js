@@ -6,7 +6,7 @@ var jwt = require('../constants.js').jwt;
 
 var messageActions = {
 
-  seeMessageHistory: function (username) {
+  getMessages: function (username) {
     requestHelper
     .get('messages/getall/' + username, jwt)
     .end(function (err, response) {

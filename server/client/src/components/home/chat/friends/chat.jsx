@@ -22,11 +22,11 @@ var Chat = React.createClass({
   },
 
   componentDidMount: function () {
-    friendsStore.addChangeListener(this._onChangeEvent);
+    messagesStore.addChangeListener(this._onChangeEvent);
   },
 
   componentWillUnmount: function () {
-    friendsStore.removeChangeListener(this._onChangeEvent);
+    messagesStore.removeChangeListener(this._onChangeEvent);
   },
 
   _onChangeEvent: function () {
@@ -53,7 +53,6 @@ var Chat = React.createClass({
     return (
       <div>
         <div>
-          <h1>Chat</h1>
           <ul>  
             <li>THINGS</li>
           </ul>

@@ -27453,7 +27453,7 @@
 
 	var messageActions = {
 
-	  seeMessageHistory: function (username) {
+	  getMessages: function (username) {
 	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
 	      console.log('friend data got', response.body.data);
 	      AppDispatcher.handleClientAction({
@@ -27800,7 +27800,8 @@
 	    // set the state to show the chat component and from there trigger request to get all messages
 	    this.setState({
 	      chat: true,
-	      showFriends: false
+	      showFriends: false,
+	      userChatWith: username
 	    });
 
 	    this.render();
@@ -27815,18 +27816,20 @@
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.chat) {
-	      Title = "Chat";
+	      Title = "Chat with " + this.state.userChatWith;
 	      Messages = React.createElement(Chat, null);
+	      // Friends = null;
 	    } else if (this.state.showFriends) {
-	      Title = "Friends";
-	      Friends = this.state.friends.map(function (person, id) {
-	        return React.createElement(
-	          'li',
-	          { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
-	          person.username
-	        );
-	      });
-	    }
+	        Title = "Friends";
+	        Friends = this.state.friends.map(function (person, id) {
+	          return React.createElement(
+	            'li',
+	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	            person.username
+	          );
+	        });
+	        // Messages = null;
+	      }
 
 	    return React.createElement(
 	      'div',
@@ -27842,7 +27845,8 @@
 	        React.createElement(
 	          'ul',
 	          null,
-	          Friends
+	          Friends,
+	          Messages
 	        )
 	      )
 	    );
@@ -27888,11 +27892,11 @@
 	  },
 
 	  componentDidMount: function () {
-	    friendsStore.addChangeListener(this._onChangeEvent);
+	    messagesStore.addChangeListener(this._onChangeEvent);
 	  },
 
 	  componentWillUnmount: function () {
-	    friendsStore.removeChangeListener(this._onChangeEvent);
+	    messagesStore.removeChangeListener(this._onChangeEvent);
 	  },
 
 	  _onChangeEvent: function () {
@@ -27920,11 +27924,6 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(
-	          'h1',
-	          null,
-	          'Chat'
-	        ),
 	        React.createElement(
 	          'ul',
 	          null,
@@ -27958,7 +27957,7 @@
 
 	var messagesStore = Object.assign(new EventEmitter(), {
 
-	  getMessagesData: function () {
+	  getMessageData: function () {
 	    return _messageDetails;
 	  },
 

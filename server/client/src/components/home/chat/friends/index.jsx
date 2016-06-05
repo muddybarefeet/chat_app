@@ -43,7 +43,8 @@ var Friends = React.createClass({
     // set the state to show the chat component and from there trigger request to get all messages
     this.setState({
       chat:true,
-      showFriends:false
+      showFriends:false,
+      userChatWith: username
     });
 
     this.render();
@@ -60,13 +61,15 @@ var Friends = React.createClass({
 
     // if chat is false in state then dont show else do show
     if (this.state.chat) {
-      Title = "Chat";
+      Title = "Chat with "+ this.state.userChatWith;
       Messages = (<Chat></Chat>);
+      // Friends = null;
     } else if (this.state.showFriends) {
       Title = "Friends";
       Friends = this.state.friends.map(function(person, id) {
         return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
       });
+      // Messages = null;
     }
 
     return (
@@ -75,6 +78,7 @@ var Friends = React.createClass({
           <h1>{Title}</h1>
           <ul>  
             {Friends}
+            {Messages}
           </ul>
         </div>
       </div>

@@ -10,7 +10,7 @@ var _messageDetails = {
 
 var messagesStore = Object.assign(new EventEmitter (), {
   
-  getMessagesData: function () {
+  getMessageData: function () {
     return _messageDetails;
   },
 

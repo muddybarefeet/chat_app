@@ -74,7 +74,7 @@ var Friends = React.createClass({
 
     return (
       <div>
-        <div>
+        <div className="container">
           <h1>{Title}</h1>
           <ul>  
             {Friends}

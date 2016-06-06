@@ -5883,3 +5883,9 @@ body {
 
 body {
   color: white; }
+
+/*extra styles added*/
+
+.width-input {
+  width:450px;
+}

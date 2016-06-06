@@ -54,8 +54,16 @@ var Chat = React.createClass({
       <div>
         <div>
           <ul>  
-            <li>THINGS</li>
+            {}
           </ul>
+          <div className="width-input">
+            <div className="input-group">
+              <input type="text" className="form-control" placeholder="" />
+              <span className="input-group-btn">
+                <button className="btn btn-default" type="button">Go!</button>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     );

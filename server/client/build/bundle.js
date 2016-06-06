@@ -27836,7 +27836,7 @@
 	      null,
 	      React.createElement(
 	        'div',
-	        null,
+	        { className: 'container' },
 	        React.createElement(
 	          'h1',
 	          null,
@@ -27924,13 +27924,23 @@
 	      React.createElement(
 	        'div',
 	        null,
+	        React.createElement('ul', null),
 	        React.createElement(
-	          'ul',
-	          null,
+	          'div',
+	          { className: 'width-input' },
 	          React.createElement(
-	            'li',
-	            null,
-	            'THINGS'
+	            'div',
+	            { className: 'input-group' },
+	            React.createElement('input', { type: 'text', className: 'form-control', placeholder: '' }),
+	            React.createElement(
+	              'span',
+	              { className: 'input-group-btn' },
+	              React.createElement(
+	                'button',
+	                { className: 'btn btn-default', type: 'button' },
+	                'Go!'
+	              )
+	            )
 	          )
 	        )
 	      )

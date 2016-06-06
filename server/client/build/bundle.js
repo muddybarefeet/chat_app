@@ -27456,10 +27456,21 @@
 	  getMessages: function (username) {
 	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
 	      // console.log('friend data got',response.body.data);
-	      AppDispatcher.handleClientAction({
-	        actionType: "GET_FRIENDS",
-	        data: response.body.data
-	      });
+	      // AppDispatcher.handleClientAction({
+	      //   actionType: "GET_FRIENDS",
+	      //   data: response.body.data
+	      // });
+	    });
+	  },
+
+	  sendMessage: function () {
+
+	    requestHelper.post('messages/send', jwt).end(function (err, response) {
+	      // console.log('friend data got',response.body.data);
+	      // AppDispatcher.handleClientAction({
+	      //   actionType: "GET_FRIENDS",
+	      //   data: response.body.data
+	      // });
 	    });
 	  }
 
@@ -27921,7 +27932,7 @@
 
 	  sendMessage: function (event) {
 	    if (event.key === 'Enter') {
-	      console.log('in enter', this.state.value);
+	      console.log('in enter want to send message', this.state.value);
 	    }
 	  },
 
@@ -27946,16 +27957,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'input-group' },
-	            React.createElement('input', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendMessage, onChange: this.handleChange }),
-	            React.createElement(
-	              'span',
-	              { className: 'input-group-btn' },
-	              React.createElement(
-	                'button',
-	                { className: 'btn btn-default', type: 'button' },
-	                'Go!'
-	              )
-	            )
+	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendMessage, onChange: this.handleChange })
 	          )
 	        )
 	      )

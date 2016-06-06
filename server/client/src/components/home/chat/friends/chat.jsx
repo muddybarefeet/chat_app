@@ -50,7 +50,8 @@ var Chat = React.createClass({
 
   sendMessage: function (event) {
     if(event.key === 'Enter'){
-      console.log('in enter', this.state.value);
+      console.log('in enter want to send message', this.state.value);
+
     }
   },
 
@@ -70,10 +71,7 @@ var Chat = React.createClass({
           </ul>
           <div className="width-input">
             <div className="input-group">
-              <input type="text" className="form-control" placeholder="" value={this.state.value} onKeyUp={this.sendMessage} onChange={this.handleChange} />
-              <span className="input-group-btn">
-                <button className="btn btn-default" type="button">Go!</button>
-              </span>
+              <textArea type="text" className="form-control" placeholder="" value={this.state.value} onKeyUp={this.sendMessage} onChange={this.handleChange} />
             </div>
           </div>
         </div>

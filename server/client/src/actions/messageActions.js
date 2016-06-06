@@ -11,11 +11,25 @@ var messageActions = {
     .get('messages/getall/' + username, jwt)
     .end(function (err, response) {
       // console.log('friend data got',response.body.data);
-      AppDispatcher.handleClientAction({
-        actionType: "GET_FRIENDS",
-        data: response.body.data
-      });
+      // AppDispatcher.handleClientAction({
+      //   actionType: "GET_FRIENDS",
+      //   data: response.body.data
+      // });
     });
+  },
+
+  sendMessage: function () {
+
+    requestHelper
+    .post('messages/send', jwt)
+    .end(function (err, response) {
+      // console.log('friend data got',response.body.data);
+      // AppDispatcher.handleClientAction({
+      //   actionType: "GET_FRIENDS",
+      //   data: response.body.data
+      // });
+    });
+
   }
 
 

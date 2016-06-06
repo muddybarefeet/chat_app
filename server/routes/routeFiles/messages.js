@@ -20,9 +20,10 @@ module.exports = function (services) {
       console.log('in post to add friend');
 
       var userId = req.__userId;
-      var requestFor = req.body.recipient;
+      var messageFor = req.body.recipient;
+      var message = req.body.message;
 
-      services.db.messages.sendMessage(userId, recipient, message)
+      services.db.messages.sendMessage(userId, messageFor, message)
       .then(function(response) {
         res.json({
           data: response

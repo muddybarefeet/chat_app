@@ -41,6 +41,18 @@ var Chat = React.createClass({
 
   },
 
+  handleChange: function(event){
+    // if the key was not enter then save the content of what is typed to the state
+    this.setState({
+      value: event.target.value
+    }, function () {console.log(this.state.value)});
+  },
+
+  sendMessage: function (event) {
+    if(event.key === 'Enter'){
+      console.log('in enter', this.state.value);
+    }
+  },
 
   render: function () {
 
@@ -58,7 +70,7 @@ var Chat = React.createClass({
           </ul>
           <div className="width-input">
             <div className="input-group">
-              <input type="text" className="form-control" placeholder="" />
+              <input type="text" className="form-control" placeholder="" value={this.state.value} onKeyUp={this.sendMessage} onChange={this.handleChange} />
               <span className="input-group-btn">
                 <button className="btn btn-default" type="button">Go!</button>
               </span>

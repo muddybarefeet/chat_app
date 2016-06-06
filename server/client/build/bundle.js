@@ -27455,7 +27455,7 @@
 
 	  getMessages: function (username) {
 	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
-	      console.log('friend data got', response.body.data);
+	      // console.log('friend data got',response.body.data);
 	      AppDispatcher.handleClientAction({
 	        actionType: "GET_FRIENDS",
 	        data: response.body.data
@@ -27910,6 +27910,21 @@
 	    console.log('sending message');
 	  },
 
+	  handleChange: function (event) {
+	    // if the key was not enter then save the content of what is typed to the state
+	    this.setState({
+	      value: event.target.value
+	    }, function () {
+	      console.log(this.state.value);
+	    });
+	  },
+
+	  sendMessage: function (event) {
+	    if (event.key === 'Enter') {
+	      console.log('in enter', this.state.value);
+	    }
+	  },
+
 	  render: function () {
 
 	    var that = this;
@@ -27931,7 +27946,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'input-group' },
-	            React.createElement('input', { type: 'text', className: 'form-control', placeholder: '' }),
+	            React.createElement('input', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendMessage, onChange: this.handleChange }),
 	            React.createElement(
 	              'span',
 	              { className: 'input-group-btn' },

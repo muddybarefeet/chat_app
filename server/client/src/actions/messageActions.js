@@ -10,11 +10,10 @@ var messageActions = {
     requestHelper
     .get('messages/getall/' + username, jwt)
     .end(function (err, response) {
-      // console.log('friend data got',response.body.data);
-      // AppDispatcher.handleClientAction({
-      //   actionType: "GET_FRIENDS",
-      //   data: response.body.data
-      // });
+      AppDispatcher.handleClientAction({
+        actionType: "GET_MESSAGES",
+        data: response.body.data
+      });
     });
   },
 
@@ -25,7 +24,7 @@ var messageActions = {
     .end(function (err, response) {
       console.log('message data got',response.body.data);
       // AppDispatcher.handleClientAction({
-      //   actionType: "GET_FRIENDS",
+      //   actionType: "SENT_MESSAGE",
       //   data: response.body.data
       // });
     });

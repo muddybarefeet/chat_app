@@ -18,7 +18,7 @@ var Chat = React.createClass({
   },
 
   componentWillMount: function () {
-    messageActions.getMessages();
+    messageActions.getMessages(this.props.username);
   },
 
   componentDidMount: function () {
@@ -33,6 +33,7 @@ var Chat = React.createClass({
     // friends have been got and now they need to be displayed
     this.setState({
       // save the messages in the state
+      messages: messagesStore.getMessageData().messages
     });
   },
 
@@ -61,15 +62,19 @@ var Chat = React.createClass({
 
     var that = this;
 
-    // var Messages = this.state.messages.map(function(message, id) {
-    //   return <li key={id} onClick={that.seeFriendMessages.bind(null,message)}>{message}</li>;
-    // });
+    var messages;
+
+    if (this.state.messages) {
+      messages = this.state.messages.map(function(message, id) {
+        return <li key={id}>{message.message}</li>;
+      });
+    }
 
     return (
       <div>
         <div>
           <ul>  
-            {}
+            {messages}
           </ul>
           <div className="width-input">
             <div className="input-group">

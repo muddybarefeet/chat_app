@@ -55,18 +55,18 @@ var Friends = React.createClass({
   render: function () {
 
     var that = this;
-    var Friends; 
-    var Messages;
-    var Title;
+    var friends; 
+    var messages;
+    var title;
 
     // if chat is false in state then dont show else do show
     if (this.state.chat) {
-      Title = "Chat with "+ this.state.userChatWith;
-      Messages = (<Chat username={this.state.userChatWith}></Chat>);
+      title = "Chat with "+ this.state.userChatWith;
+      messages = (<Chat username={this.state.userChatWith}></Chat>);
       // Friends = null;
     } else if (this.state.showFriends) {
-      Title = "Friends";
-      Friends = this.state.friends.map(function(person, id) {
+      title = "Friends";
+      friends = this.state.friends.map(function(person, id) {
         return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
       });
       // Messages = null;
@@ -75,10 +75,10 @@ var Friends = React.createClass({
     return (
       <div>
         <div className="container">
-          <h1>{Title}</h1>
+          <h1>{title}</h1>
           <ul>  
-            {Friends}
-            {Messages}
+            {friends}
+            {messages}
           </ul>
         </div>
       </div>

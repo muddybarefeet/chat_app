@@ -5,7 +5,7 @@ var checkAuth = require('./../../../services/jwts/index.js').checkAuth;
 module.exports = function (services) {
 
   router
-    .param('username', function (req, res, next, matchId) {
+    .param('username', function (req, res, next, username) {
       req.username = username;
       next();
     });
@@ -88,7 +88,6 @@ module.exports = function (services) {
     //-----------------------------------
     router.route('/getall/:username')
       .get(function (req, res) {
-        console.log('in router', username);
         var userId = req.__userId;
 
         services.db.messages.getMessagesFromFriend(userId, req.username)

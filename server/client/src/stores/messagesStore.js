@@ -32,10 +32,11 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
   var action = payload.action;//payload is the object of data coming from dispactcher //action is the object passed from the actions file
 
 
-  // if (action.actionType === "GET_MESSAGES") {
-
-  //   messagesStore.emitChange();
-  // }
+  if (action.actionType === "GET_MESSAGES") {
+    console.log('messages got', action.data);
+    _messageDetails.messages = action.data;
+    messagesStore.emitChange();
+  }
 
   // if (action.actionType === "SEND_MESSAGE") {
 

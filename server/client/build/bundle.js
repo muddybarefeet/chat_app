@@ -27501,18 +27501,18 @@
 	  render: function () {
 
 	    var that = this;
-	    var Friends;
-	    var Messages;
-	    var Title;
+	    var friends;
+	    var messages;
+	    var title;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.chat) {
-	      Title = "Chat with " + this.state.userChatWith;
-	      Messages = React.createElement(Chat, { username: this.state.userChatWith });
+	      title = "Chat with " + this.state.userChatWith;
+	      messages = React.createElement(Chat, { username: this.state.userChatWith });
 	      // Friends = null;
 	    } else if (this.state.showFriends) {
-	        Title = "Friends";
-	        Friends = this.state.friends.map(function (person, id) {
+	        title = "Friends";
+	        friends = this.state.friends.map(function (person, id) {
 	          return React.createElement(
 	            'li',
 	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
@@ -27531,13 +27531,13 @@
 	        React.createElement(
 	          'h1',
 	          null,
-	          Title
+	          title
 	        ),
 	        React.createElement(
 	          'ul',
 	          null,
-	          Friends,
-	          Messages
+	          friends,
+	          messages
 	        )
 	      )
 	    );
@@ -27561,11 +27561,10 @@
 
 	  getMessages: function (username) {
 	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
-	      // console.log('friend data got',response.body.data);
-	      // AppDispatcher.handleClientAction({
-	      //   actionType: "GET_FRIENDS",
-	      //   data: response.body.data
-	      // });
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_MESSAGES",
+	        data: response.body.data
+	      });
 	    });
 	  },
 
@@ -27574,7 +27573,7 @@
 	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
 	      console.log('message data got', response.body.data);
 	      // AppDispatcher.handleClientAction({
-	      //   actionType: "GET_FRIENDS",
+	      //   actionType: "SENT_MESSAGE",
 	      //   data: response.body.data
 	      // });
 	    });
@@ -27682,7 +27681,7 @@
 	  },
 
 	  componentWillMount: function () {
-	    messageActions.getMessages();
+	    messageActions.getMessages(this.props.username);
 	  },
 
 	  componentDidMount: function () {
@@ -27697,6 +27696,7 @@
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      // save the messages in the state
+	      messages: messagesStore.getMessageData().messages
 	    });
 	  },
 
@@ -27726,9 +27726,17 @@
 
 	    var that = this;
 
-	    // var Messages = this.state.messages.map(function(message, id) {
-	    //   return <li key={id} onClick={that.seeFriendMessages.bind(null,message)}>{message}</li>;
-	    // });
+	    var messages;
+
+	    if (this.state.messages) {
+	      messages = this.state.messages.map(function (message, id) {
+	        return React.createElement(
+	          'li',
+	          { key: id },
+	          message.message
+	        );
+	      });
+	    }
 
 	    return React.createElement(
 	      'div',
@@ -27736,7 +27744,11 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('ul', null),
+	        React.createElement(
+	          'ul',
+	          null,
+	          messages
+	        ),
 	        React.createElement(
 	          'div',
 	          { className: 'width-input' },
@@ -27792,10 +27804,11 @@
 	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
 	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
 
-	  // if (action.actionType === "GET_MESSAGES") {
-
-	  //   messagesStore.emitChange();
-	  // }
+	  if (action.actionType === "GET_MESSAGES") {
+	    console.log('messages got', action.data);
+	    _messageDetails.messages = action.data;
+	    messagesStore.emitChange();
+	  }
 
 	  // if (action.actionType === "SEND_MESSAGE") {
 

@@ -17,14 +17,15 @@ module.exports = function (services) {
   router.route('/send')
     .post(function (req, res) {
 
-      console.log('in post to add friend');
+      console.log('in post to add friend',req.body);
 
       var userId = req.__userId;
-      var messageFor = req.body.recipient;
+      var messageFor = req.body.to;
       var message = req.body.message;
 
       services.db.messages.sendMessage(userId, messageFor, message)
       .then(function(response) {
+        console.log('message posted',response);
         res.json({
           data: response
         });

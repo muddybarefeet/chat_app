@@ -27209,10 +27209,10 @@
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
-	var Friends = __webpack_require__(241);
-	var Rooms = __webpack_require__(242);
-	var Add = __webpack_require__(239);
-	var Pending = __webpack_require__(240);
+	var Friends = __webpack_require__(235);
+	var Rooms = __webpack_require__(240);
+	var Add = __webpack_require__(241);
+	var Pending = __webpack_require__(242);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27441,7 +27441,113 @@
 	module.exports = friendsActions;
 
 /***/ },
-/* 235 */,
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+	// TODO: unfriend button
+	var friendActions = __webpack_require__(234);
+	var messageActions = __webpack_require__(236);
+	var friendsStore = __webpack_require__(237);
+	var Chat = __webpack_require__(238);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Friends = React.createClass({
+	  displayName: 'Friends',
+
+
+	  getInitialState: function () {
+	    return {
+	      friends: friendsStore.getFriendData().friends,
+	      chat: false,
+	      showFriends: true
+	    };
+	  },
+
+	  componentDidMount: function () {
+	    friendsStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    friendsStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      friends: friendsStore.getFriendData().friends
+	    });
+	  },
+
+	  seeFriendMessages: function (username) {
+	    console.log('want to see chat History!', username);
+	    // on click here we want to go to a new page that is the chat history between the users
+	    // onclick need to go to new component and here to show the message history
+	    // redirect to messages page
+
+	    // set the state to show the chat component and from there trigger request to get all messages
+	    this.setState({
+	      chat: true,
+	      showFriends: false,
+	      userChatWith: username
+	    });
+
+	    this.render();
+	  },
+
+	  render: function () {
+
+	    var that = this;
+	    var Friends;
+	    var Messages;
+	    var Title;
+
+	    // if chat is false in state then dont show else do show
+	    if (this.state.chat) {
+	      Title = "Chat with " + this.state.userChatWith;
+	      Messages = React.createElement(Chat, { username: this.state.userChatWith });
+	      // Friends = null;
+	    } else if (this.state.showFriends) {
+	        Title = "Friends";
+	        Friends = this.state.friends.map(function (person, id) {
+	          return React.createElement(
+	            'li',
+	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	            person.username
+	          );
+	        });
+	        // Messages = null;
+	      }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(
+	          'h1',
+	          null,
+	          Title
+	        ),
+	        React.createElement(
+	          'ul',
+	          null,
+	          Friends,
+	          Messages
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Friends;
+
+/***/ },
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -27463,10 +27569,10 @@
 	    });
 	  },
 
-	  sendMessage: function () {
+	  sendMessage: function (whoFor, message) {
 
-	    requestHelper.post('messages/send', jwt).end(function (err, response) {
-	      // console.log('friend data got',response.body.data);
+	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
+	      console.log('message data got', response.body.data);
 	      // AppDispatcher.handleClientAction({
 	      //   actionType: "GET_FRIENDS",
 	      //   data: response.body.data
@@ -27551,8 +27657,165 @@
 	module.exports = friendsStore;
 
 /***/ },
-/* 238 */,
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//page to get the users friends and display them on the page
+	// on clicking on a friend a user can chat to that one friend
+
+	var friendActions = __webpack_require__(234);
+	var messageActions = __webpack_require__(236);
+	var messagesStore = __webpack_require__(239);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Chat = React.createClass({
+	  displayName: 'Chat',
+
+
+	  getInitialState: function () {
+	    return {
+	      // trigger get all message function
+	      messages: messagesStore.getMessageData().messages
+	    };
+	  },
+
+	  componentWillMount: function () {
+	    messageActions.getMessages();
+	  },
+
+	  componentDidMount: function () {
+	    messagesStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    messagesStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      // save the messages in the state
+	    });
+	  },
+
+	  sendMessgae: function (username) {
+	    console.log('sending message');
+	  },
+
+	  handleChange: function (event) {
+	    // if the key was not enter then save the content of what is typed to the state
+	    this.setState({
+	      value: event.target.value
+	    }, function () {
+	      console.log(this.state.value);
+	    });
+	  },
+
+	  sendMessage: function (event) {
+	    if (event.key === 'Enter') {
+	      messageActions.sendMessage(this.props.username, this.state.value);
+	      this.setState({
+	        value: ""
+	      });
+	    }
+	  },
+
+	  render: function () {
+
+	    var that = this;
+
+	    // var Messages = this.state.messages.map(function(message, id) {
+	    //   return <li key={id} onClick={that.seeFriendMessages.bind(null,message)}>{message}</li>;
+	    // });
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('ul', null),
+	        React.createElement(
+	          'div',
+	          { className: 'width-input' },
+	          React.createElement(
+	            'div',
+	            { className: 'input-group' },
+	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendMessage, onChange: this.handleChange })
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Chat;
+
+/***/ },
 /* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var EventEmitter = __webpack_require__(232).EventEmitter;
+
+	var CHANGE_EVENT = "change";
+
+	var _messageDetails = {
+	  messages: []
+	};
+
+	var messagesStore = Object.assign(new EventEmitter(), {
+
+	  getMessageData: function () {
+	    return _messageDetails;
+	  },
+
+	  emitChange: function () {
+	    this.emit(CHANGE_EVENT);
+	  },
+
+	  addChangeListener: function (callback) {
+	    this.addListener(CHANGE_EVENT, callback);
+	  },
+
+	  removeChangeListener: function (callback) {
+	    this.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	});
+
+	AppDispatcher.register(function (payload) {
+	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
+	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
+
+	  // if (action.actionType === "GET_MESSAGES") {
+
+	  //   messagesStore.emitChange();
+	  // }
+
+	  // if (action.actionType === "SEND_MESSAGE") {
+
+	  // }
+
+	  // if (action.actionType === "NEW_MESSAGES") {
+
+	  // }
+	});
+
+	module.exports = messagesStore;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports) {
+
+	// component to show rooms and on click go the room and its message hitsory
+
+/***/ },
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -27634,7 +27897,7 @@
 	module.exports = Add;
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -27759,268 +28022,6 @@
 	});
 
 	module.exports = Pending;
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//page to get the users friends and display them on the page
-	// on clicking on a friend a user can chat to that one friend
-	// TODO: unfriend button
-	var friendActions = __webpack_require__(234);
-	var messageActions = __webpack_require__(236);
-	var friendsStore = __webpack_require__(237);
-	var Chat = __webpack_require__(243);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Friends = React.createClass({
-	  displayName: 'Friends',
-
-
-	  getInitialState: function () {
-	    return {
-	      friends: friendsStore.getFriendData().friends,
-	      chat: false,
-	      showFriends: true
-	    };
-	  },
-
-	  componentDidMount: function () {
-	    friendsStore.addChangeListener(this._onChangeEvent);
-	  },
-
-	  componentWillUnmount: function () {
-	    friendsStore.removeChangeListener(this._onChangeEvent);
-	  },
-
-	  _onChangeEvent: function () {
-	    // friends have been got and now they need to be displayed
-	    this.setState({
-	      friends: friendsStore.getFriendData().friends
-	    });
-	  },
-
-	  seeFriendMessages: function (username) {
-	    console.log('want to see chat History!', username);
-	    // on click here we want to go to a new page that is the chat history between the users
-	    // onclick need to go to new component and here to show the message history
-	    // redirect to messages page
-
-	    // set the state to show the chat component and from there trigger request to get all messages
-	    this.setState({
-	      chat: true,
-	      showFriends: false,
-	      userChatWith: username
-	    });
-
-	    this.render();
-	  },
-
-	  render: function () {
-
-	    var that = this;
-	    var Friends;
-	    var Messages;
-	    var Title;
-
-	    // if chat is false in state then dont show else do show
-	    if (this.state.chat) {
-	      Title = "Chat with " + this.state.userChatWith;
-	      Messages = React.createElement(Chat, null);
-	      // Friends = null;
-	    } else if (this.state.showFriends) {
-	        Title = "Friends";
-	        Friends = this.state.friends.map(function (person, id) {
-	          return React.createElement(
-	            'li',
-	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
-	            person.username
-	          );
-	        });
-	        // Messages = null;
-	      }
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(
-	          'h1',
-	          null,
-	          Title
-	        ),
-	        React.createElement(
-	          'ul',
-	          null,
-	          Friends,
-	          Messages
-	        )
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = Friends;
-
-/***/ },
-/* 242 */
-/***/ function(module, exports) {
-
-	// component to show rooms and on click go the room and its message hitsory
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//page to get the users friends and display them on the page
-	// on clicking on a friend a user can chat to that one friend
-
-	var friendActions = __webpack_require__(234);
-	var messageActions = __webpack_require__(236);
-	var messagesStore = __webpack_require__(244);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Chat = React.createClass({
-	  displayName: 'Chat',
-
-
-	  getInitialState: function () {
-	    return {
-	      // trigger get all message function
-	      messages: messagesStore.getMessageData().messages
-	    };
-	  },
-
-	  componentWillMount: function () {
-	    messageActions.getMessages();
-	  },
-
-	  componentDidMount: function () {
-	    messagesStore.addChangeListener(this._onChangeEvent);
-	  },
-
-	  componentWillUnmount: function () {
-	    messagesStore.removeChangeListener(this._onChangeEvent);
-	  },
-
-	  _onChangeEvent: function () {
-	    // friends have been got and now they need to be displayed
-	    this.setState({
-	      // save the messages in the state
-	    });
-	  },
-
-	  sendMessgae: function (username) {
-	    console.log('sending message');
-	  },
-
-	  handleChange: function (event) {
-	    // if the key was not enter then save the content of what is typed to the state
-	    this.setState({
-	      value: event.target.value
-	    }, function () {
-	      console.log(this.state.value);
-	    });
-	  },
-
-	  sendMessage: function (event) {
-	    if (event.key === 'Enter') {
-	      console.log('in enter want to send message', this.state.value);
-	    }
-	  },
-
-	  render: function () {
-
-	    var that = this;
-
-	    // var Messages = this.state.messages.map(function(message, id) {
-	    //   return <li key={id} onClick={that.seeFriendMessages.bind(null,message)}>{message}</li>;
-	    // });
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement('ul', null),
-	        React.createElement(
-	          'div',
-	          { className: 'width-input' },
-	          React.createElement(
-	            'div',
-	            { className: 'input-group' },
-	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendMessage, onChange: this.handleChange })
-	          )
-	        )
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = Chat;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var EventEmitter = __webpack_require__(232).EventEmitter;
-
-	var CHANGE_EVENT = "change";
-
-	var _messageDetails = {
-	  messages: []
-	};
-
-	var messagesStore = Object.assign(new EventEmitter(), {
-
-	  getMessageData: function () {
-	    return _messageDetails;
-	  },
-
-	  emitChange: function () {
-	    this.emit(CHANGE_EVENT);
-	  },
-
-	  addChangeListener: function (callback) {
-	    this.addListener(CHANGE_EVENT, callback);
-	  },
-
-	  removeChangeListener: function (callback) {
-	    this.removeListener(CHANGE_EVENT, callback);
-	  }
-
-	});
-
-	AppDispatcher.register(function (payload) {
-	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
-	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
-
-	  // if (action.actionType === "GET_MESSAGES") {
-
-	  //   messagesStore.emitChange();
-	  // }
-
-	  // if (action.actionType === "SEND_MESSAGE") {
-
-	  // }
-
-	  // if (action.actionType === "NEW_MESSAGES") {
-
-	  // }
-	});
-
-	module.exports = messagesStore;
 
 /***/ }
 /******/ ]);

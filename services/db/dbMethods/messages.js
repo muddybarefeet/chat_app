@@ -7,7 +7,7 @@ module.exports = function (knex) {
   //to click on a friend and to send them a message
   fnHash.sendMessage = function (userId, recipient, message) {
     var recipientId;
-
+    console.log('in sending message');
     return knex.select('u_id')
       .from('users')
       .where('username', recipient)

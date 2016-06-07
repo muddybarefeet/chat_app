@@ -62,7 +62,7 @@ var Friends = React.createClass({
     // if chat is false in state then dont show else do show
     if (this.state.chat) {
       Title = "Chat with "+ this.state.userChatWith;
-      Messages = (<Chat></Chat>);
+      Messages = (<Chat username={this.state.userChatWith}></Chat>);
       // Friends = null;
     } else if (this.state.showFriends) {
       Title = "Friends";

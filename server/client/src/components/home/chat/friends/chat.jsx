@@ -50,8 +50,10 @@ var Chat = React.createClass({
 
   sendMessage: function (event) {
     if(event.key === 'Enter'){
-      console.log('in enter want to send message', this.state.value);
-
+      messageActions.sendMessage(this.props.username,this.state.value);
+      this.setState({
+        value: ""
+      });
     }
   },
 

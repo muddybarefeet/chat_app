@@ -18,12 +18,12 @@ var messageActions = {
     });
   },
 
-  sendMessage: function () {
+  sendMessage: function (whoFor,message) {
 
     requestHelper
-    .post('messages/send', jwt)
+    .post('messages/send', { to: whoFor, message: message }, jwt)
     .end(function (err, response) {
-      // console.log('friend data got',response.body.data);
+      console.log('message data got',response.body.data);
       // AppDispatcher.handleClientAction({
       //   actionType: "GET_FRIENDS",
       //   data: response.body.data

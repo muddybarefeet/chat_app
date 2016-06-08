@@ -27569,11 +27569,20 @@
 	  },
 
 	  sendMessage: function (whoFor, message) {
-
 	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
 	      console.log('message data got', response.body.data);
 	      AppDispatcher.handleClientAction({
 	        actionType: "SENT_MESSAGE",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  readMessages: function (whoWith) {
+	    requestHelper.put('messages/read', { whoWith: whoWith }, jwt).end(function (err, response) {
+	      console.log('returning updated read message status', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "UPDATED_READ",
 	        data: response.body.data
 	      });
 	    });
@@ -27701,6 +27710,8 @@
 	    });
 	  },
 
+	  // if all of the messages are got then send back that the user has seem them
+
 	  handleChange: function (event) {
 	    // if the key was not enter then save the content of what is typed to the state
 	    this.setState({
@@ -27799,14 +27810,8 @@
 	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
 	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
 
-	  if (action.actionType === "GET_MESSAGES") {
+	  if (action.actionType === "GET_MESSAGES" || action.actionType === "UPDATED_READ" || action.actionType === "SENT_MESSAGE") {
 	    _messageDetails.messages = action.data;
-	    messagesStore.emitChange();
-	  }
-
-	  if (action.actionType === "SENT_MESSAGE") {
-	    _messageDetails.messages = action.data;
-	    console.log('messages got from being sent', _messageDetails.messages);
 	    messagesStore.emitChange();
 	  }
 

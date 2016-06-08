@@ -44,9 +44,9 @@ module.exports = function (services) {
   router.route('/read')
     .put(function (req, res) {
       var userId = req.__userId;
-      var toRespondTo = req.body.toRespond;
+      var whoWith = req.body.whoWith;
 
-      services.db.messages.updateMessageStatus(userId, message)
+      services.db.messages.updateMessageStatus(userId, whoWith)
       .then(function (response) {
         res.json({
           data: response

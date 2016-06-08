@@ -38,6 +38,8 @@ var Chat = React.createClass({
     });
   },
 
+  // if all of the messages are got then send back that the user has seem them
+
   handleChange: function(event){
     // if the key was not enter then save the content of what is typed to the state
     this.setState({

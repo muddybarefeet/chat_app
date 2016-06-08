@@ -18,7 +18,6 @@ var messageActions = {
   },
 
   sendMessage: function (whoFor,message) {
-
     requestHelper
     .post('messages/send', { to: whoFor, message: message }, jwt)
     .end(function (err, response) {
@@ -28,9 +27,19 @@ var messageActions = {
         data: response.body.data
       });
     });
+  },
 
+  readMessages: function (whoWith) {
+    requestHelper
+    .put('messages/read', { whoWith: whoWith }, jwt)
+    .end(function (err, response) {
+      console.log('returning updated read message status',response.body.data);
+      AppDispatcher.handleClientAction({
+        actionType: "UPDATED_READ",
+        data: response.body.data
+      });
+    });
   }
-
 
 };
 

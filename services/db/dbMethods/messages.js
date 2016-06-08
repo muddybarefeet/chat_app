@@ -1,6 +1,6 @@
 //this is for person to person messaging
 
-module.exports = function (knex) {
+module.exports = function (knex, helpers) {
 
   var fnHash = {};
 
@@ -43,9 +43,7 @@ module.exports = function (knex) {
       },'*');
     })
     .then(function (insertedMessageRow) {
-      return knex.select()
-      .from('messages')
-      .orderBy('created_at', 'asc');
+      return helpers.getMessages(userId, recipient);
     })
     .catch(function (err) {
       console.log('err in send message', err);
@@ -110,35 +108,8 @@ module.exports = function (knex) {
 
   //get specific conversation between you and a user
   fnHash.getMessagesFromFriend = function (userId, otherUsername) {
-
-    //get the id of the other user
-      return knex.select('u_id')
-      .from('users')
-      .where('username', otherUsername)
-      .then(function (otherUserId) {
-        if (otherUserId.length !== 1) {
-          throw new Error("The username: "+otherUsername+" does not exist");
-        }
-        return knex.select()
-        .from('messages')
-        .where(function () {
-          this.where('sender_id', userId)
-          .andWhere('reciever_id', otherUserId[0].u_id);
-        })
-        .orWhere(function () {
-          this.where('sender_id', otherUserId[0].u_id)
-          .andWhere('reciever_id', userId);
-        })
-        .orderBy('created_at', 'asc');
-      })
-      .then(function (selectedMessages) {
-        //loop through the array of users messages and add to the userMessages hash accordingly
-        return selectedMessages;
-      })
-      .catch(function (err) {
-        console.log('err messages betwen user and friend', err);
-        throw err;
-      });
+    // call the function from the helpers
+    return helpers.getMessages(userId, otherUsername);
 
   };
 

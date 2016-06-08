@@ -86,6 +86,36 @@ module.exports = function (knex) {
     });
   };
 
+  returnHash.getMessages = function () {
+    return knex.select('u_id')
+    .from('users')
+    .where('username', otherUsername)
+    .then(function (otherUserId) {
+      if (otherUserId.length !== 1) {
+        throw new Error("The username: "+otherUsername+" does not exist");
+      }
+      return knex.select()
+      .from('messages')
+      .where(function () {
+        this.where('sender_id', userId)
+        .andWhere('reciever_id', otherUserId[0].u_id);
+      })
+      .orWhere(function () {
+        this.where('sender_id', otherUserId[0].u_id)
+        .andWhere('reciever_id', userId);
+      })
+      .orderBy('created_at', 'asc');
+    })
+    .then(function (selectedMessages) {
+      //loop through the array of users messages and add to the userMessages hash accordingly
+      return selectedMessages;
+    })
+    .catch(function (err) {
+      console.log('err messages betwen user and friend', err);
+      throw err;
+    });
+  };
+
   return returnHash;
 
 };

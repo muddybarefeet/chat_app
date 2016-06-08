@@ -74,29 +74,20 @@ module.exports = function (knex, helpers) {
 
   //to recieve all messages sent to the client from other users
   fnHash.getUnreadMessages = function (userId) {
-    //get all messages the user in in where the messages have not been read
-    return knex.select()
+    //get all messages the user is in where the messages have not been read
+    return knex.select('sender_id')
       .from('messages')
-      .where(function() {
-        this.where('sender_id', userId)
-        .orWhere('reciever_id', userId);
-      })
+      .where('reciever_id', userId)
       .andWhere('has_been_read', false)
-      .orderBy('created_at', 'asc')
-    .then(function (selectedMessages) {
-      //get all the userids not the user and look up the usernames and return these
-      var userIds = selectedMessages.map(function (message) {
-        if (message.sender_id !== userId) {
-          return message.sender_id;
-        }
-        return message.userId;
-      });
-
+    .then(function (selectedUserIds) {
+      console.log('selectedUserIds db method', selectedUserIds);
+      // get all the usernames for the userIds that have been returned in an array
       return knex.select()
       .from('users')
-      .whereIn('u_id', userIds);
+      .whereIn('u_id', selectedUserIds);
     })
     .then(function (userInfo) {
+      console.log('userInfo in db method: ', userInfo);
       return userInfo;
     })
     .catch(function (err) {

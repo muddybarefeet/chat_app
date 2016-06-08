@@ -42,6 +42,7 @@ var messageActions = {
   },
 
   getUnreadMessages: function () {
+    console.log('getting the unread messages');
     requestHelper
     .get('messages/unread', jwt)
     .end(function (err, response) {

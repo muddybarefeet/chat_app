@@ -1,6 +1,6 @@
 //page to get the users friends and display them on the page
 // on clicking on a friend a user can chat to that one friend
-// TODO: unfriend button
+// TODO: unfriend button 
 var friendActions = require('./../../../../actions/friendActions.js');
 var friendsStore = require('./../../../../stores/friendsStore.js');
 var messageActions = require('./../../../../actions/messageActions.js');
@@ -44,20 +44,12 @@ var Friends = React.createClass({
   },
 
   seeFriendMessages: function (username) {
-    console.log('want to see chat History!', username);
-    // on click here we want to go to a new page that is the chat history between the users
-    // onclick need to go to new component and here to show the message history
-    // redirect to messages page
-
     // set the state to show the chat component and from there trigger request to get all messages
     this.setState({
       chat:true,
       showFriends:false,
       userChatWith: username
     });
-
-    this.render();
-
   },
 
 

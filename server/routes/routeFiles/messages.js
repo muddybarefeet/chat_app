@@ -62,27 +62,28 @@ module.exports = function (services) {
     });
 
 
-    // //get unread messages
-    // //-----------------------------------
-    // router.route('/getUnread')
-    //   .get(function (req, res) {
+    //get unread messages
+    //-----------------------------------
+    router.route('/unread')
+      .get(function (req, res) {
 
-    //     var userId = req.__userId;
+        var userId = req.__userId;
 
-    //     services.db.messages.getUnreadMessages(userId)
-    //     .then(function (response) {
-    //       res.json({
-    //         data: response
-    //       });
-    //     })
-    //     .catch(function(err){
-    //       console.log('err', err);
-    //       res.status(404).json({
-    //           message: err.message
-    //       });
-    //     });
+        services.db.messages.getUnreadMessages(userId)
+        .then(function (response) {
+          console.log('resposnse', resposnse);
+          res.json({
+            data: response
+          });
+        })
+        .catch(function(err){
+          console.log('err', err);
+          res.status(404).json({
+              message: err.message
+          });
+        });
 
-    //   });
+      });
 
     //get messages from a certain friend
     //-----------------------------------

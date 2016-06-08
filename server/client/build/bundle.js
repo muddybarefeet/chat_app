@@ -27492,19 +27492,12 @@
 	  },
 
 	  seeFriendMessages: function (username) {
-	    console.log('want to see chat History!', username);
-	    // on click here we want to go to a new page that is the chat history between the users
-	    // onclick need to go to new component and here to show the message history
-	    // redirect to messages page
-
 	    // set the state to show the chat component and from there trigger request to get all messages
 	    this.setState({
 	      chat: true,
 	      showFriends: false,
 	      userChatWith: username
 	    });
-
-	    this.render();
 	  },
 
 	  render: function () {
@@ -27598,6 +27591,7 @@
 	  },
 
 	  getUnreadMessages: function () {
+	    console.log('getting the unread messages');
 	    requestHelper.get('messages/unread', jwt).end(function (err, response) {
 	      console.log('returning updated read message status', response.body.data);
 	      AppDispatcher.handleClientAction({
@@ -27690,6 +27684,8 @@
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 
+	// TODO make a button to go back to the friends page
+
 	var friendActions = __webpack_require__(234);
 	var messageActions = __webpack_require__(236);
 	var messagesStore = __webpack_require__(239);
@@ -27721,7 +27717,6 @@
 	  },
 
 	  _onChangeEvent: function () {
-	    console.log('updating component');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      // save the messages in the state

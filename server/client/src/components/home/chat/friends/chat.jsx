@@ -1,6 +1,8 @@
 //page to get the users friends and display them on the page
 // on clicking on a friend a user can chat to that one friend
 
+// TODO make a button to go back to the friends page
+
 var friendActions = require('./../../../../actions/friendActions.js');
 var messageActions = require('./../../../../actions/messageActions.js');
 var messagesStore = require('./../../../../stores/messagesStore.js');
@@ -30,7 +32,6 @@ var Chat = React.createClass({
   },
 
   _onChangeEvent: function () {
-    console.log('updating component');
     // friends have been got and now they need to be displayed
     this.setState({
       // save the messages in the state

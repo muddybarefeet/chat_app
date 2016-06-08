@@ -86,7 +86,7 @@ module.exports = function (knex) {
     });
   };
 
-  returnHash.getMessages = function () {
+  returnHash.getMessages = function (userId, otherUsername) {
     return knex.select('u_id')
     .from('users')
     .where('username', otherUsername)

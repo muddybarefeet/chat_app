@@ -33,14 +33,15 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
 
 
   if (action.actionType === "GET_MESSAGES") {
-    console.log('messages got', action.data);
     _messageDetails.messages = action.data;
     messagesStore.emitChange();
   }
 
-  // if (action.actionType === "SEND_MESSAGE") {
-
-  // }
+  if (action.actionType === "SENT_MESSAGE") {
+    _messageDetails.messages = action.data;
+    console.log('messages got from being sent', _messageDetails.messages);
+    messagesStore.emitChange();
+  }
 
   // if (action.actionType === "NEW_MESSAGES") {
     

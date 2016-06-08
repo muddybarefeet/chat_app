@@ -27572,10 +27572,10 @@
 
 	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
 	      console.log('message data got', response.body.data);
-	      // AppDispatcher.handleClientAction({
-	      //   actionType: "SENT_MESSAGE",
-	      //   data: response.body.data
-	      // });
+	      AppDispatcher.handleClientAction({
+	        actionType: "SENT_MESSAGE",
+	        data: response.body.data
+	      });
 	    });
 	  }
 
@@ -27693,6 +27693,7 @@
 	  },
 
 	  _onChangeEvent: function () {
+	    console.log('updating component');
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      // save the messages in the state
@@ -27700,16 +27701,10 @@
 	    });
 	  },
 
-	  sendMessgae: function (username) {
-	    console.log('sending message');
-	  },
-
 	  handleChange: function (event) {
 	    // if the key was not enter then save the content of what is typed to the state
 	    this.setState({
 	      value: event.target.value
-	    }, function () {
-	      console.log(this.state.value);
 	    });
 	  },
 
@@ -27805,14 +27800,15 @@
 	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
 
 	  if (action.actionType === "GET_MESSAGES") {
-	    console.log('messages got', action.data);
 	    _messageDetails.messages = action.data;
 	    messagesStore.emitChange();
 	  }
 
-	  // if (action.actionType === "SEND_MESSAGE") {
-
-	  // }
+	  if (action.actionType === "SENT_MESSAGE") {
+	    _messageDetails.messages = action.data;
+	    console.log('messages got from being sent', _messageDetails.messages);
+	    messagesStore.emitChange();
+	  }
 
 	  // if (action.actionType === "NEW_MESSAGES") {
 

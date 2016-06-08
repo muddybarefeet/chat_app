@@ -30,6 +30,7 @@ var Chat = React.createClass({
   },
 
   _onChangeEvent: function () {
+    console.log('updating component');
     // friends have been got and now they need to be displayed
     this.setState({
       // save the messages in the state
@@ -37,16 +38,11 @@ var Chat = React.createClass({
     });
   },
 
-  sendMessgae: function (username) {
-    console.log('sending message');
-
-  },
-
   handleChange: function(event){
     // if the key was not enter then save the content of what is typed to the state
     this.setState({
       value: event.target.value
-    }, function () {console.log(this.state.value)});
+    });
   },
 
   sendMessage: function (event) {

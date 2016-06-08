@@ -23,10 +23,10 @@ var messageActions = {
     .post('messages/send', { to: whoFor, message: message }, jwt)
     .end(function (err, response) {
       console.log('message data got',response.body.data);
-      // AppDispatcher.handleClientAction({
-      //   actionType: "SENT_MESSAGE",
-      //   data: response.body.data
-      // });
+      AppDispatcher.handleClientAction({
+        actionType: "SENT_MESSAGE",
+        data: response.body.data
+      });
     });
 
   }

@@ -39,6 +39,18 @@ var messageActions = {
         data: response.body.data
       });
     });
+  },
+
+  getUnreadMessages: function () {
+    requestHelper
+    .get('messages/unread', jwt)
+    .end(function (err, response) {
+      console.log('returning updated read message status',response.body.data);
+      AppDispatcher.handleClientAction({
+        actionType: "UNREAD_MESSAGES",
+        data: response.body.data
+      });
+    });
   }
 
 };

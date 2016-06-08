@@ -27448,8 +27448,10 @@
 	// on clicking on a friend a user can chat to that one friend
 	// TODO: unfriend button
 	var friendActions = __webpack_require__(234);
-	var messageActions = __webpack_require__(236);
 	var friendsStore = __webpack_require__(237);
+	var messageActions = __webpack_require__(236);
+	var messagesStore = __webpack_require__(239);
+
 	var Chat = __webpack_require__(238);
 
 	var React = __webpack_require__(1);
@@ -27462,9 +27464,15 @@
 	  getInitialState: function () {
 	    return {
 	      friends: friendsStore.getFriendData().friends,
+	      // return an array of usernames that have sent the user messages that they have not seen
+	      unread: messagesStore.getMessageData().unreadMessages,
 	      chat: false,
 	      showFriends: true
 	    };
+	  },
+
+	  componentWillMount: function () {
+	    messageActions.getUnreadMessages();
 	  },
 
 	  componentDidMount: function () {
@@ -27478,7 +27486,8 @@
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      friends: friendsStore.getFriendData().friends
+	      friends: friendsStore.getFriendData().friends,
+	      unread: messagesStore.getMessageData().unreadMessages
 	    });
 	  },
 
@@ -27583,6 +27592,16 @@
 	      console.log('returning updated read message status', response.body.data);
 	      AppDispatcher.handleClientAction({
 	        actionType: "UPDATED_READ",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  getUnreadMessages: function () {
+	    requestHelper.get('messages/unread', jwt).end(function (err, response) {
+	      console.log('returning updated read message status', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "UNREAD_MESSAGES",
 	        data: response.body.data
 	      });
 	    });
@@ -27710,7 +27729,9 @@
 	    });
 	  },
 
-	  // if all of the messages are got then send back that the user has seem them
+	  // TODO
+	  // if all of the messages are got, and some where not written by the user AND unread then highlight
+	  // on leaving this pannel then update the messages table to say that the messages have been seen
 
 	  handleChange: function (event) {
 	    // if the key was not enter then save the content of what is typed to the state
@@ -27783,7 +27804,8 @@
 	var CHANGE_EVENT = "change";
 
 	var _messageDetails = {
-	  messages: []
+	  messages: [],
+	  unreadMessages: []
 	};
 
 	var messagesStore = Object.assign(new EventEmitter(), {
@@ -27815,9 +27837,11 @@
 	    messagesStore.emitChange();
 	  }
 
-	  // if (action.actionType === "NEW_MESSAGES") {
-
-	  // }
+	  if (action.actionType === "UNREAD_MESSAGES") {
+	    console.log('usernames got in store', action.data);
+	    _messageDetails.unreadMessages = action.data;
+	    messagesStore.emitChange();
+	  }
 	});
 
 	module.exports = messagesStore;

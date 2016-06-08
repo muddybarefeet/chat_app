@@ -38,7 +38,10 @@ var Chat = React.createClass({
     });
   },
 
-  // if all of the messages are got then send back that the user has seem them
+  // TODO
+  // if all of the messages are got, and some where not written by the user AND unread then highlight
+  // on leaving this pannel then update the messages table to say that the messages have been seen
+
 
   handleChange: function(event){
     // if the key was not enter then save the content of what is typed to the state

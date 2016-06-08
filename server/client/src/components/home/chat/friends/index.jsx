@@ -2,8 +2,10 @@
 // on clicking on a friend a user can chat to that one friend
 // TODO: unfriend button
 var friendActions = require('./../../../../actions/friendActions.js');
-var messageActions = require('./../../../../actions/messageActions.js');
 var friendsStore = require('./../../../../stores/friendsStore.js');
+var messageActions = require('./../../../../actions/messageActions.js');
+var messagesStore = require('./../../../../stores/messagesStore.js');
+
 var Chat = require('./chat.jsx');
 
 var React = require('react');
@@ -14,9 +16,15 @@ var Friends = React.createClass({
   getInitialState: function () {
     return {
       friends: friendsStore.getFriendData().friends,
+      // return an array of usernames that have sent the user messages that they have not seen
+      unread: messagesStore.getMessageData().unreadMessages,
       chat: false,
       showFriends: true
     };
+  },
+
+  componentWillMount: function () {
+    messageActions.getUnreadMessages();
   },
 
   componentDidMount: function () {
@@ -30,7 +38,8 @@ var Friends = React.createClass({
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
     this.setState({
-      friends: friendsStore.getFriendData().friends
+      friends: friendsStore.getFriendData().friends,
+      unread: messagesStore.getMessageData().unreadMessages
     });
   },
 

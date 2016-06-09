@@ -54,7 +54,6 @@ module.exports = function (knex, helpers) {
 
   //function triggered on a user reading a message to set has_been_read to true
   fnHash.updateMessageStatus = function (userId, whoWith) {
-
     var friendId;
     return knex
     .select('u_id')
@@ -78,21 +77,18 @@ module.exports = function (knex, helpers) {
       console.log('err updating read message status');
       throw err;
     });
-
   };
 
   //to recieve all messages sent to the client from other users
   fnHash.getUnreadMessages = function (userId) {
     //get all messages the user is in where the messages have not been read
     return helpers.getUnreadMessages(userId);
-
   };
 
   //get specific conversation between you and a user
   fnHash.getMessagesFromFriend = function (userId, otherUsername) {
     // call the function from the helpers
     return helpers.getMessages(userId, otherUsername);
-
   };
 
   return fnHash;

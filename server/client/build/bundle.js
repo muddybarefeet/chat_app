@@ -27745,7 +27745,8 @@
 	  getInitialState: function () {
 	    return {
 	      // trigger get all message function
-	      messages: messagesStore.getMessageData().messages
+	      messages: messagesStore.getMessageData().messages,
+	      firstRender: true
 	    };
 	  },
 
@@ -27767,8 +27768,14 @@
 	      // save the messages in the state
 	      messages: messagesStore.getMessageData().messages
 	    });
-	    // trigger function to update the unread messages to read
-	    messageActions.readMessages(this.props.username);
+	    if (this.state.firstRender) {
+	      // trigger function to update the unread messages to read
+	      // only trigger after initially opened the page and loaded data
+	      messageActions.readMessages(this.props.username);
+	      this.setState({
+	        firstRender: false
+	      });
+	    }
 	  },
 
 	  // TODO
@@ -27794,21 +27801,29 @@
 	  render: function () {
 
 	    var that = this;
-
 	    var messages;
 
 	    if (this.state.messages) {
 	      messages = this.state.messages.map(function (message, id) {
+	        console.log('messages in componnt', message);
 	        // if the message has not been read then it needs to be highlighted
-	        // if (message.has_been_read) {
-	        //   return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
-	        // } else {
-	        return React.createElement(
-	          'li',
-	          { key: id },
-	          message.message
-	        );
-	        // }
+	        if (message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id, style: { color: "red" } },
+	            React.createElement(
+	              'strong',
+	              null,
+	              message.message
+	            )
+	          );
+	        } else if (!message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id },
+	            message.message
+	          );
+	        }
 	      });
 	    }
 

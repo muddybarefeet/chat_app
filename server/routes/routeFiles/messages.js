@@ -48,6 +48,7 @@ module.exports = function (services) {
 
       services.db.messages.updateMessageStatus(userId, whoWith)
       .then(function (response) {
+        console.log('response in reading messages', response);
         res.json({
           data: response
         });
@@ -60,30 +61,6 @@ module.exports = function (services) {
       });
 
     });
-
-
-    //get unread messages
-    //-----------------------------------
-    // router.route('/unread')
-    //   .get(function (req, res) {
-
-    //     var userId = req.__userId;
-
-    //     services.db.messages.getUnreadMessages(userId)
-    //     .then(function (response) {
-    //       console.log('resposnse', resposnse);
-    //       res.json({
-    //         data: response
-    //       });
-    //     })
-    //     .catch(function(err){
-    //       console.log('err', err);
-    //       res.status(404).json({
-    //           message: err.message
-    //       });
-    //     });
-
-    //   });
 
     //get messages from a certain friend
     //-----------------------------------

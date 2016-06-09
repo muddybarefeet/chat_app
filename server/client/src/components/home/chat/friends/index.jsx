@@ -16,8 +16,6 @@ var Friends = React.createClass({
   getInitialState: function () {
     return {
       friends: friendsStore.getFriendData().friends,
-      // return an array of usernames that have sent the user messages that they have not seen
-      // unread: messagesStore.getMessageData().unreadMessages,
       chat: false,
       showFriends: true
     };
@@ -35,7 +33,6 @@ var Friends = React.createClass({
     // friends have been got and now they need to be displayed
     this.setState({
       friends: friendsStore.getFriendData().friends
-      // unread: messagesStore.getMessageData().unreadMessages
     });
   },
 

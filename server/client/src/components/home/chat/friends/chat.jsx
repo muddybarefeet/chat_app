@@ -37,6 +37,8 @@ var Chat = React.createClass({
       // save the messages in the state
       messages: messagesStore.getMessageData().messages
     });
+    // trigger function to update the unread messages to read
+    messageActions.readMessages(this.props.username);
   },
 
   // TODO
@@ -68,7 +70,12 @@ var Chat = React.createClass({
 
     if (this.state.messages) {
       messages = this.state.messages.map(function(message, id) {
-        return <li key={id}>{message.message}</li>;
+        // if the message has not been read then it needs to be highlighted
+        // if (message.has_been_read) {
+        //   return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
+        // } else {
+          return <li key={id}>{message.message}</li>;
+        // }
       });
     }
 

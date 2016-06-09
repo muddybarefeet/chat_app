@@ -55,12 +55,21 @@ module.exports = function (knex, helpers) {
   //function triggered on a user reading a message to set has_been_read to true
   fnHash.updateMessageStatus = function (userId, whoWith) {
 
-    //update the has_been_read cell in the messages table to true when the message was snet to the user
-    return knex('messages')
+    var friendId;
+    return knex
+    .select('u_id')
+    .from('users')
+    .where('username',whoWith)
+    .then(function (uIdArr) {
+      friendId = uIdArr[0].u_id;
+      //update the has_been_read cell in the messages table to true when the message was snet to the user
+      return knex('messages')
       .where('reciever_id', userId)
+      .andWhere('sender_id', friendId)
       .update({
         has_been_read: true
-      }, '*')
+      }, '*');
+    })
     .then(function (newRow) {
       // return all the messages with updated status
       return helpers.getMessages(userId, whoWith);

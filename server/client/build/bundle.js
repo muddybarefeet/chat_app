@@ -27464,8 +27464,6 @@
 	  getInitialState: function () {
 	    return {
 	      friends: friendsStore.getFriendData().friends,
-	      // return an array of usernames that have sent the user messages that they have not seen
-	      // unread: messagesStore.getMessageData().unreadMessages,
 	      chat: false,
 	      showFriends: true
 	    };
@@ -27483,7 +27481,6 @@
 	    // friends have been got and now they need to be displayed
 	    this.setState({
 	      friends: friendsStore.getFriendData().friends
-	      // unread: messagesStore.getMessageData().unreadMessages
 	    });
 	  },
 
@@ -27670,19 +27667,6 @@
 
 	};
 
-	// getUnreadMessages: function () {
-	//   console.log('getting the unread messages');
-	//   requestHelper
-	//   .get('messages/unread', jwt)
-	//   .end(function (err, response) {
-	//     console.log('returning updated read message status',response.body.data);
-	//     AppDispatcher.handleClientAction({
-	//       actionType: "UNREAD_MESSAGES",
-	//       data: response.body.data
-	//     });
-	//   });
-	// }
-
 	module.exports = messageActions;
 
 /***/ },
@@ -27783,6 +27767,8 @@
 	      // save the messages in the state
 	      messages: messagesStore.getMessageData().messages
 	    });
+	    // trigger function to update the unread messages to read
+	    messageActions.readMessages(this.props.username);
 	  },
 
 	  // TODO
@@ -27813,11 +27799,16 @@
 
 	    if (this.state.messages) {
 	      messages = this.state.messages.map(function (message, id) {
+	        // if the message has not been read then it needs to be highlighted
+	        // if (message.has_been_read) {
+	        //   return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
+	        // } else {
 	        return React.createElement(
 	          'li',
 	          { key: id },
 	          message.message
 	        );
+	        // }
 	      });
 	    }
 

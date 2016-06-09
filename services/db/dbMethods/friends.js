@@ -108,7 +108,8 @@ module.exports = function (knex, helpers) {
       console.log('2', unreads);
       unread = unreads;
       for (var key in friendsData.friends) {
-        if (unread.indexOf(key) !== -1) {
+        // if there is a key of the users id 
+        if (unread[key]) {
           friendsData.friends[key].unread = true;
         } else {
           console.log('not got unreads', friendsData.friends[key]);

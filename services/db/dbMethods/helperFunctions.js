@@ -4,7 +4,7 @@ module.exports = function (knex) {
   var returnHash = {};
 
   returnHash.getFriends = function (userId) {
-
+    console.log('userid', userId);
     var friendsData = {
       pendingRequestOut: {},
       pendingRequestIn: {},
@@ -44,19 +44,30 @@ module.exports = function (knex) {
           }
         }
 
+        // if the friendor is the user
+          // put friend in pendingOut unless not already there
+          // if there 
+
         // 1. they may be being asked to be a friend in pendingIn
         // if the friendee is in pendingIn the delete and add to friends
         if (element.friendor === userId) {
           if (friendsData.pendingRequestIn[friendId] && !friendsData.friends[friendId]) {
+            console.log('should come in this if if already in pending in');
             delete friendsData.pendingRequestIn[friendId];
             friendsData.friends[friendId] = friendId;
+          } else if (!friendsData.pendingRequestOut[friendId] && !friendsData.friends[friendId]) {
+            friendsData.pendingRequestOut[friendId] = friendId;
+            delete friendsData.notYetFriends[friendId];
           }
         } if (element.friendor === friendId) {
         // 2. else someone is sending a request to them and needs to put friendee in pendingIn
-          if (!friendsData.pendingRequestIn[friendId] && !friendsData.friends[friendId]) {
-            friendsData.pendingRequestIn[friendId] = friendId;
+          if (!friendsData.pendingRequestOut[friendId] && !friendsData.friends[friendId]) {
+            friendsData.pendingRequestOut[friendId] = friendId;
             // remove the the id from not yet friends
             delete friendsData.notYetFriends[friendId];
+          } else if (friendsData.pendingRequestOut[friendId] && !friendsData.friends[friendId]) {
+            delete friendsData.pendingRequestOut[friendId];
+            friendsData.friends[friendId] = friendId;
           }
         }
 
@@ -116,13 +127,20 @@ module.exports = function (knex) {
   };
 
   returnHash.getUnreadMessages = function (userId) {
-
+    var data = {};
     return knex.select('sender_id')
       .from('messages')
       .where('reciever_id', userId)
       .andWhere('has_been_read', false)
     .then(function (selectedUserIds) {
-      return selectedUserIds;
+      selectedUserIds.map(function (id) {
+        if (data[id.sender_id]) {
+          data[id.sender_id]++;
+        } else {
+          data[id.sender_id] = 1;
+        }
+      });
+      return data;
     })
     .catch(function (err) {
       console.log('err in getting a users unread messages from friends', err);

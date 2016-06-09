@@ -17,15 +17,15 @@ var Friends = React.createClass({
     return {
       friends: friendsStore.getFriendData().friends,
       // return an array of usernames that have sent the user messages that they have not seen
-      unread: messagesStore.getMessageData().unreadMessages,
+      // unread: messagesStore.getMessageData().unreadMessages,
       chat: false,
       showFriends: true
     };
   },
 
-  componentWillMount: function () {
-    messageActions.getUnreadMessages();
-  },
+  // componentWillMount: function () {
+  //   messageActions.getUnreadMessages();
+  // },
 
   componentDidMount: function () {
     friendsStore.addChangeListener(this._onChangeEvent);
@@ -38,8 +38,8 @@ var Friends = React.createClass({
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
     this.setState({
-      friends: friendsStore.getFriendData().friends,
-      unread: messagesStore.getMessageData().unreadMessages
+      friends: friendsStore.getFriendData().friends
+      // unread: messagesStore.getMessageData().unreadMessages
     });
   },
 
@@ -68,7 +68,11 @@ var Friends = React.createClass({
     } else if (this.state.showFriends) {
       title = "Friends";
       friends = this.state.friends.map(function(person, id) {
-        return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
+        if (person.unread) {
+          return <li key={id} className="highlight" onClick={that.seeFriendMessages.bind(null,person.username)}><strong>{person.username}</strong></li>;
+        } else {
+          return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
+        }
       });
       // Messages = null;
     }

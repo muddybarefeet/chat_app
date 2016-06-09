@@ -95,7 +95,29 @@ module.exports = function (knex, helpers) {
   // join the users and friends tables then filter
 
   fnHash.getFriends = function (userId) {
-    return helpers.getFriends(userId);
+    
+    var friendsData = {};
+    var unread;
+
+    return helpers.getFriends(userId)
+    .then(function (friendsHash) {
+      friendsData = friendsHash;
+      return helpers.getUnreadMessages(userId);
+    })
+    .then(function (unreads) {
+      console.log('2', unreads);
+      unread = unreads;
+      for (var key in friendsData.friends) {
+        if (unread.indexOf(key) !== -1) {
+          friendsData.friends[key].unread = true;
+        } else {
+          console.log('not got unreads', friendsData.friends[key]);
+          friendsData.friends[key].unread = false;
+        }
+      }
+      return friendsData;
+    });
+
   };
 
   return fnHash;

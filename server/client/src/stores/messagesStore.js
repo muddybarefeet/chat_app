@@ -5,8 +5,8 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = "change";
 
 var _messageDetails = {
-  messages: [],
-  unreadMessages: []
+  messages: []
+  // unreadMessages: []
 };
 
 var messagesStore = Object.assign(new EventEmitter (), {
@@ -38,11 +38,11 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     messagesStore.emitChange();
   }
 
-  if (action.actionType === "UNREAD_MESSAGES") {
-    console.log('usernames got in store', action.data);
-    _messageDetails.unreadMessages = action.data;
-    messagesStore.emitChange();
-  }
+  // if (action.actionType === "UNREAD_MESSAGES") {
+  //   console.log('usernames got in store', action.data);
+  //   _messageDetails.unreadMessages = action.data;
+  //   messagesStore.emitChange();
+  // }
 
 });
 

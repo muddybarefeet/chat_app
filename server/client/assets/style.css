@@ -5889,3 +5889,7 @@ body {
 .width-input {
   width:450px;
 }
+
+.highLight {
+  color: orange;
+}

@@ -27448,11 +27448,11 @@
 	// on clicking on a friend a user can chat to that one friend
 	// TODO: unfriend button
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(237);
-	var messageActions = __webpack_require__(236);
-	var messagesStore = __webpack_require__(239);
+	var friendsStore = __webpack_require__(236);
+	var messageActions = __webpack_require__(237);
+	var messagesStore = __webpack_require__(238);
 
-	var Chat = __webpack_require__(238);
+	var Chat = __webpack_require__(239);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27465,15 +27465,15 @@
 	    return {
 	      friends: friendsStore.getFriendData().friends,
 	      // return an array of usernames that have sent the user messages that they have not seen
-	      unread: messagesStore.getMessageData().unreadMessages,
+	      // unread: messagesStore.getMessageData().unreadMessages,
 	      chat: false,
 	      showFriends: true
 	    };
 	  },
 
-	  componentWillMount: function () {
-	    messageActions.getUnreadMessages();
-	  },
+	  // componentWillMount: function () {
+	  //   messageActions.getUnreadMessages();
+	  // },
 
 	  componentDidMount: function () {
 	    friendsStore.addChangeListener(this._onChangeEvent);
@@ -27486,8 +27486,8 @@
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      friends: friendsStore.getFriendData().friends,
-	      unread: messagesStore.getMessageData().unreadMessages
+	      friends: friendsStore.getFriendData().friends
+	      // unread: messagesStore.getMessageData().unreadMessages
 	    });
 	  },
 
@@ -27515,11 +27515,23 @@
 	    } else if (this.state.showFriends) {
 	        title = "Friends";
 	        friends = this.state.friends.map(function (person, id) {
-	          return React.createElement(
-	            'li',
-	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
-	            person.username
-	          );
+	          if (person.unread) {
+	            return React.createElement(
+	              'li',
+	              { key: id, className: 'highlight', onClick: that.seeFriendMessages.bind(null, person.username) },
+	              React.createElement(
+	                'strong',
+	                null,
+	                person.username
+	              )
+	            );
+	          } else {
+	            return React.createElement(
+	              'li',
+	              { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	              person.username
+	            );
+	          }
 	        });
 	        // Messages = null;
 	      }
@@ -27551,62 +27563,6 @@
 
 /***/ },
 /* 236 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var requestHelper = __webpack_require__(222);
-
-	var jwt = __webpack_require__(223).jwt;
-
-	var messageActions = {
-
-	  getMessages: function (username) {
-	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
-	      AppDispatcher.handleClientAction({
-	        actionType: "GET_MESSAGES",
-	        data: response.body.data
-	      });
-	    });
-	  },
-
-	  sendMessage: function (whoFor, message) {
-	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
-	      console.log('message data got', response.body.data);
-	      AppDispatcher.handleClientAction({
-	        actionType: "SENT_MESSAGE",
-	        data: response.body.data
-	      });
-	    });
-	  },
-
-	  readMessages: function (whoWith) {
-	    requestHelper.put('messages/read', { whoWith: whoWith }, jwt).end(function (err, response) {
-	      console.log('returning updated read message status', response.body.data);
-	      AppDispatcher.handleClientAction({
-	        actionType: "UPDATED_READ",
-	        data: response.body.data
-	      });
-	    });
-	  },
-
-	  getUnreadMessages: function () {
-	    console.log('getting the unread messages');
-	    requestHelper.get('messages/unread', jwt).end(function (err, response) {
-	      console.log('returning updated read message status', response.body.data);
-	      AppDispatcher.handleClientAction({
-	        actionType: "UNREAD_MESSAGES",
-	        data: response.body.data
-	      });
-	    });
-	  }
-
-	};
-
-	module.exports = messageActions;
-
-/***/ },
-/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -27678,7 +27634,118 @@
 	module.exports = friendsStore;
 
 /***/ },
+/* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var messageActions = {
+
+	  getMessages: function (username) {
+	    requestHelper.get('messages/getall/' + username, jwt).end(function (err, response) {
+	      AppDispatcher.handleClientAction({
+	        actionType: "GET_MESSAGES",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  sendMessage: function (whoFor, message) {
+	    requestHelper.post('messages/send', { to: whoFor, message: message }, jwt).end(function (err, response) {
+	      console.log('message data got', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "SENT_MESSAGE",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  readMessages: function (whoWith) {
+	    requestHelper.put('messages/read', { whoWith: whoWith }, jwt).end(function (err, response) {
+	      console.log('returning updated read message status', response.body.data);
+	      AppDispatcher.handleClientAction({
+	        actionType: "UPDATED_READ",
+	        data: response.body.data
+	      });
+	    });
+	  }
+
+	};
+
+	// getUnreadMessages: function () {
+	//   console.log('getting the unread messages');
+	//   requestHelper
+	//   .get('messages/unread', jwt)
+	//   .end(function (err, response) {
+	//     console.log('returning updated read message status',response.body.data);
+	//     AppDispatcher.handleClientAction({
+	//       actionType: "UNREAD_MESSAGES",
+	//       data: response.body.data
+	//     });
+	//   });
+	// }
+
+	module.exports = messageActions;
+
+/***/ },
 /* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var EventEmitter = __webpack_require__(232).EventEmitter;
+
+	var CHANGE_EVENT = "change";
+
+	var _messageDetails = {
+	  messages: []
+	  // unreadMessages: []
+	};
+
+	var messagesStore = Object.assign(new EventEmitter(), {
+
+	  getMessageData: function () {
+	    return _messageDetails;
+	  },
+
+	  emitChange: function () {
+	    this.emit(CHANGE_EVENT);
+	  },
+
+	  addChangeListener: function (callback) {
+	    this.addListener(CHANGE_EVENT, callback);
+	  },
+
+	  removeChangeListener: function (callback) {
+	    this.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	});
+
+	AppDispatcher.register(function (payload) {
+	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
+	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
+
+	  if (action.actionType === "GET_MESSAGES" || action.actionType === "UPDATED_READ" || action.actionType === "SENT_MESSAGE") {
+	    _messageDetails.messages = action.data;
+	    messagesStore.emitChange();
+	  }
+
+	  // if (action.actionType === "UNREAD_MESSAGES") {
+	  //   console.log('usernames got in store', action.data);
+	  //   _messageDetails.unreadMessages = action.data;
+	  //   messagesStore.emitChange();
+	  // }
+	});
+
+	module.exports = messagesStore;
+
+/***/ },
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -27687,8 +27754,8 @@
 	// TODO make a button to go back to the friends page
 
 	var friendActions = __webpack_require__(234);
-	var messageActions = __webpack_require__(236);
-	var messagesStore = __webpack_require__(239);
+	var messageActions = __webpack_require__(237);
+	var messagesStore = __webpack_require__(238);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27789,59 +27856,6 @@
 	module.exports = Chat;
 
 /***/ },
-/* 239 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var EventEmitter = __webpack_require__(232).EventEmitter;
-
-	var CHANGE_EVENT = "change";
-
-	var _messageDetails = {
-	  messages: [],
-	  unreadMessages: []
-	};
-
-	var messagesStore = Object.assign(new EventEmitter(), {
-
-	  getMessageData: function () {
-	    return _messageDetails;
-	  },
-
-	  emitChange: function () {
-	    this.emit(CHANGE_EVENT);
-	  },
-
-	  addChangeListener: function (callback) {
-	    this.addListener(CHANGE_EVENT, callback);
-	  },
-
-	  removeChangeListener: function (callback) {
-	    this.removeListener(CHANGE_EVENT, callback);
-	  }
-
-	});
-
-	AppDispatcher.register(function (payload) {
-	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
-	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
-
-	  if (action.actionType === "GET_MESSAGES" || action.actionType === "UPDATED_READ" || action.actionType === "SENT_MESSAGE") {
-	    _messageDetails.messages = action.data;
-	    messagesStore.emitChange();
-	  }
-
-	  if (action.actionType === "UNREAD_MESSAGES") {
-	    console.log('usernames got in store', action.data);
-	    _messageDetails.unreadMessages = action.data;
-	    messagesStore.emitChange();
-	  }
-	});
-
-	module.exports = messagesStore;
-
-/***/ },
 /* 240 */
 /***/ function(module, exports) {
 
@@ -27855,7 +27869,7 @@
 	// on clicking on a friend a user can chat to that one friend
 
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(237);
+	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27937,7 +27951,7 @@
 	// on clicking on a friend a user can chat to that one friend
 
 	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(237);
+	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;

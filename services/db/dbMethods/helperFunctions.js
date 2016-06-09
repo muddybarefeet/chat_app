@@ -31,7 +31,6 @@ module.exports = function (knex) {
       // where one of then ids is the users
     })
     .then(function (friendsRows) {
-      console.log(friendsRows);
       //look through the list of friends and extract the friend information
       friendsRows.forEach(function(element) {
         // find the friendId
@@ -76,7 +75,7 @@ module.exports = function (knex) {
           friendsData.notYetFriends[user.u_id] = user;
         }
       });
-      // console.log("in controller",friendsData);
+
       return friendsData;
 
     })
@@ -112,6 +111,21 @@ module.exports = function (knex) {
     })
     .catch(function (err) {
       console.log('err messages betwen user and friend', err);
+      throw err;
+    });
+  };
+
+  returnHash.getUnreadMessages = function (userId) {
+
+    return knex.select('sender_id')
+      .from('messages')
+      .where('reciever_id', userId)
+      .andWhere('has_been_read', false)
+    .then(function (selectedUserIds) {
+      return selectedUserIds;
+    })
+    .catch(function (err) {
+      console.log('err in getting a users unread messages from friends', err);
       throw err;
     });
   };

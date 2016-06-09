@@ -23,10 +23,6 @@ var Friends = React.createClass({
     };
   },
 
-  // componentWillMount: function () {
-  //   messageActions.getUnreadMessages();
-  // },
-
   componentDidMount: function () {
     friendsStore.addChangeListener(this._onChangeEvent);
   },
@@ -64,17 +60,15 @@ var Friends = React.createClass({
     if (this.state.chat) {
       title = "Chat with "+ this.state.userChatWith;
       messages = (<Chat username={this.state.userChatWith}></Chat>);
-      // Friends = null;
     } else if (this.state.showFriends) {
       title = "Friends";
       friends = this.state.friends.map(function(person, id) {
         if (person.unread) {
-          return <li key={id} className="highlight" onClick={that.seeFriendMessages.bind(null,person.username)}><strong>{person.username}</strong></li>;
+          return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}><strong style={{cursor: "pointer",color:"red"}}>{person.username}</strong></li>;
         } else {
           return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
         }
       });
-      // Messages = null;
     }
 
     return (

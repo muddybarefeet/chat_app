@@ -46,7 +46,7 @@ module.exports = function (knex) {
 
         // 1. if the user is the friendor check that they have not already been asked to be friends(pendingIn)
         // if they have then make them friends
-        // else put in pendingIn
+        // else put in pendingOut
         if (element.friendor === userId) {
           if (friendsData.pendingRequestIn[friendId] && !friendsData.friends[friendId]) {
             console.log('should come in this if if already in pending in');

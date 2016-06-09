@@ -27471,10 +27471,6 @@
 	    };
 	  },
 
-	  // componentWillMount: function () {
-	  //   messageActions.getUnreadMessages();
-	  // },
-
 	  componentDidMount: function () {
 	    friendsStore.addChangeListener(this._onChangeEvent);
 	  },
@@ -27511,30 +27507,28 @@
 	    if (this.state.chat) {
 	      title = "Chat with " + this.state.userChatWith;
 	      messages = React.createElement(Chat, { username: this.state.userChatWith });
-	      // Friends = null;
 	    } else if (this.state.showFriends) {
-	        title = "Friends";
-	        friends = this.state.friends.map(function (person, id) {
-	          if (person.unread) {
-	            return React.createElement(
-	              'li',
-	              { key: id, className: 'highlight', onClick: that.seeFriendMessages.bind(null, person.username) },
-	              React.createElement(
-	                'strong',
-	                null,
-	                person.username
-	              )
-	            );
-	          } else {
-	            return React.createElement(
-	              'li',
-	              { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	      title = "Friends";
+	      friends = this.state.friends.map(function (person, id) {
+	        if (person.unread) {
+	          return React.createElement(
+	            'li',
+	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	            React.createElement(
+	              'strong',
+	              { style: { cursor: "pointer", color: "red" } },
 	              person.username
-	            );
-	          }
-	        });
-	        // Messages = null;
-	      }
+	            )
+	          );
+	        } else {
+	          return React.createElement(
+	            'li',
+	            { key: id, onClick: that.seeFriendMessages.bind(null, person.username) },
+	            person.username
+	          );
+	        }
+	      });
+	    }
 
 	    return React.createElement(
 	      'div',

@@ -5,18 +5,19 @@ My own implementation of a chat app to have a better understanding of the intric
 
 Current todo:
 
-1. get onClicks getting the data from the element
-2. so can see a friend in the friends tab and then can get click and get message history and send messages
+*click on room to see history
+*show that there are unread messages in a room
 
-How continue:
+*page to join rooms (see all the rooms that can be joined(public rooms not in))
 
-- once have messaging then can show when have unread messages from friends
-
-Rooms:
-Make show rooms page(with create new room feautre) and a join rooms page like addFriends
-
-*style and clean up get friends function
+Next week:
+*make find new friends a seach bar and then add to the friends tab
+*in friends have friends listed in alphabetical order
+* have a sub tab on friends to see pending in and out requests(move pending tab)
 
 
 Extra:
 *Add in a search feature for add friends and rooms so not dispaly all to the user at once
+*add in reject friend request (have route but not hooked up or tested)
+*add invite users and a respecive search route for that
+  *have in create a room and in room itself can add a new user to a room

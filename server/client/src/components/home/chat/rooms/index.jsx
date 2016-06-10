@@ -2,55 +2,47 @@
 // on clicking on a friend a user can chat to that one friend
 // TODO: unfriend button 
 var roomActions = require('./../../../../actions/roomActions.js');
-// var friendsStore = require('./../../../../stores/friendsStore.js');
+var roomStore = require('./../../../../stores/roomStore.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
 
-var Friends = React.createClass({
+var Rooms = React.createClass({
 
   getInitialState: function () {
     return {
-      getRooms: roomActons.getRooms(),
-      rooms: true,
-      showRoom: false
+      showRooms: true,
+      showChatRoom: false,
+      rooms: roomActions.getRooms()
     };
   },
 
   componentDidMount: function () {
-    friendsStore.addChangeListener(this._onChangeEvent);
+    roomStore.addChangeListener(this._onChangeEvent);
   },
 
   componentWillUnmount: function () {
-    friendsStore.removeChangeListener(this._onChangeEvent);
+    roomStore.removeChangeListener(this._onChangeEvent);
   },
 
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
     this.setState({
-      friends: friendsStore.getFriendData().friends
+      rooms: roomStore.getRoomData().rooms
     });
   },
-
-  seeFriendMessages: function (username) {
-    // set the state to show the chat component and from there trigger request to get all messages
-    this.setState({
-
-    });
-  },
-
 
   render: function () {
 
     var that = this;
-    var rooms;
+    var rooms = null;
     var title;
 
     // if chat is false in state then dont show else do show
-    if (this.state.rooms) {
+    if (this.state.showRooms) {
       title = "Rooms";
 
-    } else if (this.state.showRoom) {
+    } else if (this.state.showChatRoom) {
       title = "This is 1 room!"; //change to being the name of the room
       // friends = this.state.friends.map(function(person, id) {
       //   if (person.unread) {
@@ -66,8 +58,7 @@ var Friends = React.createClass({
         <div className="container">
           <h1>{title}</h1>
           <ul>  
-            {friends}
-            {messages}
+            {rooms}
           </ul>
         </div>
       </div>

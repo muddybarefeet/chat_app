@@ -27274,6 +27274,16 @@
 	    friendActions.getFriends();
 	  },
 
+	  getRooms: function () {
+	    this.setState({
+	      // set the state to update the view
+	      friends: false,
+	      rooms: true,
+	      add: false,
+	      pending: false
+	    });
+	  },
+
 	  render: function () {
 
 	    var friends = this.state.friends;
@@ -27319,7 +27329,7 @@
 	            { className: 'col-md-3' },
 	            React.createElement(
 	              'button',
-	              { type: 'button', className: 'btn btn-default' },
+	              { type: 'button', className: 'btn btn-default', onClick: this.getRooms },
 	              'Rooms'
 	            )
 	          ),
@@ -27863,53 +27873,48 @@
 	// on clicking on a friend a user can chat to that one friend
 	// TODO: unfriend button
 	var roomActions = __webpack_require__(243);
-	// var friendsStore = require('./../../../../stores/friendsStore.js');
+	var roomStore = __webpack_require__(244);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 
-	var Friends = React.createClass({
-	  displayName: 'Friends',
+	var Rooms = React.createClass({
+	  displayName: 'Rooms',
 
 
 	  getInitialState: function () {
 	    return {
-	      getRooms: roomActons.getRooms(),
-	      rooms: true,
-	      showRoom: false
+	      showRooms: true,
+	      showChatRoom: false,
+	      rooms: roomActions.getRooms()
 	    };
 	  },
 
 	  componentDidMount: function () {
-	    friendsStore.addChangeListener(this._onChangeEvent);
+	    roomStore.addChangeListener(this._onChangeEvent);
 	  },
 
 	  componentWillUnmount: function () {
-	    friendsStore.removeChangeListener(this._onChangeEvent);
+	    roomStore.removeChangeListener(this._onChangeEvent);
 	  },
 
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      friends: friendsStore.getFriendData().friends
+	      rooms: roomStore.getRoomData().rooms
 	    });
-	  },
-
-	  seeFriendMessages: function (username) {
-	    // set the state to show the chat component and from there trigger request to get all messages
-	    this.setState({});
 	  },
 
 	  render: function () {
 
 	    var that = this;
-	    var rooms;
+	    var rooms = null;
 	    var title;
 
 	    // if chat is false in state then dont show else do show
-	    if (this.state.rooms) {
+	    if (this.state.showRooms) {
 	      title = "Rooms";
-	    } else if (this.state.showRoom) {
+	    } else if (this.state.showChatRoom) {
 	      title = "This is 1 room!"; //change to being the name of the room
 	      // friends = this.state.friends.map(function(person, id) {
 	      //   if (person.unread) {
@@ -27934,8 +27939,7 @@
 	        React.createElement(
 	          'ul',
 	          null,
-	          friends,
-	          messages
+	          rooms
 	        )
 	      )
 	    );
@@ -28199,6 +28203,66 @@
 	};
 
 	module.exports = roomActions;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var EventEmitter = __webpack_require__(232).EventEmitter;
+
+	var CHANGE_EVENT = "change";
+
+	var _roomDetails = {
+	  rooms: []
+	};
+
+	var roomStore = Object.assign(new EventEmitter(), {
+
+	  getRoomData: function () {
+	    return _roomDetails;
+	  },
+
+	  emitChange: function () {
+	    this.emit(CHANGE_EVENT);
+	  },
+
+	  addChangeListener: function (callback) {
+	    this.addListener(CHANGE_EVENT, callback);
+	  },
+
+	  removeChangeListener: function (callback) {
+	    this.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	});
+
+	AppDispatcher.register(function (payload) {
+	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
+	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
+	  // if(action.actionType === "ADD_FRIEND") {
+	  //   console.log('action', action.data);
+	  //   //think about if want anything back to the user
+	  // }
+
+	  if (action.actionType === "GET_ROOMS") {
+	    // split the db return into the correct bucket
+	    console.log('in get rooms store', action.data);
+
+	    roomStore.emitChange();
+	  }
+
+	  // if (action.actionType === "USER_LOGIN_ERROR") {
+
+	  // }
+
+	  // if (action.actionType === "USER_SIGNUP_ERROR") {
+
+	  // }
+	});
+
+	module.exports = roomStore;
 
 /***/ }
 /******/ ]);

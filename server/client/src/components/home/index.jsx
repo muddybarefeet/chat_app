@@ -67,6 +67,16 @@ var Main = React.createClass({
     friendActions.getFriends();
   },
 
+  getRooms: function () {
+    this.setState({
+      // set the state to update the view
+      friends: false,
+      rooms : true,
+      add: false,
+      pending: false
+    });
+  },
+
   render: function () {
 
     var friends = this.state.friends;
@@ -97,7 +107,7 @@ var Main = React.createClass({
                   <button type="button" className="btn btn-default" onClick={this.getFriends}>Friends</button>
                 </li>
                 <li className="col-md-3">
-                  <button type="button" className="btn btn-default">Rooms</button>
+                  <button type="button" className="btn btn-default" onClick={this.getRooms}>Rooms</button>
                 </li>
                 <li className="col-md-3">
                   <button type="button" className="btn btn-default" onClick={this.addFriendsPage}>Find New Friends</button>

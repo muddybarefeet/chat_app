@@ -27905,15 +27905,33 @@
 	    });
 	  },
 
+	  makeRoom: function () {
+	    // userId, roomName, status
+	    // roomActions.makeRoom();
+	    // this.setState({
+	    //   create:
+	    // });
+	    console.log('this is a room being made');
+	  },
+
 	  render: function () {
 
 	    var that = this;
-	    var rooms = null;
+	    var rooms;
 	    var title;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.showRooms) {
 	      title = "Rooms";
+	      if (this.state.rooms) {
+	        rooms = this.state.rooms.map(function (room, id) {
+	          return React.createElement(
+	            'li',
+	            { key: id },
+	            room.name
+	          );
+	        });
+	      }
 	    } else if (this.state.showChatRoom) {
 	      title = "This is 1 room!"; //change to being the name of the room
 	      // friends = this.state.friends.map(function(person, id) {
@@ -27935,6 +27953,33 @@
 	          'h1',
 	          null,
 	          title
+	        ),
+	        React.createElement('i', { className: 'fa fa-plus fa-2x', 'aria-hidden': 'true', onClick: this.makeRoom }),
+	        React.createElement('input', { type: 'name', className: 'form-control', id: 'name', placeholder: 'Room Name' }),
+	        React.createElement('input', { type: 'name', className: 'form-control', id: 'username', placeholder: 'Invite' }),
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'div',
+	            { className: 'radio' },
+	            React.createElement(
+	              'label',
+	              null,
+	              React.createElement('input', { type: 'radio', name: 'optradio' }),
+	              'Public'
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'radio' },
+	            React.createElement(
+	              'label',
+	              null,
+	              React.createElement('input', { type: 'radio', name: 'optradio' }),
+	              'Private'
+	            )
+	          )
 	        ),
 	        React.createElement(
 	          'ul',
@@ -28173,9 +28218,9 @@
 	var roomActions = {
 
 	  getRooms: function (whoFor) {
-
+	    console.log('getting rooms! not yet');
 	    // requestHelper
-	    // .post('friends/add', { recipient: whoFor },jwt)
+	    // .post('rooms/joined', { recipient: whoFor },jwt)
 	    // .end(function (err, response) {
 
 	    //   if (response.status === 200) {
@@ -28191,13 +28236,9 @@
 
 	  makeRoom: function (friendToConfirm) {
 
-	    // requestHelper
-	    // .post('friends/confirm', { toRespond: friendToConfirm }, jwt)
-	    // .end(function (err, response) {
-	    //   console.log('response from db on confiming/reject friend a friend', response);
-
-	    // });
-
+	    requestHelper.post('rooms/create', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	    });
 	  }
 
 	};

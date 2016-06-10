@@ -32,16 +32,29 @@ var Rooms = React.createClass({
     });
   },
 
+  makeRoom: function () {
+    // userId, roomName, status
+    // roomActions.makeRoom();
+    // this.setState({
+    //   create: 
+    // });
+    console.log('this is a room being made');
+  },
+
   render: function () {
 
     var that = this;
-    var rooms = null;
+    var rooms;
     var title;
 
     // if chat is false in state then dont show else do show
     if (this.state.showRooms) {
       title = "Rooms";
-
+      if (this.state.rooms) {
+        rooms = this.state.rooms.map(function (room, id) {
+          return (<li key={id}>{room.name}</li>);
+        });
+      }
     } else if (this.state.showChatRoom) {
       title = "This is 1 room!"; //change to being the name of the room
       // friends = this.state.friends.map(function(person, id) {
@@ -56,10 +69,24 @@ var Rooms = React.createClass({
     return (
       <div>
         <div className="container">
+
           <h1>{title}</h1>
+          <i className="fa fa-plus fa-2x" aria-hidden="true" onClick={this.makeRoom}></i>
+          <input type="name" className="form-control" id="name" placeholder="Room Name" />
+          <input type="name" className="form-control" id="username" placeholder="Invite" />
+          <div>
+            <div className="radio">
+              <label><input type="radio" name="optradio" />Public</label>
+            </div>
+            <div className="radio">
+              <label><input type="radio" name="optradio" />Private</label>
+            </div>
+          </div>
+
           <ul>  
             {rooms}
           </ul>
+
         </div>
       </div>
     );

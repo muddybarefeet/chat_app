@@ -7,9 +7,9 @@ var jwt = require('../constants.js').jwt;
 var roomActions = {
 
   getRooms: function (whoFor) {
-
+    console.log('getting rooms! not yet');
     // requestHelper
-    // .post('friends/add', { recipient: whoFor },jwt)
+    // .post('rooms/joined', { recipient: whoFor },jwt)
     // .end(function (err, response) {
 
     //   if (response.status === 200) {
@@ -25,12 +25,12 @@ var roomActions = {
 
   makeRoom: function (friendToConfirm) {
 
-    // requestHelper
-    // .post('friends/confirm', { toRespond: friendToConfirm }, jwt)
-    // .end(function (err, response) {
-    //   console.log('response from db on confiming/reject friend a friend', response);
+    requestHelper
+    .post('rooms/create', { toRespond: friendToConfirm }, jwt)
+    .end(function (err, response) {
+      console.log('response from db on confiming/reject friend a friend', response);
 
-    // });
+    });
 
   }
 

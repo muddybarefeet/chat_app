@@ -32,13 +32,22 @@ var Rooms = React.createClass({
     });
   },
 
+  addName: function (event) {
+    this.setState({
+      roomName: event.target.value
+    });
+  },
+
+  addType: function (type) {
+    console.log('this event is a radio', event);
+    this.setState({
+      roomStatus: type
+    })
+  },
+
   makeRoom: function () {
-    // userId, roomName, status
-    // roomActions.makeRoom();
-    // this.setState({
-    //   create: 
-    // });
-    console.log('this is a room being made');
+    console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
+    // roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
   },
 
   render: function () {
@@ -72,16 +81,17 @@ var Rooms = React.createClass({
 
           <h1>{title}</h1>
           <i className="fa fa-plus fa-2x" aria-hidden="true" onClick={this.makeRoom}></i>
-          <input type="name" className="form-control" id="name" placeholder="Room Name" />
-          <input type="name" className="form-control" id="username" placeholder="Invite" />
+          <input type="name" className="form-control" id="name" placeholder="Room Name" onChange={this.addName}/>
+          {/*<input type="name" className="form-control" id="username" placeholder="Invite User Type a Username" />*/}
           <div>
             <div className="radio">
-              <label><input type="radio" name="optradio" />Public</label>
+              <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"public")}/>Public</label>
             </div>
             <div className="radio">
-              <label><input type="radio" name="optradio" />Private</label>
+              <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"private")}/>Private</label>
             </div>
           </div>
+          <button type="button" className="btn btn-primary" onClick={this.makeRoom}>Create</button>
 
           <ul>  
             {rooms}

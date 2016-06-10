@@ -27905,13 +27905,22 @@
 	    });
 	  },
 
+	  addName: function (event) {
+	    this.setState({
+	      roomName: event.target.value
+	    });
+	  },
+
+	  addType: function (type) {
+	    console.log('this event is a radio', event);
+	    this.setState({
+	      roomStatus: type
+	    });
+	  },
+
 	  makeRoom: function () {
-	    // userId, roomName, status
-	    // roomActions.makeRoom();
-	    // this.setState({
-	    //   create:
-	    // });
-	    console.log('this is a room being made');
+	    console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
+	    // roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
 	  },
 
 	  render: function () {
@@ -27955,8 +27964,7 @@
 	          title
 	        ),
 	        React.createElement('i', { className: 'fa fa-plus fa-2x', 'aria-hidden': 'true', onClick: this.makeRoom }),
-	        React.createElement('input', { type: 'name', className: 'form-control', id: 'name', placeholder: 'Room Name' }),
-	        React.createElement('input', { type: 'name', className: 'form-control', id: 'username', placeholder: 'Invite' }),
+	        React.createElement('input', { type: 'name', className: 'form-control', id: 'name', placeholder: 'Room Name', onChange: this.addName }),
 	        React.createElement(
 	          'div',
 	          null,
@@ -27966,7 +27974,7 @@
 	            React.createElement(
 	              'label',
 	              null,
-	              React.createElement('input', { type: 'radio', name: 'optradio' }),
+	              React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "public") }),
 	              'Public'
 	            )
 	          ),
@@ -27976,10 +27984,15 @@
 	            React.createElement(
 	              'label',
 	              null,
-	              React.createElement('input', { type: 'radio', name: 'optradio' }),
+	              React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "private") }),
 	              'Private'
 	            )
 	          )
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'button', className: 'btn btn-primary', onClick: this.makeRoom },
+	          'Create'
 	        ),
 	        React.createElement(
 	          'ul',

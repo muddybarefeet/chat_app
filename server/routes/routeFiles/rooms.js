@@ -11,10 +11,10 @@ module.exports = function (services) {
   router.route('/create')
     .post(function (req, res) {
 
-      console.log('in post to add friend');
-
       var userId = req.__userId;
-      var requestFor = req.body.recipient;
+      var roomName = req.body.name;
+      var status = req.body.status;
+      console.log('in post to add friend route', roomName, status);
 
       services.db.rooms.createRoom(userId, roomName, status)
       .then(function(response) {

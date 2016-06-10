@@ -146,6 +146,28 @@ module.exports = function (knex) {
     });
   };
 
+  returnHash.getRooms = function (userId) {
+    var roomData = [];
+    //select all the rows from the users rooms table that is in and then get this data from the rooms table
+    return knex.select('room_id')
+    .from('users_rooms')
+    .where('user_id', userId)
+    .andWhere('accepted', true)
+    .then(function (returnRows) {
+      //flatten the array of into one hash
+      returnRows.forEach(function (id) {
+        roomData.push(id.room_id);
+      });
+      return knex.select()
+      .from('rooms')
+      .whereIn('r_id', roomData);
+    })
+    .catch(function (err) {
+      console.log('err in see rooms part of', err);
+      throw err;
+    });
+  };
+
   return returnHash;
 
 };

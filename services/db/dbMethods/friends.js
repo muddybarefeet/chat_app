@@ -105,7 +105,6 @@ module.exports = function (knex, helpers) {
       return helpers.getUnreadMessages(userId);
     })
     .then(function (unreads) {
-      console.log('2', unreads);
       unread = unreads;
       for (var key in friendsData.friends) {
         // if there is a key of the users id 

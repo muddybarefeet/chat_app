@@ -12,8 +12,6 @@ module.exports = function (services) {
   router.route('/add')
     .post(function (req, res) {
 
-      console.log('in post to add friend');
-
       var userId = req.__userId;
       var requestFor = req.body.recipient;
 

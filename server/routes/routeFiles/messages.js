@@ -17,8 +17,6 @@ module.exports = function (services) {
   router.route('/send')
     .post(function (req, res) {
 
-      console.log('in post to add friend',req.body);
-
       var userId = req.__userId;
       var messageFor = req.body.to;
       var message = req.body.message;

@@ -42,9 +42,11 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  // if (action.actionType === "USER_LOGIN_ERROR") {
-
-  // }
+  if (action.actionType === "MAKE_ROOM") {
+    console.log('in store', action.data);
+    _roomDetails.rooms = action.data;
+    roomStore.emitChange();
+  }
 
   // if (action.actionType === "USER_SIGNUP_ERROR") {
     

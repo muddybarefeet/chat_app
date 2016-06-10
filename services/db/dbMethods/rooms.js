@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 
-module.exports = function (knex) {
+module.exports = function (knex, helpers) {
 
   var fnHash = {};
 
@@ -16,6 +16,7 @@ module.exports = function (knex) {
       creator: userId
     }], '*')
     .then(function (insertedRowArray) {
+      // insert the user who made the room in to the users_rooms table
       return knex('users_rooms')
       .insert([{
         room_id: insertedRowArray[0].r_id,
@@ -24,7 +25,9 @@ module.exports = function (knex) {
       }], '*');
     })
     .then(function (arrayOfInsertedUserData) {
-      return arrayOfInsertedUserData;
+      // return all the rooms to the user
+      console.log('get rooms', helpers.getRooms(userId));
+      return helpers.getRooms(userId);
     })
     .catch(function (err) {
       console.log('error in making a public room ', err);
@@ -220,26 +223,7 @@ module.exports = function (knex) {
   //---------------------------
   //users_rooms get all rows you are in and then get the room data accociated with these inputs
   fnHash.seeRoomsIn = function (userId) {
-    var roomData = [];
-    //select all the rows from the users rooms table that is in and then get this data from the rooms table
-    return knex.select('room_id')
-    .from('users_rooms')
-    .where('user_id', userId)
-    .andWhere('accepted', true)
-    .then(function (returnRows) {
-      //flatten the array of into one hash
-      returnRows.forEach(function (id) {
-        roomData.push(id.room_id);
-      });
-      return knex.select()
-      .from('rooms')
-      .whereIn('r_id', roomData);
-    })
-    .catch(function (err) {
-      console.log('err in see rooms part of', err);
-      throw err;
-    });
-
+    return helpers.getRooms(userId);
   };
 
   //send message

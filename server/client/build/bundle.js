@@ -27900,6 +27900,7 @@
 
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
+	    console.log('in component', roomStore.getRoomData().rooms);
 	    this.setState({
 	      rooms: roomStore.getRoomData().rooms
 	    });
@@ -27920,7 +27921,7 @@
 
 	  makeRoom: function () {
 	    console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
-	    // roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
+	    roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
 	  },
 
 	  render: function () {
@@ -28230,6 +28231,17 @@
 
 	var roomActions = {
 
+	  makeRoom: function (roomName, roomStatus) {
+
+	    requestHelper.post('rooms/create', { name: roomName, status: roomStatus }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	      AppDispatcher.handleServerAction({
+	        actionType: "MAKE_ROOM",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
 	  getRooms: function (whoFor) {
 	    console.log('getting rooms! not yet');
 	    // requestHelper
@@ -28245,13 +28257,6 @@
 	    //     console.log('err', err);
 	    //   }
 	    // });
-	  },
-
-	  makeRoom: function (friendToConfirm) {
-
-	    requestHelper.post('rooms/create', { toRespond: friendToConfirm }, jwt).end(function (err, response) {
-	      console.log('response from db on confiming/reject friend a friend', response);
-	    });
 	  }
 
 	};
@@ -28307,9 +28312,11 @@
 	    roomStore.emitChange();
 	  }
 
-	  // if (action.actionType === "USER_LOGIN_ERROR") {
-
-	  // }
+	  if (action.actionType === "MAKE_ROOM") {
+	    console.log('in store', action.data);
+	    _roomDetails.rooms = action.data;
+	    roomStore.emitChange();
+	  }
 
 	  // if (action.actionType === "USER_SIGNUP_ERROR") {
 

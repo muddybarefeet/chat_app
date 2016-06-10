@@ -27,6 +27,7 @@ var Rooms = React.createClass({
 
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
+    console.log('in component', roomStore.getRoomData().rooms);
     this.setState({
       rooms: roomStore.getRoomData().rooms
     });
@@ -47,7 +48,7 @@ var Rooms = React.createClass({
 
   makeRoom: function () {
     console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
-    // roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
+    roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
   },
 
   render: function () {

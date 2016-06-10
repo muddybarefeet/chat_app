@@ -35,15 +35,8 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
   //   //think about if want anything back to the user
   // }
 
-  if (action.actionType === "GET_ROOMS") {
+  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
     // split the db return into the correct bucket
-    console.log('in get rooms store',action.data);
-
-    roomStore.emitChange();
-  }
-
-  if (action.actionType === "MAKE_ROOM") {
-    console.log('in store', action.data);
     _roomDetails.rooms = action.data;
     roomStore.emitChange();
   }

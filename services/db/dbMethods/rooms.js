@@ -36,7 +36,15 @@ module.exports = function (knex, helpers) {
 
   };
 
+  //see all rooms joined
+  //---------------------------
+  //users_rooms get all rows you are in and then get the room data accociated with these inputs
+  fnHash.getRooms = function (userId) {
+    return helpers.getRooms(userId);
+  };
+
   //invite users to join a room
+  //--------------------------
   fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
 
     var usersArr;
@@ -218,13 +226,6 @@ module.exports = function (knex, helpers) {
 
   };
 
-
-  //see all rooms joined
-  //---------------------------
-  //users_rooms get all rows you are in and then get the room data accociated with these inputs
-  fnHash.seeRoomsIn = function (userId) {
-    return helpers.getRooms(userId);
-  };
 
   //send message
   fnHash.sendMessage = function (userId, roomName, message) {

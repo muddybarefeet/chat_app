@@ -28242,21 +28242,18 @@
 	    });
 	  },
 
-	  getRooms: function (whoFor) {
-	    console.log('getting rooms! not yet');
-	    // requestHelper
-	    // .post('rooms/joined', { recipient: whoFor },jwt)
-	    // .end(function (err, response) {
-
-	    //   if (response.status === 200) {
-	    //     AppDispatcher.handleServerAction({
-	    //       actionType: "ADD_FRIEND",
-	    //       data: response.data
-	    //     });
-	    //   } else {
-	    //     console.log('err', err);
-	    //   }
-	    // });
+	  getRooms: function () {
+	    console.log('in get room action');
+	    requestHelper.get('rooms/joined', jwt).end(function (err, response) {
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "GET_ROOMS",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
 	  }
 
 	};
@@ -28305,15 +28302,8 @@
 	  //   //think about if want anything back to the user
 	  // }
 
-	  if (action.actionType === "GET_ROOMS") {
+	  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
 	    // split the db return into the correct bucket
-	    console.log('in get rooms store', action.data);
-
-	    roomStore.emitChange();
-	  }
-
-	  if (action.actionType === "MAKE_ROOM") {
-	    console.log('in store', action.data);
 	    _roomDetails.rooms = action.data;
 	    roomStore.emitChange();
 	  }

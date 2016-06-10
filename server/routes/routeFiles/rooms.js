@@ -31,6 +31,28 @@ module.exports = function (services) {
 
     });
 
+  // get the rooms that joined rooms in
+  //-----------------------------------
+  router.route('/joined')
+    .get(function (req, res) {
+
+      var userId = req.__userId;
+
+      services.db.rooms.getRooms(userId)
+      .then(function (response) {
+        res.json({
+          data: response
+        });
+      })
+      .catch(function(err){
+        console.log('err', err);
+        res.status(404).json({
+            message: err.message
+        });
+      });
+
+    });
+
   //invite users to a room
   //-----------------------------------
   router.route('/invite')
@@ -105,28 +127,6 @@ module.exports = function (services) {
       var userId = req.__userId;
 
       services.db.rooms.notJoinedYet(userId)
-      .then(function (response) {
-        res.json({
-          data: response
-        });
-      })
-      .catch(function(err){
-        console.log('err', err);
-        res.status(404).json({
-            message: err.message
-        });
-      });
-
-    });
-
-  // get the rooms that joined rooms in
-  //-----------------------------------
-  router.route('/joined')
-    .get(function (req, res) {
-
-      var userId = req.__userId;
-
-      services.db.rooms.seeRoomsIn(userId)
       .then(function (response) {
         res.json({
           data: response

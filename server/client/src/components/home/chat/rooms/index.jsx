@@ -1,12 +1,8 @@
 //page to get the users friends and display them on the page
 // on clicking on a friend a user can chat to that one friend
 // TODO: unfriend button 
-var friendActions = require('./../../../../actions/friendActions.js');
-var friendsStore = require('./../../../../stores/friendsStore.js');
-var messageActions = require('./../../../../actions/messageActions.js');
-var messagesStore = require('./../../../../stores/messagesStore.js');
-
-var Rooms = require('./chat.jsx');
+var roomActions = require('./../../../../actions/roomActions.js');
+// var friendsStore = require('./../../../../stores/friendsStore.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -15,7 +11,8 @@ var Friends = React.createClass({
 
   getInitialState: function () {
     return {
-      showRooms: true,
+      getRooms: roomActons.getRooms(),
+      rooms: true,
       showRoom: false
     };
   },

@@ -27862,12 +27862,8 @@
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 	// TODO: unfriend button
-	var friendActions = __webpack_require__(234);
-	var friendsStore = __webpack_require__(236);
-	var messageActions = __webpack_require__(237);
-	var messagesStore = __webpack_require__(238);
-
-	var Rooms = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./chat.jsx\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var roomActions = __webpack_require__(243);
+	// var friendsStore = require('./../../../../stores/friendsStore.js');
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -27878,7 +27874,8 @@
 
 	  getInitialState: function () {
 	    return {
-	      showRooms: true,
+	      getRooms: roomActons.getRooms(),
+	      rooms: true,
 	      showRoom: false
 	    };
 	  },
@@ -28158,6 +28155,50 @@
 	});
 
 	module.exports = Pending;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var roomActions = {
+
+	  getRooms: function (whoFor) {
+
+	    // requestHelper
+	    // .post('friends/add', { recipient: whoFor },jwt)
+	    // .end(function (err, response) {
+
+	    //   if (response.status === 200) {
+	    //     AppDispatcher.handleServerAction({
+	    //       actionType: "ADD_FRIEND",
+	    //       data: response.data
+	    //     });
+	    //   } else {
+	    //     console.log('err', err);
+	    //   }
+	    // });
+	  },
+
+	  makeRoom: function (friendToConfirm) {
+
+	    // requestHelper
+	    // .post('friends/confirm', { toRespond: friendToConfirm }, jwt)
+	    // .end(function (err, response) {
+	    //   console.log('response from db on confiming/reject friend a friend', response);
+
+	    // });
+
+	  }
+
+	};
+
+	module.exports = roomActions;
 
 /***/ }
 /******/ ]);

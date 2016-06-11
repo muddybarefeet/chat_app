@@ -5,7 +5,6 @@ My own implementation of a chat app to have a better understanding of the intric
 
 Current todo:
 
-*send and recieve messages
 *show that there are unread messages in a room
 *page to join rooms (see all the rooms that can be joined(public rooms not in))
 *add update read messages in chat

@@ -31,9 +31,9 @@ var messageActions = {
 
   readMessages: function (whoWith) {
     requestHelper
-    .put('messages/read', { whoWith: whoWith }, jwt)
+    .put('messages/read/'+ whoWith, jwt)
     .end(function (err, response) {
-      console.log('returning updated read message status',response.body.data);
+      console.log('returning updated read message status',response);
       AppDispatcher.handleClientAction({
         actionType: "UPDATED_READ",
         data: response.body.data

@@ -27666,8 +27666,8 @@
 	  },
 
 	  readMessages: function (whoWith) {
-	    requestHelper.put('messages/read', { whoWith: whoWith }, jwt).end(function (err, response) {
-	      console.log('returning updated read message status', response.body.data);
+	    requestHelper.put('messages/read/' + whoWith, jwt).end(function (err, response) {
+	      console.log('returning updated read message status', response);
 	      AppDispatcher.handleClientAction({
 	        actionType: "UPDATED_READ",
 	        data: response.body.data
@@ -27755,8 +27755,7 @@
 	  getInitialState: function () {
 	    return {
 	      // trigger get all message function
-	      messages: messagesStore.getMessageData().messages,
-	      firstRender: true
+	      messages: messagesStore.getMessageData().messages
 	    };
 	  },
 
@@ -27766,6 +27765,7 @@
 
 	  componentDidMount: function () {
 	    messagesStore.addChangeListener(this._onChangeEvent);
+	    messageActions.readMessages(this.props.username);
 	  },
 
 	  componentWillUnmount: function () {
@@ -27778,14 +27778,6 @@
 	      // save the messages in the state
 	      messages: messagesStore.getMessageData().messages
 	    });
-	    if (this.state.firstRender) {
-	      // trigger function to update the unread messages to read
-	      // only trigger after initially opened the page and loaded data
-	      messageActions.readMessages(this.props.username);
-	      this.setState({
-	        firstRender: false
-	      });
-	    }
 	  },
 
 	  // TODO
@@ -27815,9 +27807,8 @@
 
 	    if (this.state.messages) {
 	      messages = this.state.messages.map(function (message, id) {
-	        console.log('messages in componnt', message);
 	        // if the message has not been read then it needs to be highlighted
-	        if (message.has_been_read) {
+	        if (!message.has_been_read) {
 	          return React.createElement(
 	            'li',
 	            { key: id, style: { color: "red" } },
@@ -27827,7 +27818,7 @@
 	              message.message
 	            )
 	          );
-	        } else if (!message.has_been_read) {
+	        } else if (message.has_been_read) {
 	          return React.createElement(
 	            'li',
 	            { key: id },

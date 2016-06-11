@@ -8,6 +8,10 @@ module.exports = function (services) {
     .param('username', function (req, res, next, username) {
       req.username = username;
       next();
+    })
+    .param('whoWith', function (req, res, next, whoWith) {
+      req.whoWith = whoWith;
+      next();
     });
 
   router.use(checkAuth);
@@ -39,14 +43,13 @@ module.exports = function (services) {
 
   //mark a massage as read
   //-----------------------------------
-  router.route('/read')
+  router.route('/read/:whoWith')
     .put(function (req, res) {
       var userId = req.__userId;
-      var whoWith = req.body.whoWith;
+      var whoWith = req.whoWith;
 
       services.db.messages.updateMessageStatus(userId, whoWith)
       .then(function (response) {
-        console.log('response in reading messages', response);
         res.json({
           data: response
         });
@@ -81,7 +84,6 @@ module.exports = function (services) {
 
       });
 
-
-
   return router;
+
 };

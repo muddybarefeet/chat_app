@@ -36,16 +36,17 @@ var Room = React.createClass({
   },
 
   handleChange: function(event){
+    console.log('writing message');
     // if the key was not enter then save the content of what is typed to the state
     this.setState({
       value: event.target.value
     });
   },
 
-  sendRoomMessage: function () {
+  sendRoomMessage: function (event) {
     if(event.key === 'Enter'){
       console.log('sending message', this.props.roomName, this.state.value);
-      // roomActions.sendMessage(this.props.roomName,this.state.value);
+      roomActions.sendMessage(this.props.roomName,this.state.value);
       this.setState({
         value: ""
       });

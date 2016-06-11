@@ -42,7 +42,7 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  if (action.actionType === "GET_MESSAGES") {
+  if (action.actionType === "SEND_MESSAGE") {
     _roomDetails.messages = action.data;
     roomStore.emitChange();
   }

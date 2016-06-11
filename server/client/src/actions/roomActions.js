@@ -37,20 +37,20 @@ var roomActions = {
     });
   },
 
-  sendMessage: function () {
-    // console.log('in get room action');
-    // requestHelper
-    // .post('rooms/send', jwt)
-    // .end(function (err, response) {
-    //   if (response.status === 200) {
-    //     AppDispatcher.handleServerAction({
-    //       actionType: "SEND_MESSAGES",
-    //       data: response.body.data
-    //     });
-    //   } else {
-    //     console.log('err', err);
-    //   }
-    // });
+  sendMessage: function (name,message) {
+    console.log('in get send message action');
+    requestHelper
+    .post('rooms/send', {roomName:name, message:message}, jwt)
+    .end(function (err, response) {
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "SEND_MESSAGE",
+          data: response.body.data
+        });
+      } else {
+        console.log('err', err);
+      }
+    });
   },
 
   getMessages: function (roomName) {

@@ -5,10 +5,10 @@ My own implementation of a chat app to have a better understanding of the intric
 
 Current todo:
 
-*click on room to see history
+*send and recieve messages
 *show that there are unread messages in a room
-
 *page to join rooms (see all the rooms that can be joined(public rooms not in))
+*add update read messages in chat
 
 Next week:
 *make find new friends a seach bar and then add to the friends tab

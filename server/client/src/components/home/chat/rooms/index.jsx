@@ -7,13 +7,17 @@ var roomStore = require('./../../../../stores/roomStore.js');
 var React = require('react');
 var Link = require('react-router').Link;
 
+var Room = require('./room.jsx');
+
 var Rooms = React.createClass({
 
   getInitialState: function () {
     return {
       showRooms: true,
       showChatRoom: false,
-      rooms: roomActions.getRooms()
+      rooms: roomActions.getRooms(),
+      currentRoom: null,
+      create: false
     };
   },
 
@@ -40,15 +44,27 @@ var Rooms = React.createClass({
   },
 
   addType: function (type) {
-    console.log('this event is a radio', event);
     this.setState({
       roomStatus: type
     })
   },
 
   makeRoom: function () {
-    console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
     roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
+  },
+
+  seeRoom: function (name) {
+    this.setState({
+      showChatRoom: true,
+      showRooms: false,
+      currentRoom: name
+    });
+  },
+
+  add: function () {
+    this.setState({
+      create: !this.state.create
+    });
   },
 
   render: function () {
@@ -56,24 +72,35 @@ var Rooms = React.createClass({
     var that = this;
     var rooms;
     var title;
+    var room;
+    var create;
 
     // if chat is false in state then dont show else do show
     if (this.state.showRooms) {
       title = "Rooms";
       if (this.state.rooms) {
         rooms = this.state.rooms.map(function (room, id) {
-          return (<li key={id}>{room.name}</li>);
+          return (<li key={id} onClick={that.seeRoom.bind(null,room.name)}>{room.name}</li>);
         });
       }
     } else if (this.state.showChatRoom) {
-      title = "This is 1 room!"; //change to being the name of the room
-      // friends = this.state.friends.map(function(person, id) {
-      //   if (person.unread) {
-      //     return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}><strong style={{cursor: "pointer",color:"red"}}>{person.username}</strong></li>;
-      //   } else {
-      //     return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
-      //   }
-      // });
+      title = this.state.currentRoom; //change to being the name of the room
+      room = (<Room roomName={this.state.currentRoom}></Room>);
+    }
+
+    if (this.state.create) {
+      create = (
+        <div>
+          <input type="name" className="form-control" id="name" placeholder="Room Name" onChange={this.addName}/>
+          <div className="radio">
+            <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"public")}/>Public</label>
+          </div>
+          <div className="radio">
+            <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"private")}/>Private</label>
+          </div>
+        <button type="button" className="btn btn-primary" onClick={this.add}>Create</button>
+        </div>
+      );
     }
 
     return (
@@ -81,20 +108,12 @@ var Rooms = React.createClass({
         <div className="container">
 
           <h1>{title}</h1>
-          <i className="fa fa-plus fa-2x" aria-hidden="true" onClick={this.makeRoom}></i>
-          <input type="name" className="form-control" id="name" placeholder="Room Name" onChange={this.addName}/>
+          <i className="fa fa-plus fa-2x" aria-hidden="true" onClick={this.add}></i>
+          {create}
           {/*<input type="name" className="form-control" id="username" placeholder="Invite User Type a Username" />*/}
-          <div>
-            <div className="radio">
-              <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"public")}/>Public</label>
-            </div>
-            <div className="radio">
-              <label><input type="radio" name="optradio" onClick={this.addType.bind(null,"private")}/>Private</label>
-            </div>
-          </div>
-          <button type="button" className="btn btn-primary" onClick={this.makeRoom}>Create</button>
 
-          <ul>  
+          <ul>
+            {room} 
             {rooms}
           </ul>
 

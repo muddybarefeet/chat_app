@@ -35,6 +35,22 @@ var roomActions = {
         console.log('err', err);
       }
     });
+  },
+
+  sendMessage: function () {
+    console.log('in get room action');
+    requestHelper
+    .get('rooms/send', jwt)
+    .end(function (err, response) {
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "GET_ROOMS",
+          data: response.body.data
+        });
+      } else {
+        console.log('err', err);
+      }
+    });
   }
 
 };

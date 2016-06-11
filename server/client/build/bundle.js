@@ -27878,6 +27878,8 @@
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 
+	var Room = __webpack_require__(245);
+
 	var Rooms = React.createClass({
 	  displayName: 'Rooms',
 
@@ -27886,7 +27888,9 @@
 	    return {
 	      showRooms: true,
 	      showChatRoom: false,
-	      rooms: roomActions.getRooms()
+	      rooms: roomActions.getRooms(),
+	      currentRoom: null,
+	      create: false
 	    };
 	  },
 
@@ -27913,15 +27917,27 @@
 	  },
 
 	  addType: function (type) {
-	    console.log('this event is a radio', event);
 	    this.setState({
 	      roomStatus: type
 	    });
 	  },
 
 	  makeRoom: function () {
-	    console.log('this is a room being made', this.state.roomName, this.state.roomStatus);
 	    roomActions.makeRoom(this.state.roomName, this.state.roomStatus);
+	  },
+
+	  seeRoom: function (name) {
+	    this.setState({
+	      showChatRoom: true,
+	      showRooms: false,
+	      currentRoom: name
+	    });
+	  },
+
+	  add: function () {
+	    this.setState({
+	      create: !this.state.create
+	    });
 	  },
 
 	  render: function () {
@@ -27929,6 +27945,8 @@
 	    var that = this;
 	    var rooms;
 	    var title;
+	    var room;
+	    var create;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.showRooms) {
@@ -27937,20 +27955,47 @@
 	        rooms = this.state.rooms.map(function (room, id) {
 	          return React.createElement(
 	            'li',
-	            { key: id },
+	            { key: id, onClick: that.seeRoom.bind(null, room.name) },
 	            room.name
 	          );
 	        });
 	      }
 	    } else if (this.state.showChatRoom) {
-	      title = "This is 1 room!"; //change to being the name of the room
-	      // friends = this.state.friends.map(function(person, id) {
-	      //   if (person.unread) {
-	      //     return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}><strong style={{cursor: "pointer",color:"red"}}>{person.username}</strong></li>;
-	      //   } else {
-	      //     return <li key={id} onClick={that.seeFriendMessages.bind(null,person.username)}>{person.username}</li>;
-	      //   }
-	      // });
+	      title = this.state.currentRoom; //change to being the name of the room
+	      room = React.createElement(Room, { roomName: this.state.currentRoom });
+	    }
+
+	    if (this.state.create) {
+	      create = React.createElement(
+	        'div',
+	        null,
+	        React.createElement('input', { type: 'name', className: 'form-control', id: 'name', placeholder: 'Room Name', onChange: this.addName }),
+	        React.createElement(
+	          'div',
+	          { className: 'radio' },
+	          React.createElement(
+	            'label',
+	            null,
+	            React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "public") }),
+	            'Public'
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'radio' },
+	          React.createElement(
+	            'label',
+	            null,
+	            React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "private") }),
+	            'Private'
+	          )
+	        ),
+	        React.createElement(
+	          'button',
+	          { type: 'button', className: 'btn btn-primary', onClick: this.add },
+	          'Create'
+	        )
+	      );
 	    }
 
 	    return React.createElement(
@@ -27964,40 +28009,12 @@
 	          null,
 	          title
 	        ),
-	        React.createElement('i', { className: 'fa fa-plus fa-2x', 'aria-hidden': 'true', onClick: this.makeRoom }),
-	        React.createElement('input', { type: 'name', className: 'form-control', id: 'name', placeholder: 'Room Name', onChange: this.addName }),
-	        React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'div',
-	            { className: 'radio' },
-	            React.createElement(
-	              'label',
-	              null,
-	              React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "public") }),
-	              'Public'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { className: 'radio' },
-	            React.createElement(
-	              'label',
-	              null,
-	              React.createElement('input', { type: 'radio', name: 'optradio', onClick: this.addType.bind(null, "private") }),
-	              'Private'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'button',
-	          { type: 'button', className: 'btn btn-primary', onClick: this.makeRoom },
-	          'Create'
-	        ),
+	        React.createElement('i', { className: 'fa fa-plus fa-2x', 'aria-hidden': 'true', onClick: this.add }),
+	        create,
 	        React.createElement(
 	          'ul',
 	          null,
+	          room,
 	          rooms
 	        )
 	      )
@@ -28254,6 +28271,20 @@
 	        console.log('err', err);
 	      }
 	    });
+	  },
+
+	  sendMessage: function () {
+	    console.log('in get room action');
+	    requestHelper.get('rooms/send', jwt).end(function (err, response) {
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "GET_ROOMS",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
 	  }
 
 	};
@@ -28314,6 +28345,104 @@
 	});
 
 	module.exports = roomStore;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+
+	var roomActions = __webpack_require__(243);
+	var roomStore = __webpack_require__(244);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Room = React.createClass({
+	  displayName: 'Room',
+
+
+	  getInitialState: function () {
+	    return {
+	      // trigger get all message function
+
+	    };
+	  },
+
+	  componentWillMount: function () {
+	    // roomActions.getMessages(this.props.username);
+	  },
+
+	  componentDidMount: function () {
+	    roomStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    roomStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    console.log('state changed');
+	  },
+
+	  handleChange: function (event) {
+	    // if the key was not enter then save the content of what is typed to the state
+	    this.setState({
+	      value: event.target.value
+	    });
+	  },
+
+	  sendRoomMessage: function () {
+	    if (event.key === 'Enter') {
+	      console.log('sending message', this.props.roomName, this.state.value);
+	      // roomActions.sendMessage(this.props.roomName,this.state.value);
+	      this.setState({
+	        value: ""
+	      });
+	    }
+	  },
+
+	  render: function () {
+
+	    var that = this;
+	    // var messages;
+
+	    // if (this.state.messages) {
+	    //   messages = this.state.messages.map(function(message, id) {
+	    //     console.log('messages in componnt', message);
+	    //     // if the message has not been read then it needs to be highlighted
+	    //     if (message.has_been_read) {
+	    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
+	    //     } else if (!message.has_been_read) {
+	    //       return <li key={id}>{message.message}</li>;
+	    //     }
+	    //   });
+	    // }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('ul', null),
+	        React.createElement(
+	          'div',
+	          { className: 'width-input' },
+	          React.createElement(
+	            'div',
+	            { className: 'input-group' },
+	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendRoomMessage, onChange: this.handleChange })
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Room;
 
 /***/ }
 /******/ ]);

@@ -5,7 +5,8 @@ var EventEmitter = require('events').EventEmitter;
 var CHANGE_EVENT = "change";
 
 var _roomDetails = {
-  rooms: []
+  rooms: [],
+  messages: []
 };
 
 var roomStore = Object.assign(new EventEmitter (), {
@@ -41,7 +42,16 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  // if (action.actionType === "USER_SIGNUP_ERROR") {
+  if (action.actionType === "GET_MESSAGES") {
+    _roomDetails.messages = action.data;
+    roomStore.emitChange();
+  }
+
+  // if (action.actionType === "GET_MESSAGES") {
+    
+  // }
+
+  // if (action.actionType === "GET_MESSAGES") {
     
   // }
 

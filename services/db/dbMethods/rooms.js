@@ -43,6 +43,89 @@ module.exports = function (knex, helpers) {
     return helpers.getRooms(userId);
   };
 
+
+  //send message
+  fnHash.sendMessage = function (userId, roomName, message) {
+
+    var rId;
+    //insert the message into the rooms messages table
+    return knex.select('r_id')
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomId) {
+      if (roomId.length !== 1) {
+        throw new Error("Room: "+roomName+" does not exist");
+      }
+      rId = roomId[0].r_id;
+      // check that the user is in this room
+      return knex.select()
+      .from('users_rooms')
+      .where('user_id', userId)
+      .andWhere('room_id', roomId[0].r_id)
+      .andWhere('accepted', true);
+    })
+    .then(function (userCheck) {
+      if (userCheck.length !== 1) {
+        throw new Error("You are not currently part of this room");
+      }
+      // now know the user was returned then insert message
+      return knex('rooms_messages')
+        .insert([{
+        room_id: rId,
+        sender: userId,
+        message: message
+      }],'*');
+    })
+    .then(function (returnData) {
+      //update the users messages by returning the content of the messages table
+      return knex.select()
+      .from('rooms_messages')
+      .orderBy('created_at', 'asc');
+    })
+    .catch(function (err) {
+      console.log('err in sending message', err);
+      throw err;
+    });
+
+  };
+
+  //get messages
+  fnHash.getMessages = function (userId, roomName) {
+    var rId;
+    //go to the rooms table and the the id
+    //then insert into the messages table
+    return knex.select('r_id')
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomIdArr) {
+      if (roomIdArr.length !== 1) {
+        throw new Error("Room: fakeRoom does not exist");
+      }
+      rId = roomIdArr[0].r_id;
+      // check the user is part of this room
+      return knex.select()
+      .from('users_rooms')
+      .where('user_id', userId)
+      .andWhere('room_id', rId)
+      .andWhere('accepted', true);
+    })
+    .then(function (checkUser) {
+      if (checkUser.length !== 1) {
+        throw new Error("You are not currently part of this room");
+      }
+      return knex.select()
+      .from('rooms_messages')
+      .where('room_id', rId)
+      .orderBy('created_at', 'asc');
+    })
+    .catch(function (err) {
+      console.log('err in getting messages', err);
+      throw err;
+    });
+
+  };
+  
+
   //invite users to join a room
   //--------------------------
   fnHash.inviteUsers = function (userIdInviting, roomName, inviteeUsernames) {
@@ -225,90 +308,6 @@ module.exports = function (knex, helpers) {
     });
 
   };
-
-
-  //send message
-  fnHash.sendMessage = function (userId, roomName, message) {
-
-    var rId;
-    //insert the message into the rooms messages table
-    return knex.select('r_id')
-    .from('rooms')
-    .where('name', roomName)
-    .then(function (roomId) {
-      if (roomId.length !== 1) {
-        throw new Error("Room: "+roomName+" does not exist");
-      }
-      rId = roomId[0].r_id;
-      // check that the user is in this room
-      return knex.select()
-      .from('users_rooms')
-      .where('user_id', userId)
-      .andWhere('room_id', roomId[0].r_id)
-      .andWhere('accepted', true);
-    })
-    .then(function (userCheck) {
-      if (userCheck.length !== 1) {
-        throw new Error("You are not currently part of this room");
-      }
-      // now know the user was returned then insert message
-      return knex('rooms_messages')
-        .insert([{
-        room_id: rId,
-        sender: userId,
-        message: message
-      }],'*');
-    })
-    .then(function (returnData) {
-      //update the users messages by returning the content of the messages table
-      return knex.select()
-      .from('rooms_messages')
-      .orderBy('created_at', 'asc');
-    })
-    .catch(function (err) {
-      console.log('err in sending message', err);
-      throw err;
-    });
-
-  };
-
-  //get messages
-  fnHash.getMessages = function (userId, roomName) {
-    var rId;
-    //go to the rooms table and the the id
-    //then insert into the messages table
-    return knex.select('r_id')
-    .from('rooms')
-    .where('name', roomName)
-    .then(function (roomIdArr) {
-      if (roomIdArr.length !== 1) {
-        throw new Error("Room: fakeRoom does not exist");
-      }
-      rId = roomIdArr[0].r_id;
-      // check the user is part of this room
-      return knex.select()
-      .from('users_rooms')
-      .where('user_id', userId)
-      .andWhere('room_id', rId)
-      .andWhere('accepted', true);
-    })
-    .then(function (checkUser) {
-      if (checkUser.length !== 1) {
-        throw new Error("You are not currently part of this room");
-      }
-      return knex.select()
-      .from('rooms_messages')
-      .where('room_id', rId)
-      .orderBy('created_at', 'asc');
-    })
-    .catch(function (err) {
-      console.log('err in getting messages', err);
-      throw err;
-    });
-
-  };
-
-
 
   //leave a room
   //-------------------

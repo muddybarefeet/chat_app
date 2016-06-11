@@ -28274,11 +28274,28 @@
 	  },
 
 	  sendMessage: function () {
-	    console.log('in get room action');
-	    requestHelper.get('rooms/send', jwt).end(function (err, response) {
+	    // console.log('in get room action');
+	    // requestHelper
+	    // .post('rooms/send', jwt)
+	    // .end(function (err, response) {
+	    //   if (response.status === 200) {
+	    //     AppDispatcher.handleServerAction({
+	    //       actionType: "SEND_MESSAGES",
+	    //       data: response.body.data
+	    //     });
+	    //   } else {
+	    //     console.log('err', err);
+	    //   }
+	    // });
+	  },
+
+	  getMessages: function (roomName) {
+	    console.log('in get room action GET');
+	    requestHelper.get('rooms/messages/' + roomName, jwt).end(function (err, response) {
+	      console.log('action ', response);
 	      if (response.status === 200) {
 	        AppDispatcher.handleServerAction({
-	          actionType: "GET_ROOMS",
+	          actionType: "GET_MESSAGES",
 	          data: response.body.data
 	        });
 	      } else {
@@ -28302,7 +28319,8 @@
 	var CHANGE_EVENT = "change";
 
 	var _roomDetails = {
-	  rooms: []
+	  rooms: [],
+	  messages: []
 	};
 
 	var roomStore = Object.assign(new EventEmitter(), {
@@ -28339,7 +28357,16 @@
 	    roomStore.emitChange();
 	  }
 
-	  // if (action.actionType === "USER_SIGNUP_ERROR") {
+	  if (action.actionType === "GET_MESSAGES") {
+	    _roomDetails.messages = action.data;
+	    roomStore.emitChange();
+	  }
+
+	  // if (action.actionType === "GET_MESSAGES") {
+
+	  // }
+
+	  // if (action.actionType === "GET_MESSAGES") {
 
 	  // }
 	});
@@ -28365,7 +28392,7 @@
 	  getInitialState: function () {
 	    return {
 	      // trigger get all message function
-
+	      messages: roomStore.getRoomData().messages
 	    };
 	  },
 
@@ -28384,6 +28411,9 @@
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
 	    console.log('state changed');
+	    this.setState({
+	      messages: roomStore.getRoomData().messages
+	    });
 	  },
 
 	  handleChange: function (event) {
@@ -28406,19 +28436,30 @@
 	  render: function () {
 
 	    var that = this;
-	    // var messages;
+	    var messages;
 
-	    // if (this.state.messages) {
-	    //   messages = this.state.messages.map(function(message, id) {
-	    //     console.log('messages in componnt', message);
-	    //     // if the message has not been read then it needs to be highlighted
-	    //     if (message.has_been_read) {
-	    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
-	    //     } else if (!message.has_been_read) {
-	    //       return <li key={id}>{message.message}</li>;
-	    //     }
-	    //   });
-	    // }
+	    if (this.state.messages) {
+	      messages = this.state.messages.map(function (message, id) {
+	        // if the message has not been read then it needs to be highlighted
+	        if (message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id, style: { color: "red" } },
+	            React.createElement(
+	              'strong',
+	              null,
+	              message.message
+	            )
+	          );
+	        } else if (!message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id },
+	            message.message
+	          );
+	        }
+	      });
+	    }
 
 	    return React.createElement(
 	      'div',
@@ -28426,7 +28467,11 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('ul', null),
+	        React.createElement(
+	          'ul',
+	          null,
+	          messages
+	        ),
 	        React.createElement(
 	          'div',
 	          { className: 'width-input' },

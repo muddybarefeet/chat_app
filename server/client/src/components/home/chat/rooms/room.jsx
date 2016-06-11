@@ -11,7 +11,7 @@ var Room = React.createClass({
   getInitialState: function () {
     return {
       // trigger get all message function
- 
+      messages: roomStore.getRoomData().messages
     };
   },
 
@@ -30,6 +30,9 @@ var Room = React.createClass({
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
     console.log('state changed');
+    this.setState({
+      messages: roomStore.getRoomData().messages
+    });
   },
 
   handleChange: function(event){
@@ -52,24 +55,24 @@ var Room = React.createClass({
   render: function () {
 
     var that = this;
-    // var messages;
+    var messages;
 
-    // if (this.state.messages) {
-    //   messages = this.state.messages.map(function(message, id) {
-    //     console.log('messages in componnt', message);
-    //     // if the message has not been read then it needs to be highlighted
-    //     if (message.has_been_read) {
-    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
-    //     } else if (!message.has_been_read) {
-    //       return <li key={id}>{message.message}</li>;
-    //     }
-    //   });
-    // }
+    if (this.state.messages) {
+      messages = this.state.messages.map(function(message, id) {
+        // if the message has not been read then it needs to be highlighted
+        if (message.has_been_read) {
+          return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
+        } else if (!message.has_been_read) {
+          return <li key={id}>{message.message}</li>;
+        }
+      });
+    }
 
     return (
       <div>
         <div>
           <ul>
+            {messages}
           </ul>
           <div className="width-input">
             <div className="input-group">

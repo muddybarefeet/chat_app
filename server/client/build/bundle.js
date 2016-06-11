@@ -27503,17 +27503,26 @@
 	    });
 	  },
 
+	  returnToMain: function () {
+	    this.setState({
+	      chat: false,
+	      showFriends: true
+	    });
+	  },
+
 	  render: function () {
 
 	    var that = this;
 	    var friends;
 	    var messages;
 	    var title;
+	    var backarrow;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.chat) {
 	      title = "Chat with " + this.state.userChatWith;
 	      messages = React.createElement(Chat, { username: this.state.userChatWith });
+	      backarrow = React.createElement('i', { className: 'fa fa-arrow-left fa-lg', 'aria-hidden': 'true', onClick: this.returnToMain });
 	    } else if (this.state.showFriends) {
 	      title = "Friends";
 	      friends = this.state.friends.map(function (person, id) {
@@ -27543,6 +27552,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'container' },
+	        backarrow,
 	        React.createElement(
 	          'h1',
 	          null,

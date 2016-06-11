@@ -45,6 +45,12 @@ var Friends = React.createClass({
     });
   },
 
+  returnToMain: function () {
+    this.setState({
+      chat: false,
+      showFriends: true
+    });
+  },
 
   render: function () {
 
@@ -52,11 +58,13 @@ var Friends = React.createClass({
     var friends; 
     var messages;
     var title;
+    var backarrow;
 
     // if chat is false in state then dont show else do show
     if (this.state.chat) {
       title = "Chat with "+ this.state.userChatWith;
       messages = (<Chat username={this.state.userChatWith}></Chat>);
+      backarrow = (<i className="fa fa-arrow-left fa-lg" aria-hidden="true" onClick={this.returnToMain}></i>);
     } else if (this.state.showFriends) {
       title = "Friends";
       friends = this.state.friends.map(function(person, id) {
@@ -71,6 +79,7 @@ var Friends = React.createClass({
     return (
       <div>
         <div className="container">
+          {backarrow}
           <h1>{title}</h1>
           <ul>  
             {friends}

@@ -27931,6 +27931,13 @@
 	    });
 	  },
 
+	  returnToMain: function () {
+	    this.setState({
+	      showRooms: true,
+	      showChatRoom: false
+	    });
+	  },
+
 	  render: function () {
 
 	    var that = this;
@@ -27938,6 +27945,7 @@
 	    var title;
 	    var room;
 	    var create;
+	    var backarrow;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.showRooms) {
@@ -27954,6 +27962,7 @@
 	    } else if (this.state.showChatRoom) {
 	      title = this.state.currentRoom; //change to being the name of the room
 	      room = React.createElement(Room, { roomName: this.state.currentRoom });
+	      backarrow = React.createElement('i', { className: 'fa fa-arrow-left fa-lg', 'aria-hidden': 'true', onClick: this.returnToMain });
 	    }
 
 	    if (this.state.create) {
@@ -27995,6 +28004,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'container' },
+	        backarrow,
 	        React.createElement(
 	          'h1',
 	          null,

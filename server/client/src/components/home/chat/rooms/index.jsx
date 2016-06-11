@@ -67,6 +67,13 @@ var Rooms = React.createClass({
     });
   },
 
+  returnToMain: function () {
+    this.setState({
+      showRooms: true,
+      showChatRoom: false
+    });
+  },
+
   render: function () {
 
     var that = this;
@@ -74,6 +81,7 @@ var Rooms = React.createClass({
     var title;
     var room;
     var create;
+    var backarrow;
 
     // if chat is false in state then dont show else do show
     if (this.state.showRooms) {
@@ -86,6 +94,7 @@ var Rooms = React.createClass({
     } else if (this.state.showChatRoom) {
       title = this.state.currentRoom; //change to being the name of the room
       room = (<Room roomName={this.state.currentRoom}></Room>);
+      backarrow = (<i className="fa fa-arrow-left fa-lg" aria-hidden="true" onClick={this.returnToMain}></i>);
     }
 
     if (this.state.create) {
@@ -106,7 +115,7 @@ var Rooms = React.createClass({
     return (
       <div>
         <div className="container">
-
+          {backarrow}
           <h1>{title}</h1>
           <i className="fa fa-plus fa-2x" aria-hidden="true" onClick={this.add}></i>
           {create}

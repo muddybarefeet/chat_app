@@ -27880,6 +27880,7 @@
 	var Link = __webpack_require__(159).Link;
 
 	var Room = __webpack_require__(245);
+	var Join = __webpack_require__(246);
 
 	var Rooms = React.createClass({
 	  displayName: 'Rooms',
@@ -27891,6 +27892,7 @@
 	      showChatRoom: false,
 	      rooms: roomActions.getRooms(),
 	      currentRoom: null,
+	      join: false,
 	      create: false
 	    };
 	  },
@@ -27931,6 +27933,7 @@
 	    this.setState({
 	      showChatRoom: true,
 	      showRooms: false,
+	      join: false,
 	      currentRoom: name
 	    });
 	  },
@@ -27944,6 +27947,15 @@
 	  returnToMain: function () {
 	    this.setState({
 	      showRooms: true,
+	      join: false,
+	      showChatRoom: false
+	    });
+	  },
+
+	  joinRoomPage: function () {
+	    this.setState({
+	      showRooms: false,
+	      join: true,
 	      showChatRoom: false
 	    });
 	  },
@@ -27956,6 +27968,7 @@
 	    var room;
 	    var create;
 	    var backarrow;
+	    var join;
 
 	    // if chat is false in state then dont show else do show
 	    if (this.state.showRooms) {
@@ -27973,6 +27986,9 @@
 	      title = this.state.currentRoom; //change to being the name of the room
 	      room = React.createElement(Room, { roomName: this.state.currentRoom });
 	      backarrow = React.createElement('i', { className: 'fa fa-arrow-left fa-lg', 'aria-hidden': 'true', onClick: this.returnToMain });
+	    } else if (this.state.join) {
+	      // show the pannel to join a room
+	      join = React.createElement(Join, null);
 	    }
 
 	    if (this.state.create) {
@@ -28015,6 +28031,7 @@
 	        'div',
 	        { className: 'container' },
 	        backarrow,
+	        React.createElement('i', { className: 'fa fa-hand-o-right', 'aria-hidden': 'true', onClick: this.joinRoomPage }),
 	        React.createElement(
 	          'h1',
 	          null,
@@ -28026,7 +28043,8 @@
 	          'ul',
 	          null,
 	          room,
-	          rooms
+	          rooms,
+	          join
 	        )
 	      )
 	    );
@@ -28498,6 +28516,98 @@
 	});
 
 	module.exports = Room;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+
+	var roomActions = __webpack_require__(243);
+	var roomStore = __webpack_require__(244);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Join = React.createClass({
+	  displayName: 'Join',
+
+
+	  getInitialState: function () {
+	    return {
+	      // trigger get all message function
+	      messages: roomStore.getRoomData().messages
+	    };
+	  },
+
+	  componentWillMount: function () {
+	    // roomActions.getMessages(this.props.username);
+	  },
+
+	  componentDidMount: function () {
+	    roomStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    roomStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    console.log('state changed');
+	    this.setState({
+	      messages: roomStore.getRoomData().messages
+	    });
+	  },
+
+	  handleChange: function (event) {
+	    console.log('writing message');
+	    // if the key was not enter then save the content of what is typed to the state
+	    this.setState({
+	      value: event.target.value
+	    });
+	  },
+
+	  sendRoomMessage: function (event) {
+	    if (event.key === 'Enter') {
+	      console.log('sending message', this.props.roomName, this.state.value);
+	      roomActions.sendMessage(this.props.roomName, this.state.value);
+	      this.setState({
+	        value: ""
+	      });
+	    }
+	  },
+
+	  render: function () {
+
+	    var that = this;
+	    var messages;
+
+	    // if (this.state.messages) {
+	    //   messages = this.state.messages.map(function(message, id) {
+	    //     // if the message has not been read then it needs to be highlighted
+	    //     if (message.has_been_read) {
+	    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
+	    //     } else if (!message.has_been_read) {
+	    //       return <li key={id}>{message.message}</li>;
+	    //     }
+	    //   });
+	    // }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Join a room'
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Join;
 
 /***/ }
 /******/ ]);

@@ -29,7 +29,6 @@ var Room = React.createClass({
 
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
-    console.log('state changed');
     this.setState({
       messages: roomStore.getRoomData().messages
     });

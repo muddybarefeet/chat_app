@@ -27211,8 +27211,8 @@
 	var Link = __webpack_require__(159).Link;
 	var Friends = __webpack_require__(235);
 	var Rooms = __webpack_require__(240);
-	var Add = __webpack_require__(241);
-	var Pending = __webpack_require__(242);
+	var Add = __webpack_require__(245);
+	var Pending = __webpack_require__(246);
 
 	var Main = React.createClass({
 	  displayName: 'Main',
@@ -27873,14 +27873,14 @@
 	//page to get the users friends and display them on the page
 	// on clicking on a friend a user can chat to that one friend
 	// TODO: unfriend button
-	var roomActions = __webpack_require__(243);
-	var roomStore = __webpack_require__(244);
+	var roomActions = __webpack_require__(241);
+	var roomStore = __webpack_require__(242);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 
-	var Room = __webpack_require__(245);
-	var Join = __webpack_require__(246);
+	var Room = __webpack_require__(243);
+	var Join = __webpack_require__(244);
 
 	var Rooms = React.createClass({
 	  displayName: 'Rooms',
@@ -27988,6 +27988,7 @@
 	      backarrow = React.createElement('i', { className: 'fa fa-arrow-left fa-lg', 'aria-hidden': 'true', onClick: this.returnToMain });
 	    } else if (this.state.join) {
 	      // show the pannel to join a room
+	      backarrow = React.createElement('i', { className: 'fa fa-arrow-left fa-lg', 'aria-hidden': 'true', onClick: this.returnToMain });
 	      join = React.createElement(Join, null);
 	    }
 
@@ -28058,6 +28059,366 @@
 
 /***/ },
 /* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var requestHelper = __webpack_require__(222);
+
+	var jwt = __webpack_require__(223).jwt;
+
+	var roomActions = {
+
+	  makeRoom: function (roomName, roomStatus) {
+
+	    requestHelper.post('rooms/create', { name: roomName, status: roomStatus }, jwt).end(function (err, response) {
+	      console.log('response from db on confiming/reject friend a friend', response);
+	      AppDispatcher.handleServerAction({
+	        actionType: "MAKE_ROOM",
+	        data: response.body.data
+	      });
+	    });
+	  },
+
+	  getRooms: function () {
+	    console.log('in get room action');
+	    requestHelper.get('rooms/joined', jwt).end(function (err, response) {
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "GET_ROOMS",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
+	  },
+
+	  sendMessage: function (name, message) {
+	    console.log('in get send message action');
+	    requestHelper.post('rooms/send', { roomName: name, message: message }, jwt).end(function (err, response) {
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "SEND_MESSAGE",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
+	  },
+
+	  getMessages: function (roomName) {
+	    requestHelper.get('rooms/messages/' + roomName, jwt).end(function (err, response) {
+	      console.log('action ', response);
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "GET_MESSAGES",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
+	  },
+
+	  getJoinable: function () {
+	    requestHelper.get('rooms/joinable', jwt).end(function (err, response) {
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "GET_JOINABLE",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
+	  }
+
+	};
+
+	module.exports = roomActions;
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var AppDispatcher = __webpack_require__(218);
+	var EventEmitter = __webpack_require__(232).EventEmitter;
+
+	var CHANGE_EVENT = "change";
+
+	var _roomDetails = {
+	  rooms: [],
+	  messages: [],
+	  joinable: []
+	};
+
+	var roomStore = Object.assign(new EventEmitter(), {
+
+	  getRoomData: function () {
+	    return _roomDetails;
+	  },
+
+	  emitChange: function () {
+	    this.emit(CHANGE_EVENT);
+	  },
+
+	  addChangeListener: function (callback) {
+	    this.addListener(CHANGE_EVENT, callback);
+	  },
+
+	  removeChangeListener: function (callback) {
+	    this.removeListener(CHANGE_EVENT, callback);
+	  }
+
+	});
+
+	AppDispatcher.register(function (payload) {
+	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
+	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
+	  // if(action.actionType === "ADD_FRIEND") {
+	  //   console.log('action', action.data);
+	  //   //think about if want anything back to the user
+	  // }
+
+	  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
+	    // split the db return into the correct bucket
+	    _roomDetails.rooms = action.data;
+	    roomStore.emitChange();
+	  }
+
+	  if (action.actionType === "SEND_MESSAGE" || action.actionType === "GET_MESSAGES") {
+	    _roomDetails.messages = action.data;
+	    roomStore.emitChange();
+	  }
+
+	  if (action.actionType === "GET_JOINABLE") {
+	    console.log('ins store ', action.data);
+	    _roomDetails.joinable = action.data;
+	    roomStore.emitChange();
+	  }
+
+	  // if (action.actionType === "GET_MESSAGES") {
+	  // }
+	});
+
+	module.exports = roomStore;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+
+	var roomActions = __webpack_require__(241);
+	var roomStore = __webpack_require__(242);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Room = React.createClass({
+	  displayName: 'Room',
+
+
+	  getInitialState: function () {
+	    return {
+	      // trigger get all message function
+	      messages: roomStore.getRoomData().messages
+	    };
+	  },
+
+	  componentWillMount: function () {
+	    roomActions.getMessages(this.props.roomName);
+	  },
+
+	  componentDidMount: function () {
+	    roomStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    roomStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      messages: roomStore.getRoomData().messages
+	    });
+	  },
+
+	  handleChange: function (event) {
+	    console.log('writing message');
+	    // if the key was not enter then save the content of what is typed to the state
+	    this.setState({
+	      value: event.target.value
+	    });
+	  },
+
+	  sendRoomMessage: function (event) {
+	    if (event.key === 'Enter') {
+	      console.log('sending message', this.props.roomName, this.state.value);
+	      roomActions.sendMessage(this.props.roomName, this.state.value);
+	      this.setState({
+	        value: ""
+	      });
+	    }
+	  },
+
+	  render: function () {
+
+	    var that = this;
+	    var messages;
+
+	    if (this.state.messages) {
+	      messages = this.state.messages.map(function (message, id) {
+	        // if the message has not been read then it needs to be highlighted
+	        if (message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id, style: { color: "red" } },
+	            React.createElement(
+	              'strong',
+	              null,
+	              message.message
+	            )
+	          );
+	        } else if (!message.has_been_read) {
+	          return React.createElement(
+	            'li',
+	            { key: id },
+	            message.message
+	          );
+	        }
+	      });
+	    }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'ul',
+	          null,
+	          messages
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'width-input' },
+	          React.createElement(
+	            'div',
+	            { className: 'input-group' },
+	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendRoomMessage, onChange: this.handleChange })
+	          )
+	        )
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Room;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+
+	var roomActions = __webpack_require__(241);
+	var roomStore = __webpack_require__(242);
+
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+
+	var Join = React.createClass({
+	  displayName: 'Join',
+
+
+	  getInitialState: function () {
+	    return {
+	      // trigger get all message function
+	      joinable: roomStore.getRoomData().joinable
+	    };
+	  },
+
+	  componentWillMount: function () {
+	    roomActions.getJoinable();
+	  },
+
+	  componentDidMount: function () {
+	    roomStore.addChangeListener(this._onChangeEvent);
+	  },
+
+	  componentWillUnmount: function () {
+	    roomStore.removeChangeListener(this._onChangeEvent);
+	  },
+
+	  _onChangeEvent: function () {
+	    // friends have been got and now they need to be displayed
+	    this.setState({
+	      joinable: roomStore.getRoomData().joinable
+	    });
+	  },
+
+	  // handleChange: function(event){
+	  //   console.log('writing message');
+	  //   // if the key was not enter then save the content of what is typed to the state
+	  //   this.setState({
+	  //     value: event.target.value
+	  //   });
+	  // },
+
+	  // sendRoomMessage: function (event) {
+	  //   if(event.key === 'Enter'){
+	  //     console.log('sending message', this.props.roomName, this.state.value);
+	  //     roomActions.sendMessage(this.props.roomName,this.state.value);
+	  //     this.setState({
+	  //       value: ""
+	  //     });
+	  //   }
+	  // },
+
+	  render: function () {
+
+	    var that = this;
+	    var toJoin;
+
+	    if (this.state.joinable) {
+	      toJoin = this.state.joinable.map(function (room, id) {
+	        return React.createElement(
+	          'li',
+	          { key: id },
+	          room.name
+	        );
+	      });
+	    }
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'h2',
+	        null,
+	        'Join a room'
+	      ),
+	      React.createElement(
+	        'ul',
+	        null,
+	        toJoin
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = Join;
+
+/***/ },
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -28139,7 +28500,7 @@
 	module.exports = Add;
 
 /***/ },
-/* 242 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//page to get the users friends and display them on the page
@@ -28264,348 +28625,6 @@
 	});
 
 	module.exports = Pending;
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var requestHelper = __webpack_require__(222);
-
-	var jwt = __webpack_require__(223).jwt;
-
-	var roomActions = {
-
-	  makeRoom: function (roomName, roomStatus) {
-
-	    requestHelper.post('rooms/create', { name: roomName, status: roomStatus }, jwt).end(function (err, response) {
-	      console.log('response from db on confiming/reject friend a friend', response);
-	      AppDispatcher.handleServerAction({
-	        actionType: "MAKE_ROOM",
-	        data: response.body.data
-	      });
-	    });
-	  },
-
-	  getRooms: function () {
-	    console.log('in get room action');
-	    requestHelper.get('rooms/joined', jwt).end(function (err, response) {
-	      if (response.status === 200) {
-	        AppDispatcher.handleServerAction({
-	          actionType: "GET_ROOMS",
-	          data: response.body.data
-	        });
-	      } else {
-	        console.log('err', err);
-	      }
-	    });
-	  },
-
-	  sendMessage: function (name, message) {
-	    console.log('in get send message action');
-	    requestHelper.post('rooms/send', { roomName: name, message: message }, jwt).end(function (err, response) {
-	      if (response.status === 200) {
-	        AppDispatcher.handleServerAction({
-	          actionType: "SEND_MESSAGE",
-	          data: response.body.data
-	        });
-	      } else {
-	        console.log('err', err);
-	      }
-	    });
-	  },
-
-	  getMessages: function (roomName) {
-	    console.log('in get room action GET');
-	    requestHelper.get('rooms/messages/' + roomName, jwt).end(function (err, response) {
-	      console.log('action ', response);
-	      if (response.status === 200) {
-	        AppDispatcher.handleServerAction({
-	          actionType: "GET_MESSAGES",
-	          data: response.body.data
-	        });
-	      } else {
-	        console.log('err', err);
-	      }
-	    });
-	  }
-
-	};
-
-	module.exports = roomActions;
-
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var AppDispatcher = __webpack_require__(218);
-	var EventEmitter = __webpack_require__(232).EventEmitter;
-
-	var CHANGE_EVENT = "change";
-
-	var _roomDetails = {
-	  rooms: [],
-	  messages: []
-	};
-
-	var roomStore = Object.assign(new EventEmitter(), {
-
-	  getRoomData: function () {
-	    return _roomDetails;
-	  },
-
-	  emitChange: function () {
-	    this.emit(CHANGE_EVENT);
-	  },
-
-	  addChangeListener: function (callback) {
-	    this.addListener(CHANGE_EVENT, callback);
-	  },
-
-	  removeChangeListener: function (callback) {
-	    this.removeListener(CHANGE_EVENT, callback);
-	  }
-
-	});
-
-	AppDispatcher.register(function (payload) {
-	  //'subscribes' to the dispatcher. Store wants to know if it does anything. Payload
-	  var action = payload.action; //payload is the object of data coming from dispactcher //action is the object passed from the actions file
-	  // if(action.actionType === "ADD_FRIEND") {
-	  //   console.log('action', action.data);
-	  //   //think about if want anything back to the user
-	  // }
-
-	  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
-	    // split the db return into the correct bucket
-	    _roomDetails.rooms = action.data;
-	    roomStore.emitChange();
-	  }
-
-	  if (action.actionType === "SEND_MESSAGE" || action.actionType === "GET_MESSAGES") {
-	    _roomDetails.messages = action.data;
-	    roomStore.emitChange();
-	  }
-
-	  // if (action.actionType === "GET_MESSAGES") {
-	  //   _roomDetails.messages = action.data;
-	  // }
-
-	  // if (action.actionType === "GET_MESSAGES") {
-
-	  // }
-	});
-
-	module.exports = roomStore;
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-
-	var roomActions = __webpack_require__(243);
-	var roomStore = __webpack_require__(244);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Room = React.createClass({
-	  displayName: 'Room',
-
-
-	  getInitialState: function () {
-	    return {
-	      // trigger get all message function
-	      messages: roomStore.getRoomData().messages
-	    };
-	  },
-
-	  componentWillMount: function () {
-	    roomActions.getMessages(this.props.roomName);
-	  },
-
-	  componentDidMount: function () {
-	    roomStore.addChangeListener(this._onChangeEvent);
-	  },
-
-	  componentWillUnmount: function () {
-	    roomStore.removeChangeListener(this._onChangeEvent);
-	  },
-
-	  _onChangeEvent: function () {
-	    // friends have been got and now they need to be displayed
-	    console.log('state changed');
-	    this.setState({
-	      messages: roomStore.getRoomData().messages
-	    });
-	  },
-
-	  handleChange: function (event) {
-	    console.log('writing message');
-	    // if the key was not enter then save the content of what is typed to the state
-	    this.setState({
-	      value: event.target.value
-	    });
-	  },
-
-	  sendRoomMessage: function (event) {
-	    if (event.key === 'Enter') {
-	      console.log('sending message', this.props.roomName, this.state.value);
-	      roomActions.sendMessage(this.props.roomName, this.state.value);
-	      this.setState({
-	        value: ""
-	      });
-	    }
-	  },
-
-	  render: function () {
-
-	    var that = this;
-	    var messages;
-
-	    if (this.state.messages) {
-	      messages = this.state.messages.map(function (message, id) {
-	        // if the message has not been read then it needs to be highlighted
-	        if (message.has_been_read) {
-	          return React.createElement(
-	            'li',
-	            { key: id, style: { color: "red" } },
-	            React.createElement(
-	              'strong',
-	              null,
-	              message.message
-	            )
-	          );
-	        } else if (!message.has_been_read) {
-	          return React.createElement(
-	            'li',
-	            { key: id },
-	            message.message
-	          );
-	        }
-	      });
-	    }
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'ul',
-	          null,
-	          messages
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'width-input' },
-	          React.createElement(
-	            'div',
-	            { className: 'input-group' },
-	            React.createElement('textArea', { type: 'text', className: 'form-control', placeholder: '', value: this.state.value, onKeyUp: this.sendRoomMessage, onChange: this.handleChange })
-	          )
-	        )
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = Room;
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-
-	var roomActions = __webpack_require__(243);
-	var roomStore = __webpack_require__(244);
-
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-
-	var Join = React.createClass({
-	  displayName: 'Join',
-
-
-	  getInitialState: function () {
-	    return {
-	      // trigger get all message function
-	      // toJoin: roomStore.getRoomData().toJoin
-	    };
-	  },
-
-	  componentWillMount: function () {},
-
-	  componentDidMount: function () {
-	    roomStore.addChangeListener(this._onChangeEvent);
-	  },
-
-	  componentWillUnmount: function () {
-	    roomStore.removeChangeListener(this._onChangeEvent);
-	  },
-
-	  _onChangeEvent: function () {
-	    // friends have been got and now they need to be displayed
-	    console.log('state changed');
-	    this.setState({
-	      messages: roomStore.getRoomData().messages
-	    });
-	  },
-
-	  // handleChange: function(event){
-	  //   console.log('writing message');
-	  //   // if the key was not enter then save the content of what is typed to the state
-	  //   this.setState({
-	  //     value: event.target.value
-	  //   });
-	  // },
-
-	  // sendRoomMessage: function (event) {
-	  //   if(event.key === 'Enter'){
-	  //     console.log('sending message', this.props.roomName, this.state.value);
-	  //     roomActions.sendMessage(this.props.roomName,this.state.value);
-	  //     this.setState({
-	  //       value: ""
-	  //     });
-	  //   }
-	  // },
-
-	  render: function () {
-
-	    var that = this;
-	    var messages;
-
-	    // if (this.state.messages) {
-	    //   messages = this.state.messages.map(function(message, id) {
-	    //     // if the message has not been read then it needs to be highlighted
-	    //     if (message.has_been_read) {
-	    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
-	    //     } else if (!message.has_been_read) {
-	    //       return <li key={id}>{message.message}</li>;
-	    //     }
-	    //   });
-	    // }
-
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'h2',
-	        null,
-	        'Join a room'
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = Join;
 
 /***/ }
 /******/ ]);

@@ -54,7 +54,6 @@ var roomActions = {
   },
 
   getMessages: function (roomName) {
-    console.log('in get room action GET');
     requestHelper
     .get('rooms/messages/'+roomName, jwt)
     .end(function (err, response) {
@@ -62,6 +61,21 @@ var roomActions = {
       if (response.status === 200) {
         AppDispatcher.handleServerAction({
           actionType: "GET_MESSAGES",
+          data: response.body.data
+        });
+      } else {
+        console.log('err', err);
+      }
+    });
+  },
+
+  getJoinable: function () {
+    requestHelper
+    .get('rooms/joinable', jwt)
+    .end(function (err, response) {
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "GET_JOINABLE",
           data: response.body.data
         });
       } else {

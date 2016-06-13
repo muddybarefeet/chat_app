@@ -6,7 +6,8 @@ var CHANGE_EVENT = "change";
 
 var _roomDetails = {
   rooms: [],
-  messages: []
+  messages: [],
+  joinable: []
 };
 
 var roomStore = Object.assign(new EventEmitter (), {
@@ -47,12 +48,13 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  // if (action.actionType === "GET_MESSAGES") {
-  //   _roomDetails.messages = action.data;
-  // }
+  if (action.actionType === "GET_JOINABLE") {
+    console.log('ins store ', action.data);
+    _roomDetails.joinable = action.data;
+    roomStore.emitChange();
+  }
 
   // if (action.actionType === "GET_MESSAGES") {
-    
   // }
 
 

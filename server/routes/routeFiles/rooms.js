@@ -106,6 +106,28 @@ module.exports = function (services) {
 
     });
 
+  //get joinable rooms
+  //-----------------------------------
+  router.route('/joinable')
+    .get(function (req, res) {
+
+      var userId = req.__userId;
+
+      services.db.rooms.joinable(userId)
+      .then(function (response) {
+        res.json({
+          data: response
+        });
+      })
+      .catch(function(err){
+        console.log('err', err);
+        res.status(404).json({
+            message: err.message
+        });
+      });
+
+    });
+
 
 
   // //invite users to a room
@@ -160,28 +182,6 @@ module.exports = function (services) {
   //     var userId = req.__userId;
 
   //     services.db.rooms.getPeningRequests(userId)
-  //     .then(function (response) {
-  //       res.json({
-  //         data: response
-  //       });
-  //     })
-  //     .catch(function(err){
-  //       console.log('err', err);
-  //       res.status(404).json({
-  //           message: err.message
-  //       });
-  //     });
-
-  //   });
-
-  // //get messages from a certain friend
-  // //-----------------------------------
-  // router.route('/notJoined')
-  //   .get(function (req, res) {
-
-  //     var userId = req.__userId;
-
-  //     services.db.rooms.notJoinedYet(userId)
   //     .then(function (response) {
   //       res.json({
   //         data: response

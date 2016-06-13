@@ -110,6 +110,7 @@ var Rooms = React.createClass({
       backarrow = (<i className="fa fa-arrow-left fa-lg" aria-hidden="true" onClick={this.returnToMain}></i>);
     } else if (this.state.join) {
       // show the pannel to join a room
+      backarrow = (<i className="fa fa-arrow-left fa-lg" aria-hidden="true" onClick={this.returnToMain}></i>);
       join = (<Join></Join>);
     }
 

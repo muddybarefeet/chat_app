@@ -11,12 +11,12 @@ var Join = React.createClass({
   getInitialState: function () {
     return {
       // trigger get all message function
-      // toJoin: roomStore.getRoomData().toJoin
+      joinable: roomStore.getRoomData().joinable
     };
   },
 
   componentWillMount: function () {
-
+    roomActions.getJoinable();
   },
 
   componentDidMount: function () {
@@ -29,9 +29,8 @@ var Join = React.createClass({
 
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
-    console.log('state changed');
     this.setState({
-      messages: roomStore.getRoomData().messages
+      joinable: roomStore.getRoomData().joinable
     });
   },
 
@@ -56,22 +55,20 @@ var Join = React.createClass({
   render: function () {
 
     var that = this;
-    var messages;
+    var toJoin;
 
-    // if (this.state.messages) {
-    //   messages = this.state.messages.map(function(message, id) {
-    //     // if the message has not been read then it needs to be highlighted
-    //     if (message.has_been_read) {
-    //       return <li key={id} style={{color:"red"}}><strong>{message.message}</strong></li>;
-    //     } else if (!message.has_been_read) {
-    //       return <li key={id}>{message.message}</li>;
-    //     }
-    //   });
-    // }
+    if (this.state.joinable) {
+      toJoin = this.state.joinable.map(function(room, id) {
+        return (<li key={id}>{room.name}</li>);
+      });
+    }
 
     return (
       <div>
         <h2>Join a room</h2>
+        <ul>
+          {toJoin}
+        </ul>
       </div>
     );
   }

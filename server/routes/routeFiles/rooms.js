@@ -86,10 +86,10 @@ module.exports = function (services) {
   //get users messages in a room
   //----------------------------
   router.route('/messages/:roomName')
-    .post(function (req, res) {
+    .get(function (req, res) {
 
       var userId = req.__userId;
-      var roomName = req.body.roomName;
+      var roomName = req.roomName;
 
       services.db.rooms.getMessages(userId, roomName)
       .then(function (response) {

@@ -16,7 +16,7 @@ var Room = React.createClass({
   },
 
   componentWillMount: function () {
-    // roomActions.getMessages(this.props.username);
+    roomActions.getMessages(this.props.roomName);
   },
 
   componentDidMount: function () {

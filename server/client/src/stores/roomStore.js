@@ -42,13 +42,13 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  if (action.actionType === "SEND_MESSAGE") {
+  if (action.actionType === "SEND_MESSAGE" || action.actionType === "GET_MESSAGES") {
     _roomDetails.messages = action.data;
     roomStore.emitChange();
   }
 
   // if (action.actionType === "GET_MESSAGES") {
-    
+  //   _roomDetails.messages = action.data;
   // }
 
   // if (action.actionType === "GET_MESSAGES") {

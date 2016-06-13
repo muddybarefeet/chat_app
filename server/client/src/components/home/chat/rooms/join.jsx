@@ -11,12 +11,12 @@ var Join = React.createClass({
   getInitialState: function () {
     return {
       // trigger get all message function
-      messages: roomStore.getRoomData().messages
+      // toJoin: roomStore.getRoomData().toJoin
     };
   },
 
   componentWillMount: function () {
-    // roomActions.getMessages(this.props.username);
+
   },
 
   componentDidMount: function () {
@@ -35,23 +35,23 @@ var Join = React.createClass({
     });
   },
 
-  handleChange: function(event){
-    console.log('writing message');
-    // if the key was not enter then save the content of what is typed to the state
-    this.setState({
-      value: event.target.value
-    });
-  },
+  // handleChange: function(event){
+  //   console.log('writing message');
+  //   // if the key was not enter then save the content of what is typed to the state
+  //   this.setState({
+  //     value: event.target.value
+  //   });
+  // },
 
-  sendRoomMessage: function (event) {
-    if(event.key === 'Enter'){
-      console.log('sending message', this.props.roomName, this.state.value);
-      roomActions.sendMessage(this.props.roomName,this.state.value);
-      this.setState({
-        value: ""
-      });
-    }
-  },
+  // sendRoomMessage: function (event) {
+  //   if(event.key === 'Enter'){
+  //     console.log('sending message', this.props.roomName, this.state.value);
+  //     roomActions.sendMessage(this.props.roomName,this.state.value);
+  //     this.setState({
+  //       value: ""
+  //     });
+  //   }
+  // },
 
   render: function () {
 

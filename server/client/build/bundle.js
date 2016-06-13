@@ -28384,13 +28384,13 @@
 	    roomStore.emitChange();
 	  }
 
-	  if (action.actionType === "SEND_MESSAGE") {
+	  if (action.actionType === "SEND_MESSAGE" || action.actionType === "GET_MESSAGES") {
 	    _roomDetails.messages = action.data;
 	    roomStore.emitChange();
 	  }
 
 	  // if (action.actionType === "GET_MESSAGES") {
-
+	  //   _roomDetails.messages = action.data;
 	  // }
 
 	  // if (action.actionType === "GET_MESSAGES") {
@@ -28424,7 +28424,7 @@
 	  },
 
 	  componentWillMount: function () {
-	    // roomActions.getMessages(this.props.username);
+	    roomActions.getMessages(this.props.roomName);
 	  },
 
 	  componentDidMount: function () {
@@ -28536,13 +28536,11 @@
 	  getInitialState: function () {
 	    return {
 	      // trigger get all message function
-	      messages: roomStore.getRoomData().messages
+	      // toJoin: roomStore.getRoomData().toJoin
 	    };
 	  },
 
-	  componentWillMount: function () {
-	    // roomActions.getMessages(this.props.username);
-	  },
+	  componentWillMount: function () {},
 
 	  componentDidMount: function () {
 	    roomStore.addChangeListener(this._onChangeEvent);
@@ -28560,23 +28558,23 @@
 	    });
 	  },
 
-	  handleChange: function (event) {
-	    console.log('writing message');
-	    // if the key was not enter then save the content of what is typed to the state
-	    this.setState({
-	      value: event.target.value
-	    });
-	  },
+	  // handleChange: function(event){
+	  //   console.log('writing message');
+	  //   // if the key was not enter then save the content of what is typed to the state
+	  //   this.setState({
+	  //     value: event.target.value
+	  //   });
+	  // },
 
-	  sendRoomMessage: function (event) {
-	    if (event.key === 'Enter') {
-	      console.log('sending message', this.props.roomName, this.state.value);
-	      roomActions.sendMessage(this.props.roomName, this.state.value);
-	      this.setState({
-	        value: ""
-	      });
-	    }
-	  },
+	  // sendRoomMessage: function (event) {
+	  //   if(event.key === 'Enter'){
+	  //     console.log('sending message', this.props.roomName, this.state.value);
+	  //     roomActions.sendMessage(this.props.roomName,this.state.value);
+	  //     this.setState({
+	  //       value: ""
+	  //     });
+	  //   }
+	  // },
 
 	  render: function () {
 

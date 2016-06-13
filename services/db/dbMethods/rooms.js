@@ -130,34 +130,68 @@ module.exports = function (knex, helpers) {
   //go to rooms and return all that are public that you are not part of
   fnHash.joinable = function (userId) {
 
-    var partOf = {};
-    //get list of all rooms part of
-    //then get list of all public rooms that not already joined
-    return knex.select('room_id')
-    .from('users_rooms')
-    .where('user_id', userId)
-    .then(function (returnRows) {
-      //flatten the array of into one hash
-      returnRows.forEach(function (id) {
-        partOf[id.roomId] = true;
-      });
+    return helpers.joinable(userId);
+
+  };
+
+  //join a room
+  //-----------
+
+  //1. can be invited to join a room: click on room --> send request to back end to check that they are in the users rooms
+  //return yes/no to allow to see the room
+
+  //2.can ask to join a room if public
+  //click on the room --> send request and check that the room is public and then insert the user into the table with accepted true
+  fnHash.joinRoom = function (userId, roomName) {
+
+    var room_id;
+    var roomType;
+    //get the id of the room
+    return knex.select()
+    .from('rooms')
+    .where('name', roomName)
+    .then(function (roomArr) {
+      if (roomArr.length !== 1) {
+        throw new Error("Room: "+roomName+" does not exist");
+      }
+      room_id = roomArr[0].r_id;
+      roomType = roomArr[0].type;
+      //insert / update the user in users rooms table
+      //get the user that matches the usrId if no matches then insert
       return knex.select()
-      .from('rooms')
-      .where('type', 'public')
-      .andWhere('creator', '<>', userId);
+      .from('users_rooms')
+      .where('user_id', userId)
+      .andWhere('room_id', room_id);
     })
-    .then(function (roomsNotIn) {
-      return roomsNotIn.map(function (room) {
-        if ( !partOf.hasOwnProperty(room.r_id) ) {
-          return room;
-        }
-      });
+    .then(function (selectedData) {
+      if (selectedData.length === 0 && roomType === "public") {
+        return knex('users_rooms').insert([{
+          room_id: room_id,
+          user_id: userId,
+          accepted: true
+        }],'*');
+      } else if (selectedData.length === 0 && roomType === "private") {
+        //if the user was not already in the users_rooms table and the room is private then they cant join
+        throw new Error("User not allowed to join private room without being invited");
+      } else if (selectedData[0].accepted === true) {
+        // if they are already part of this room then just return room
+        return selectedData;
+      } else {
+        return knex('users_rooms')
+        .where('user_id', userId)
+        .andWhere('accepted', false)
+        .update({
+          accepted: true
+        }, '*');
+      }
+    })
+    .then(function (insertedData) {
+      return helpers.joinable(userId);
     })
     .catch(function (err) {
-      console.log('error in finding rooms you can join', err);
+      console.log('error in joining a room', err);
       throw err;
     });
-
   };
   
 
@@ -221,65 +255,6 @@ module.exports = function (knex, helpers) {
   //   });
   // };
 
-  //join a room
-  //-----------
-
-  //1. can be invited to join a room: click on room --> send request to back end to check that they are in the users rooms
-  //return yes/no to allow to see the room
-
-  //2.can ask to join a room if public
-  //click on the room --> send request and check that the room is public and then insert the user into the table with accepted true
-  // fnHash.joinRoom = function (userId, roomName) {
-
-  //   var room_id;
-  //   var roomType;
-  //   //get the id of the room
-  //   return knex.select()
-  //   .from('rooms')
-  //   .where('name', roomName)
-  //   .then(function (roomArr) {
-  //     if (roomArr.length !== 1) {
-  //       throw new Error("Room: "+roomName+" does not exist");
-  //     }
-  //     room_id = roomArr[0].r_id;
-  //     roomType = roomArr[0].type;
-  //     //insert / update the user in users rooms table
-  //     //get the user that matches the usrId if no matches then insert
-  //     return knex.select()
-  //     .from('users_rooms')
-  //     .where('user_id', userId)
-  //     .andWhere('room_id', room_id);
-  //   })
-  //   .then(function (selectedData) {
-  //     if (selectedData.length === 0 && roomType === "public") {
-  //       return knex('users_rooms').insert([{
-  //         room_id: room_id,
-  //         user_id: userId,
-  //         accepted: true
-  //       }],'*');
-  //     } else if (selectedData.length === 0 && roomType === "private") {
-  //       //if the user was not already in the users_rooms table and the room is private then they cant join
-  //       throw new Error("User not allowed to join private room without being invited");
-  //     } else if (selectedData[0].accepted === true) {
-  //       // if they are already part of this room then just return room
-  //       return selectedData;
-  //     } else {
-  //       return knex('users_rooms')
-  //       .where('user_id', userId)
-  //       .andWhere('accepted', false)
-  //       .update({
-  //         accepted: true
-  //       }, '*');
-  //     }
-  //   })
-  //   .then(function (insertedData) {
-  //     return insertedData;
-  //   })
-  //   .catch(function (err) {
-  //     console.log('error in joining a room', err);
-  //     throw err;
-  //   });
-  // };
 
   //see pending room requests for the user
   //-------------------------

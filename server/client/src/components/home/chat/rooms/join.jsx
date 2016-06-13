@@ -34,13 +34,12 @@ var Join = React.createClass({
     });
   },
 
-  // handleChange: function(event){
-  //   console.log('writing message');
-  //   // if the key was not enter then save the content of what is typed to the state
-  //   this.setState({
-  //     value: event.target.value
-  //   });
-  // },
+  join: function(room){
+    // on click then... go into the room and see all of the messages and from there back up
+    // 1. send event to update rooms joined
+    roomActions.join(room);
+    // 2. make room.jsx listen for the update on the rooms joined and put into the room
+  },
 
   // sendRoomMessage: function (event) {
   //   if(event.key === 'Enter'){
@@ -59,7 +58,7 @@ var Join = React.createClass({
 
     if (this.state.joinable) {
       toJoin = this.state.joinable.map(function(room, id) {
-        return (<li key={id}>{room.name}</li>);
+        return (<li key={id} onClick={that.join.bind(null,room.name)}>{room.name}</li>);
       });
     }
 

@@ -82,6 +82,22 @@ var roomActions = {
         console.log('err', err);
       }
     });
+  },
+
+  join: function (roomName) {
+    requestHelper
+    .post('rooms/join', {roomName: roomName}, jwt)
+    .end(function (err, response) {
+      console.log('joining', response);
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "JOIN_ROOM",
+          data: response.body.data
+        });
+      } else {
+        console.log('err', err);
+      }
+    });
   }
 
 };

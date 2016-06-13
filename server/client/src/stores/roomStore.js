@@ -37,7 +37,7 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
   //   //think about if want anything back to the user
   // }
 
-  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
+  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM" || action.actionType === "JOIN_ROOM") {
     // split the db return into the correct bucket
     _roomDetails.rooms = action.data;
     roomStore.emitChange();
@@ -48,15 +48,11 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     roomStore.emitChange();
   }
 
-  if (action.actionType === "GET_JOINABLE") {
-    console.log('ins store ', action.data);
+  if (action.actionType === "GET_JOINABLE" || action.actionType === "JOIN_ROOM") {
+    console.log('in store ', action.data);
     _roomDetails.joinable = action.data;
     roomStore.emitChange();
   }
-
-  // if (action.actionType === "GET_MESSAGES") {
-  // }
-
 
 });
 

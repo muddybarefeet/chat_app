@@ -33,7 +33,6 @@ var Rooms = React.createClass({
 
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
-    console.log('in component', roomStore.getRoomData().rooms);
     this.setState({
       rooms: roomStore.getRoomData().rooms
     });

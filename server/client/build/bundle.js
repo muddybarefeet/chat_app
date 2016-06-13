@@ -27907,7 +27907,6 @@
 
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
-	    console.log('in component', roomStore.getRoomData().rooms);
 	    this.setState({
 	      rooms: roomStore.getRoomData().rooms
 	    });
@@ -28133,6 +28132,20 @@
 	        console.log('err', err);
 	      }
 	    });
+	  },
+
+	  join: function (roomName) {
+	    requestHelper.post('rooms/join', { roomName: roomName }, jwt).end(function (err, response) {
+	      console.log('joining', response);
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "JOIN_ROOM",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
 	  }
 
 	};
@@ -28183,7 +28196,7 @@
 	  //   //think about if want anything back to the user
 	  // }
 
-	  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM") {
+	  if (action.actionType === "GET_ROOMS" || action.actionType === "MAKE_ROOM" || action.actionType === "JOIN_ROOM") {
 	    // split the db return into the correct bucket
 	    _roomDetails.rooms = action.data;
 	    roomStore.emitChange();
@@ -28194,14 +28207,11 @@
 	    roomStore.emitChange();
 	  }
 
-	  if (action.actionType === "GET_JOINABLE") {
-	    console.log('ins store ', action.data);
+	  if (action.actionType === "GET_JOINABLE" || action.actionType === "JOIN_ROOM") {
+	    console.log('in store ', action.data);
 	    _roomDetails.joinable = action.data;
 	    roomStore.emitChange();
 	  }
-
-	  // if (action.actionType === "GET_MESSAGES") {
-	  // }
 	});
 
 	module.exports = roomStore;
@@ -28364,13 +28374,12 @@
 	    });
 	  },
 
-	  // handleChange: function(event){
-	  //   console.log('writing message');
-	  //   // if the key was not enter then save the content of what is typed to the state
-	  //   this.setState({
-	  //     value: event.target.value
-	  //   });
-	  // },
+	  join: function (room) {
+	    // on click then... go into the room and see all of the messages and from there back up
+	    // 1. send event to update rooms joined
+	    roomActions.join(room);
+	    // 2. make room.jsx listen for the update on the rooms joined and put into the room
+	  },
 
 	  // sendRoomMessage: function (event) {
 	  //   if(event.key === 'Enter'){
@@ -28391,7 +28400,7 @@
 	      toJoin = this.state.joinable.map(function (room, id) {
 	        return React.createElement(
 	          'li',
-	          { key: id },
+	          { key: id, onClick: that.join.bind(null, room.name) },
 	          room.name
 	        );
 	      });

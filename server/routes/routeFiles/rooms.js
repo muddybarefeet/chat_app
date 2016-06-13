@@ -128,6 +128,29 @@ module.exports = function (services) {
 
     });
 
+  //join a room
+  //-----------------------------------
+  router.route('/join')
+    .post(function (req, res) {
+
+      var userId = req.__userId;
+      var roomName = req.body.roomName;
+
+      services.db.rooms.joinRoom(userId, roomName)
+      .then(function (response) {
+        res.json({
+          data: response
+        });
+      })
+      .catch(function(err){
+        console.log('err', err);
+        res.status(404).json({
+            message: err.message
+        });
+      });
+
+    });
+
 
 
   // //invite users to a room
@@ -138,28 +161,6 @@ module.exports = function (services) {
   //     var toRespondTo = req.body.toRespond;
 
   //     services.db.rooms.inviteUsers(userId, roomName, inviteeArr)
-  //     .then(function (response) {
-  //       res.json({
-  //         data: response
-  //       });
-  //     })
-  //     .catch(function(err){
-  //       console.log('err', err);
-  //       res.status(404).json({
-  //           message: err.message
-  //       });
-  //     });
-
-  //   });
-
-  // //join a room
-  // //-----------------------------------
-  // router.route('/join')
-  //   .put(function (req, res) {
-
-  //     var userId = req.__userId;
-
-  //     services.db.rooms.joinRoom(userId, roomName)
   //     .then(function (response) {
   //       res.json({
   //         data: response

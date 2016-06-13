@@ -168,6 +168,37 @@ module.exports = function (knex) {
     });
   };
 
+  returnHash.joinable = function (userId) {
+    var partOf = {};
+    //get list of all rooms part of
+    //then get list of all public rooms that not already joined
+    return knex.select('room_id')
+    .from('users_rooms')
+    .where('user_id', userId)
+    .then(function (returnRows) {
+      //flatten the array of into one hash
+      returnRows.forEach(function (id) {
+        partOf[id.room_id] = true;
+      });
+      console.log('part of', partOf);
+      return knex.select()
+      .from('rooms')
+      .where('type', 'public')
+      .andWhere('creator', '<>', userId);
+    })
+    .then(function (roomsNotIn) {
+      return roomsNotIn.filter(function (room) {
+        if ( !partOf.hasOwnProperty(room.r_id) ) {
+          return room;
+        }
+      });
+    })
+    .catch(function (err) {
+      console.log('error in finding rooms you can join', err);
+      throw err;
+    });
+  };
+
   return returnHash;
 
 };

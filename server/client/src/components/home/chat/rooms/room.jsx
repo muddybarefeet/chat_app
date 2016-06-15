@@ -113,10 +113,13 @@ var Room = React.createClass({
       <div>
         <div>
           <i className="fa fa-users" onClick={this.addUser}></i>
+          // this is the unput box to type a friends username to add
+          {addUser}
+          // ul is to show searched friends results
           <ul>
             {searchResults}
           </ul>
-          {addUser}
+          // show messages in the room
           <ul>
             {messages}
           </ul>

@@ -28359,12 +28359,15 @@
 	        'div',
 	        null,
 	        React.createElement('i', { className: 'fa fa-users', onClick: this.addUser }),
+	        '// this is the unput box to type a friends username to add',
+	        addUser,
+	        '// ul is to show searched friends results',
 	        React.createElement(
 	          'ul',
 	          null,
 	          searchResults
 	        ),
-	        addUser,
+	        '// show messages in the room',
 	        React.createElement(
 	          'ul',
 	          null,

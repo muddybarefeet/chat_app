@@ -25,10 +25,11 @@ var Room = React.createClass({
 
   componentDidMount: function () {
     roomStore.addChangeListener(this._onChangeEvent);
+    friendsStore.addChangeListener(this._onChangeEvent);
   },
 
   componentWillUnmount: function () {
-    roomStore.removeChangeListener(this._onChangeEvent);
+    friendsStore.removeChangeListener(this._onChangeEvent);
   },
 
   _onChangeEvent: function () {

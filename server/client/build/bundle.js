@@ -27436,7 +27436,6 @@
 	  },
 
 	  search: function (search) {
-	    console.log('friend actions');
 	    requestHelper.get('friends/search/' + search, jwt).end(function (err, response) {
 	      console.log('joining', response);
 	      if (response.status === 200) {
@@ -28256,10 +28255,11 @@
 
 	  componentDidMount: function () {
 	    roomStore.addChangeListener(this._onChangeEvent);
+	    friendsStore.addChangeListener(this._onChangeEvent);
 	  },
 
 	  componentWillUnmount: function () {
-	    roomStore.removeChangeListener(this._onChangeEvent);
+	    friendsStore.removeChangeListener(this._onChangeEvent);
 	  },
 
 	  _onChangeEvent: function () {

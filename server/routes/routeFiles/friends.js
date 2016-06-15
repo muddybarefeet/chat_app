@@ -130,11 +130,12 @@ module.exports = function (services) {
   //-----------------------------------
   router.route('/search/:searchName')
     .get(function (req, res) {
-
+      console.log('in route')
       var userId = req.__userId;
 
       services.db.friends.search(userId, req.searchName)
       .then(function (response) {
+        console.log('in route out', response);
         res.json({
           data: response
         });

@@ -71,7 +71,6 @@ var friendsActions = {
   },
 
   search: function (search) {
-    console.log('friend actions');
     requestHelper
     .get('friends/search/' + search, jwt)
     .end(function (err, response) {

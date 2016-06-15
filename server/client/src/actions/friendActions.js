@@ -68,18 +68,24 @@ var friendsActions = {
         data: response.body.data
       });
     });
+  },
+
+  search: function (search) {
+    console.log('friend actions');
+    requestHelper
+    .get('friends/search/' + search, jwt)
+    .end(function (err, response) {
+      console.log('joining', response);
+      if (response.status === 200) {
+        AppDispatcher.handleServerAction({
+          actionType: "SEARCH_FRIENDS",
+          data: response.body.data
+        });
+      } else {
+        console.log('err', err);
+      }
+    });
   }
-
-  // showWhoCanFriend: function () {
-
-  //   requestHelper
-  //   .get('friends/showWhoCanFriend', jwt)
-  //   .end(function (err, response) {
-  //     console.log('response show who can be friended', response);
-
-  //   });
-
-  // },
 
 };
 

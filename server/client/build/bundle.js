@@ -27433,18 +27433,22 @@
 	        data: response.body.data
 	      });
 	    });
+	  },
+
+	  search: function (search) {
+	    console.log('friend actions');
+	    requestHelper.get('friends/search/' + search, jwt).end(function (err, response) {
+	      console.log('joining', response);
+	      if (response.status === 200) {
+	        AppDispatcher.handleServerAction({
+	          actionType: "SEARCH_FRIENDS",
+	          data: response.body.data
+	        });
+	      } else {
+	        console.log('err', err);
+	      }
+	    });
 	  }
-
-	  // showWhoCanFriend: function () {
-
-	  //   requestHelper
-	  //   .get('friends/showWhoCanFriend', jwt)
-	  //   .end(function (err, response) {
-	  //     console.log('response show who can be friended', response);
-
-	  //   });
-
-	  // },
 
 	};
 
@@ -27587,7 +27591,8 @@
 	  notYetFriends: [],
 	  pendingRequestIn: [],
 	  pendingRequestOut: [],
-	  friendRequestSent: null
+	  friendRequestSent: null,
+	  possibleFriends: []
 	};
 
 	var friendsStore = Object.assign(new EventEmitter(), {
@@ -27633,9 +27638,11 @@
 	    friendsStore.emitChange();
 	  }
 
-	  // if (action.actionType === "USER_LOGIN_ERROR") {
-
-	  // }
+	  if (action.actionType === "SEARCH_FRIENDS") {
+	    console.log('got friends');
+	    _friendDetails.possibleFriends = action.data;
+	    friendsStore.emitChange();
+	  }
 
 	  // if (action.actionType === "USER_SIGNUP_ERROR") {
 
@@ -28223,7 +28230,9 @@
 	
 
 	var roomActions = __webpack_require__(241);
+	var friendActions = __webpack_require__(234);
 	var roomStore = __webpack_require__(242);
+	var friendsStore = __webpack_require__(236);
 
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
@@ -28236,6 +28245,7 @@
 	    return {
 	      // trigger get all message function
 	      messages: roomStore.getRoomData().messages,
+	      searchResults: friendsStore.getFriendData().possibleFriends,
 	      addUser: false
 	    };
 	  },
@@ -28255,7 +28265,8 @@
 	  _onChangeEvent: function () {
 	    // friends have been got and now they need to be displayed
 	    this.setState({
-	      messages: roomStore.getRoomData().messages
+	      messages: roomStore.getRoomData().messages,
+	      searchResults: friendsStore.getFriendData().possibleFriends
 	    });
 	  },
 
@@ -28276,11 +28287,25 @@
 	  },
 
 	  addUser: function () {
-	    console.log('add user');
 	    // show an input bar and from this search for a friend to add
 	    this.setState({
 	      addUser: true
 	    });
+	  },
+
+	  throttle: function (fn, delay) {},
+
+	  typingUsername: function (event) {
+	    console.log('typing');
+	    this.setState({
+	      search: event.target.value
+	    }, function () {
+	      friendActions.search(this.state.search);
+	    });
+	    // want a throttle function to query the database with the current input and return the matches
+
+	    // every second take the typed content and query the database with it
+	    // 1. set up query route to the db
 	  },
 
 	  render: function () {
@@ -28288,6 +28313,7 @@
 	    var that = this;
 	    var messages;
 	    var addUser;
+	    var searchResults;
 
 	    if (this.state.messages) {
 	      messages = this.state.messages.map(function (message, id) {
@@ -28312,8 +28338,18 @@
 	      });
 	    }
 
+	    if (this.state.searchResults) {
+	      searchResults = this.state.searchResults.map(function (user, id) {
+	        return React.createElement(
+	          'li',
+	          { key: id },
+	          user.username
+	        );
+	      });
+	    }
+
 	    if (this.state.addUser) {
-	      addUser = React.createElement('input', { type: 'text', className: 'form-control', id: 'usr', placeholder: 'Username' });
+	      addUser = React.createElement('input', { onChange: this.typingUsername, type: 'text', className: 'form-control', id: 'usr', placeholder: 'Username' });
 	    }
 
 	    return React.createElement(
@@ -28323,6 +28359,11 @@
 	        'div',
 	        null,
 	        React.createElement('i', { className: 'fa fa-users', onClick: this.addUser }),
+	        React.createElement(
+	          'ul',
+	          null,
+	          searchResults
+	        ),
 	        addUser,
 	        React.createElement(
 	          'ul',

@@ -9,7 +9,8 @@ var _friendDetails = {
   notYetFriends: [],
   pendingRequestIn: [],
   pendingRequestOut: [],
-  friendRequestSent: null
+  friendRequestSent: null,
+  possibleFriends: []
 };
 
 var friendsStore = Object.assign(new EventEmitter (), {
@@ -54,9 +55,11 @@ AppDispatcher.register( function (payload){ //'subscribes' to the dispatcher. St
     friendsStore.emitChange();
   }
 
-  // if (action.actionType === "USER_LOGIN_ERROR") {
-
-  // }
+  if (action.actionType === "SEARCH_FRIENDS") {
+    console.log('got friends');
+    _friendDetails.possibleFriends = action.data;
+    friendsStore.emitChange();
+  }
 
   // if (action.actionType === "USER_SIGNUP_ERROR") {
     

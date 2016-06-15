@@ -120,6 +120,48 @@ module.exports = function (knex, helpers) {
 
   };
 
+  // search for the input in the friends database (username)
+  fnHash.search = function (userId, searchName) {
+
+    // get all names that match but not the current user and then get friends and filter out thoses that are not friends 
+
+
+    var searchTerm = searchName + '%';
+
+    // var q = knex.select()
+    // .from('users')
+    // .where('username', 'like', searchTerm).toSQL();
+    // console.log(q);
+    var friends;
+    var possibleUsers;
+
+    return knex.select()
+    .from('users')
+    .where('username', 'like', searchTerm)
+    .andWhere('u_id', '<>', userId)
+    .orderBy('username', 'desc')
+    .then(function (data) {
+      possibleUsers = data;
+      console.log('return', data);
+      return helpers.getFriends(userId);
+    })
+    .then(function (friendsData) {
+      friends = friendsData.friends;
+      var toKeep = [];
+      possibleUsers.forEach(function (user) {
+        if (friends.hasOwnProperty(user.u_id)) {
+          toKeep.push(user);
+        }
+      });
+      return toKeep;
+    })
+    .catch(function (err) {
+      console.log('this is an error from the search friends fn in the controller');
+      throw err;
+    });
+
+  };
+
   return fnHash;
 
 };

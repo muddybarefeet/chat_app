@@ -1,7 +1,9 @@
 
 
 var roomActions = require('./../../../../actions/roomActions.js');
+var friendActions = require('./../../../../actions/friendActions.js');
 var roomStore = require('./../../../../stores/roomStore.js');
+var friendsStore = require('./../../../../stores/friendsStore.js');
 
 var React = require('react');
 var Link = require('react-router').Link;
@@ -12,6 +14,7 @@ var Room = React.createClass({
     return {
       // trigger get all message function
       messages: roomStore.getRoomData().messages,
+      searchResults: friendsStore.getFriendData().possibleFriends,
       addUser: false
     };
   },
@@ -31,7 +34,8 @@ var Room = React.createClass({
   _onChangeEvent: function () {
     // friends have been got and now they need to be displayed
     this.setState({
-      messages: roomStore.getRoomData().messages
+      messages: roomStore.getRoomData().messages,
+      searchResults: friendsStore.getFriendData().possibleFriends
     });
   },
 
@@ -52,11 +56,28 @@ var Room = React.createClass({
   },
 
   addUser: function () {
-    console.log('add user');
     // show an input bar and from this search for a friend to add
     this.setState({
       addUser: true
     });
+  },
+
+  throttle: function (fn, delay) {
+    
+  },
+
+  typingUsername: function (event) {
+    console.log('typing');
+    this.setState({
+      search: event.target.value
+    }, function () {
+      friendActions.search(this.state.search);
+    });
+    // want a throttle function to query the database with the current input and return the matches
+
+    // every second take the typed content and query the database with it
+    // 1. set up query route to the db
+
   },
 
   render: function () {
@@ -64,6 +85,7 @@ var Room = React.createClass({
     var that = this;
     var messages;
     var addUser;
+    var searchResults;
 
     if (this.state.messages) {
       messages = this.state.messages.map(function(message, id) {
@@ -76,14 +98,23 @@ var Room = React.createClass({
       });
     }
 
+    if (this.state.searchResults) {
+      searchResults = this.state.searchResults.map(function (user, id) {
+        return <li key={id}>{user.username}</li>;
+      });
+    }
+
     if (this.state.addUser) {
-      addUser = (<input type="text" className="form-control" id="usr" placeholder="Username" />);
+      addUser = (<input onChange={this.typingUsername} type="text" className="form-control" id="usr" placeholder="Username" />);
     }
 
     return (
       <div>
         <div>
           <i className="fa fa-users" onClick={this.addUser}></i>
+          <ul>
+            {searchResults}
+          </ul>
           {addUser}
           <ul>
             {messages}

@@ -5,8 +5,8 @@ My own implementation of a chat app to have a better understanding of the intric
 
 Current todo:
 
-*page to join rooms (see all the rooms that can be joined(public rooms not in))
 *show that there are unread messages in a room
+*invite people to a room
 
 Next week:
 *add rooms search bar

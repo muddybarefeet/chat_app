@@ -11,7 +11,8 @@ var Room = React.createClass({
   getInitialState: function () {
     return {
       // trigger get all message function
-      messages: roomStore.getRoomData().messages
+      messages: roomStore.getRoomData().messages,
+      addUser: false
     };
   },
 
@@ -35,7 +36,6 @@ var Room = React.createClass({
   },
 
   handleChange: function(event){
-    console.log('writing message');
     // if the key was not enter then save the content of what is typed to the state
     this.setState({
       value: event.target.value
@@ -44,7 +44,6 @@ var Room = React.createClass({
 
   sendRoomMessage: function (event) {
     if(event.key === 'Enter'){
-      console.log('sending message', this.props.roomName, this.state.value);
       roomActions.sendMessage(this.props.roomName,this.state.value);
       this.setState({
         value: ""
@@ -52,10 +51,19 @@ var Room = React.createClass({
     }
   },
 
+  addUser: function () {
+    console.log('add user');
+    // show an input bar and from this search for a friend to add
+    this.setState({
+      addUser: true
+    });
+  },
+
   render: function () {
 
     var that = this;
     var messages;
+    var addUser;
 
     if (this.state.messages) {
       messages = this.state.messages.map(function(message, id) {
@@ -68,9 +76,15 @@ var Room = React.createClass({
       });
     }
 
+    if (this.state.addUser) {
+      addUser = (<input type="text" className="form-control" id="usr" placeholder="Username" />);
+    }
+
     return (
       <div>
         <div>
+          <i className="fa fa-users" onClick={this.addUser}></i>
+          {addUser}
           <ul>
             {messages}
           </ul>

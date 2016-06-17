@@ -95,7 +95,10 @@ var Room = React.createClass({
       search: event.target.value
     }, function () {
       var throttleFn = this.throttle(friendActions.search,1000);
-      throttleFn(this.state.search);
+      // do not trigger the function if there is not anything typed
+      if (this.state.search !== "") {
+        throttleFn(this.state.search);
+      }
     });
 
   },
@@ -136,7 +139,9 @@ var Room = React.createClass({
     return (
       <div>
         <div>
-          {addUser}
+          <ul>
+            {addUser}
+          </ul>
           <i className="fa fa-users" onClick={this.addUser}></i>
           <ul>
             {searchResults}

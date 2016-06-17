@@ -28323,7 +28323,10 @@
 	      search: event.target.value
 	    }, function () {
 	      var throttleFn = this.throttle(friendActions.search, 1000);
-	      throttleFn(this.state.search);
+	      // do not trigger the function if there is not anything typed
+	      if (this.state.search !== "") {
+	        throttleFn(this.state.search);
+	      }
 	    });
 	  },
 
@@ -28382,7 +28385,11 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        addUser,
+	        React.createElement(
+	          'ul',
+	          null,
+	          addUser
+	        ),
 	        React.createElement('i', { className: 'fa fa-users', onClick: this.addUser }),
 	        React.createElement(
 	          'ul',

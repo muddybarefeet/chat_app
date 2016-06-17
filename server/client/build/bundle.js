@@ -27436,8 +27436,9 @@
 	  },
 
 	  search: function (search) {
+	    console.log('in action search', search);
 	    requestHelper.get('friends/search/' + search, jwt).end(function (err, response) {
-	      console.log('joining', response);
+	      console.log('friends found', response);
 	      if (response.status === 200) {
 	        AppDispatcher.handleServerAction({
 	          actionType: "SEARCH_FRIENDS",
@@ -28077,7 +28078,6 @@
 	  makeRoom: function (roomName, roomStatus) {
 
 	    requestHelper.post('rooms/create', { name: roomName, status: roomStatus }, jwt).end(function (err, response) {
-	      console.log('response from db on confiming/reject friend a friend', response);
 	      AppDispatcher.handleServerAction({
 	        actionType: "MAKE_ROOM",
 	        data: response.body.data
@@ -28086,7 +28086,6 @@
 	  },
 
 	  getRooms: function () {
-	    console.log('in get room action');
 	    requestHelper.get('rooms/joined', jwt).end(function (err, response) {
 	      if (response.status === 200) {
 	        AppDispatcher.handleServerAction({
@@ -28115,7 +28114,6 @@
 
 	  getMessages: function (roomName) {
 	    requestHelper.get('rooms/messages/' + roomName, jwt).end(function (err, response) {
-	      console.log('action ', response);
 	      if (response.status === 200) {
 	        AppDispatcher.handleServerAction({
 	          actionType: "GET_MESSAGES",
@@ -28293,19 +28291,44 @@
 	    });
 	  },
 
-	  throttle: function (fn, delay) {},
+	  throttle: function (fn, time) {
+	    console.log('throttle called');
+	    var working = false;
+	    var currentVal;
+	    return function () {
+
+	      if (working) {
+	        console.log('old val returned');
+	        return currentVal;
+	      }
+
+	      var args = Array.prototype.slice.call(arguments);
+
+	      working = true;
+
+	      setTimeout(function () {
+	        working = false;
+	      }, time);
+
+	      currentVal = fn.apply(null, args);
+	      console.log('new value returned');
+	      return currentVal;
+	    };
+	  },
 
 	  typingUsername: function (event) {
 	    console.log('typing');
+
 	    this.setState({
 	      search: event.target.value
 	    }, function () {
-	      friendActions.search(this.state.search);
+	      var throttleFn = this.throttle(friendActions.search, 1000);
+	      throttleFn(this.state.search);
 	    });
-	    // want a throttle function to query the database with the current input and return the matches
+	  },
 
-	    // every second take the typed content and query the database with it
-	    // 1. set up query route to the db
+	  invite: function (username) {
+	    console.log('want to add the user clicked on', username);
 	  },
 
 	  render: function () {
@@ -28339,10 +28362,11 @@
 	    }
 
 	    if (this.state.searchResults) {
+	      var that = this;
 	      searchResults = this.state.searchResults.map(function (user, id) {
 	        return React.createElement(
 	          'li',
-	          { key: id },
+	          { key: id, onClick: that.invite.bind(null, user.username) },
 	          user.username
 	        );
 	      });
@@ -28358,16 +28382,13 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement('i', { className: 'fa fa-users', onClick: this.addUser }),
-	        '// this is the unput box to type a friends username to add',
 	        addUser,
-	        '// ul is to show searched friends results',
+	        React.createElement('i', { className: 'fa fa-users', onClick: this.addUser }),
 	        React.createElement(
 	          'ul',
 	          null,
 	          searchResults
 	        ),
-	        '// show messages in the room',
 	        React.createElement(
 	          'ul',
 	          null,

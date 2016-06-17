@@ -63,22 +63,45 @@ var Room = React.createClass({
     });
   },
 
-  throttle: function (fn, delay) {
-    
+  throttle: function (fn, time) {
+    console.log('throttle called');
+    var working = false;
+    var currentVal;
+    return function () {
+
+      if (working) {
+        console.log('old val returned');
+        return currentVal;
+      }
+
+      var args = Array.prototype.slice.call(arguments);
+
+      working = true;
+
+      setTimeout(function () {
+        working = false;
+      }, time);
+
+      currentVal = fn.apply(null, args);
+      console.log('new value returned');
+      return currentVal;
+    };
   },
 
   typingUsername: function (event) {
     console.log('typing');
+
     this.setState({
       search: event.target.value
     }, function () {
-      friendActions.search(this.state.search);
+      var throttleFn = this.throttle(friendActions.search,1000);
+      throttleFn(this.state.search);
     });
-    // want a throttle function to query the database with the current input and return the matches
 
-    // every second take the typed content and query the database with it
-    // 1. set up query route to the db
+  },
 
+  invite: function (username) {
+    console.log('want to add the user clicked on', username);
   },
 
   render: function () {
@@ -100,8 +123,9 @@ var Room = React.createClass({
     }
 
     if (this.state.searchResults) {
+      var that = this;
       searchResults = this.state.searchResults.map(function (user, id) {
-        return <li key={id}>{user.username}</li>;
+        return <li key={id} onClick={that.invite.bind(null,user.username)}>{user.username}</li>;
       });
     }
 
@@ -112,14 +136,11 @@ var Room = React.createClass({
     return (
       <div>
         <div>
-          <i className="fa fa-users" onClick={this.addUser}></i>
-          // this is the unput box to type a friends username to add
           {addUser}
-          // ul is to show searched friends results
+          <i className="fa fa-users" onClick={this.addUser}></i>
           <ul>
             {searchResults}
           </ul>
-          // show messages in the room
           <ul>
             {messages}
           </ul>

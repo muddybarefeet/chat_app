@@ -11,7 +11,6 @@ var roomActions = {
     requestHelper
     .post('rooms/create', { name: roomName, status: roomStatus }, jwt)
     .end(function (err, response) {
-      console.log('response from db on confiming/reject friend a friend', response);
       AppDispatcher.handleServerAction({
         actionType: "MAKE_ROOM",
         data: response.body.data
@@ -22,7 +21,6 @@ var roomActions = {
   },
 
   getRooms: function () {
-    console.log('in get room action');
     requestHelper
     .get('rooms/joined', jwt)
     .end(function (err, response) {
@@ -57,7 +55,6 @@ var roomActions = {
     requestHelper
     .get('rooms/messages/'+roomName, jwt)
     .end(function (err, response) {
-      console.log('action ', response);
       if (response.status === 200) {
         AppDispatcher.handleServerAction({
           actionType: "GET_MESSAGES",
@@ -99,7 +96,7 @@ var roomActions = {
       }
     });
   }
-  
+
 };
 
 

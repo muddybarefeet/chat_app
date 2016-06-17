@@ -71,10 +71,11 @@ var friendsActions = {
   },
 
   search: function (search) {
+    console.log('in action search', search);
     requestHelper
     .get('friends/search/' + search, jwt)
     .end(function (err, response) {
-      console.log('joining', response);
+      console.log('friends found', response);
       if (response.status === 200) {
         AppDispatcher.handleServerAction({
           actionType: "SEARCH_FRIENDS",
